@@ -1,22 +1,10 @@
 [project]
 
-name = "exampleproject"
-# Define the name of your project here. This is mandatory. Once you publish your package for the first time,
-# this name will be locked and associated with your project. It affects how users will
-# install your package via pip, like so:
+name = "ecomo"
 
-# $ pip install exampleproject
+version = "1.0.0"
 
-# Your project will be accessible at: https://pypi.org/project/exampleproject/
-
-version = "0.1.0"
-# Version numbers should conform to PEP 440, and are also mandatory (but they can be set dynamic)
-# https://www.python.org/dev/peps/pep-0440/
-
-description = "Short description of your project"
-# Provide a short, one-line description of what your project does. This is known as the
-# "Summary" metadata field:
-# https://packaging.python.org/specifications/core-metadata/#summary
+description = "Reference Economic Model for Airborne Wind Energy Systems"
 
 readme = "README.md"
 # Here, you can include a longer description which often mirrors your README file.
@@ -24,27 +12,21 @@ readme = "README.md"
 # This corresponds to the "Description" metadata field:
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#readme
 
-requires-python = ">=3.8"
-# Indicate the versions of Python your project is compatible with. Unlike the
-# 'Programming Language' classifiers, 'pip install' will verify this field
-# and prevent installation if the Python version does not match.
-# Check https://endoflife.date/python for Python versions that are still supported.
+requires-python = ">=3.10"
 
 license = {file = "LICENSE"}
 # This specifies the license.
 # It can be a text (e.g. license = {text = "MIT License"}) or a reference to a file with the license text as shown above.
 
-keywords = ["wind-energy", "simulation"]
-# Keywords that describe your project. These assist users in discovering your project on PyPI searches.
-# These should be a comma-separated list reflecting the nature or domain of the project.
+keywords = ["airborne-wind-energy", "economic-model", "lcoe", "cost-model"]
 
 authors = [
-  {name = "A. Doe", email = "author@tudelft.nl" }
+  {name = "Paulien van der Sluijs", email = "p.m.vandersluijs-1@tudelft.nl" }
 ]
 # Information about the original authors of the project and their contact details.
 
 maintainers = [
-  {name = "B. Smith", email = "maintainer@tudelft.nl" }
+  {name = "Paulien van der Sluijs", email = "p.m.vandersluijs-1@tudelft.nl" }
 ]
 # Information about the current maintainers of the project and their contact details.
 
@@ -81,9 +63,11 @@ classifiers = [
 # For more on how this field compares to pip's requirements files, see:
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
 dependencies = [
-  "numpy", 
-  "pandas>=1.5.3", 
-  "matplotlib>=3.7.1"
+  "numpy",
+  "pandas>=1.5.3",
+  "openpyxl",
+  "scipy",
+  "matplotlib>=3.7.1",
 ]
 
 # You can define additional groups of dependencies here (e.g., development dependencies).
@@ -101,7 +85,8 @@ dev = [
 
 [project.urls]
 "Homepage" = "https://github.com/awegroup"
-"Source" = "<enter_your_repository_URL>"
+"Source" = "https://github.com/awegroup/ecomo"
+"Documentation" = "https://github.com/awegroup/ecomo#README"
 
 # To grab all the files from the src folders of installed packages, not only the .py files
 [tool.setuptools.packages.find]
