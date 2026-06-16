@@ -24,10 +24,10 @@ def main():
     # The input files must match the chosen power/wing combination.
     configure(
         name='example_system',
-        input_cost_file='eco_cost_inputs_GG_fixed',
-        input_model_file='eco_system_inputs_GG_fixed_example',
+        input_cost_file='eco_cost_inputs_GG_soft',
+        input_model_file='eco_system_inputs_GG_soft_example',
         power='GG',
-        wing='fixed',
+        wing='soft',
     )
     # ─────────────────────────────────────────────────────────────────
 
