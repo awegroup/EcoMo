@@ -1,6 +1,10 @@
 # User defined files and folders
 processed_data/
 results/
+tests/
+
+# Pickle files
+*.pkl
 
 
 # Byte-compiled / optimized / DLL files

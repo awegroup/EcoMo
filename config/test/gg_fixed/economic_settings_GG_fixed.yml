@@ -1,0 +1,56 @@
+metadata:
+  name: "ECOMo GG Fixed-Wing Economic Settings"
+  description: "Economic model settings for ground-gen fixed-wing AWE system"
+  note: null
+  awesIO_version: 0.1.0
+  # schema: economic_settings_schema.yml  # TODO: schema not yet defined in awesIO
+
+topology:
+  power: GG        # GG (ground-gen) or FG (fly-gen)
+  wing: fixed      # fixed or soft
+
+# All paths are resolved relative to this file's directory.
+input_files:
+  system: system_GG_fixed.yml                          # awesIO system_schema.yml
+  cost_inputs: economic_cost_inputs_GG_fixed.yml
+  performance: system_performance_GG_fixed.yml         # ignored in AWESPA-connected mode
+  aep_results: null     # set to path of aep_results.yml to activate AWESPA-connected mode
+  power_curves: null    # set to path of power_curves.yml to activate AWESPA-connected mode
+
+wind_resource:
+  # awesIO wind_resource_schema.yml file (relative to this settings file).
+  # When set, the site wind-speed distribution from this file is used for
+  # the economic integrals; otherwise the Weibull parameters below are used.
+  resource_file: null
+  weibull_shape: 2
+  weibull_scale: 8     # m/s
+
+business:
+  n_years: 25
+  cost_of_debt: 0.08
+  cost_of_equity: 0.12
+  tax_rate: 0.25
+  debt_to_equity: 2.3333333333333335   # 70/30 debt-to-equity ratio
+
+# Replacement frequencies [1/year].
+# null = auto-estimate from the load/cycle models, 0 = never replaced.
+replacements:
+  kite_structure: 0
+  tether: null
+  ultracapacitor: null
+  battery: null
+  hydraulic_accumulator: null
+  hydraulic_motor: 0
+  pump_motor: 0
+
+# Inputs that have no field in the awesIO system schema yet.
+# TODO: propose awesIO schema extensions for these.
+system_extras:
+  onboard_generator_rated_power: 1000.0    # W
+  onboard_battery_capacity: 1.0            # kWh
+  hydraulic_accumulator_capacity: 11.25    # kWh
+  # Tether force used in AWESPA-connected mode, where no tether force is
+  # available from the power model outputs. Single float (constant
+  # assumption) or list (one value per wind speed), in N. null omits
+  # tether force-based costs (use with caution).
+  tether_force_override: null

@@ -1,0 +1,64 @@
+metadata:
+  name: ECOMo FG Example System
+  description: Physical system parameters of the ECOMo FG example case
+  note: Converted from eco_system_inputs_FG_example.xlsx. battery_bank capacity carried verbatim from
+    Excel (E_rated=100000); the unit looks inconsistent (likely Wh, not kWh) but the battery is unused
+    with ultracapacitor storage.
+  awesIO_version: 0.1.0
+  schema: system_schema.yml
+assembly:
+  connectivity_matrix:
+  - - K1
+    - T1
+  - - T2
+    - G1
+components:
+  kites:
+  - name: ECOMo FG example kite
+    type: fixed_wing_gc
+    version: 1.0
+    joints:
+      kite_joint:
+        id: K1
+    wing:
+      name: ECOMo FG example wing
+      type: fixed_wing
+      version: 1.0
+      structure:
+        mass: 122.5
+        span: 10.0
+        aspect_ratio: 6.0
+        projected_surface_area: 16.666666666666668
+  tethers:
+  - name: tether
+    type: conductive_tether
+    version: 1.0
+    joints:
+      upper_tether_joint:
+        id: T1
+      lower_tether_joint:
+        id: T2
+    structure:
+      length: 100.0
+      diameter: 0.016
+      density: 970.0
+      conductive: true
+      material:
+        type: dyneema
+        breaking_strength: 1500000000.0
+  ground_station:
+    name: ECOMo FG example ground station
+    type: fly_gen_station
+    version: 1.0
+    joints:
+      drum_joint:
+        id: G1
+    structure:
+      mass: 0.0
+    storages:
+    - name: ultracapacitor bank
+      type: capacitor_bank
+      capacity: 16.7
+    - name: battery bank
+      type: battery_bank
+      capacity: 100000000.0

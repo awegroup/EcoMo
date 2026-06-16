@@ -1,0 +1,63 @@
+metadata:
+  name: ECOMo GG soft Reference Performance
+  description: Performance-model outputs used by the economic model in standalone mode
+  note: Converted from eco_system_inputs_GG_soft_example.xlsx. Field names aligned with power_curves_schema.yml
+    where possible. storage_exchanged_energy.battery carried verbatim from Excel (148930); the unit looks
+    inconsistent with the kWh values of the other components.
+  awesIO_version: 0.1.0
+  # schema: system_performance_schema.yml  # TODO: schema not yet defined in awesIO
+reference_wind_speeds:
+- 4.0
+- 5.0
+- 6.0
+- 7.0
+- 8.0
+- 9.0
+- 10.0
+- 11.0
+- 12.0
+- 13.0
+- 14.0
+- 16.0
+- 18.0
+- 20.0
+- 22.0
+rated_electrical_power: 148930
+peak_mechanical_power: 200000
+average_cycle_power:
+- 16122.0353605111
+- 30934.8706559892
+- 52474.5144793864
+- 81665.6274455663
+- 117699.184672907
+- 148932.023597526
+- 148924.03170463
+- 148586.206731175
+- 148231.037649362
+- 147899.385928266
+- 147566.895457963
+- 146940.60066793
+- 146351.439375689
+- 130952.773948175
+- 107789.403064971
+cycle_time: 60
+tether_force:
+- 19581.59744903
+- 30589.4427976802
+- 43855.131151227
+- 58322.449007231
+- 69451.8065536476
+- 68432.4018007148
+- 69371.4628861828
+- 69478.8976127206
+- 69485.8563217407
+- 69497.1308164078
+- 69482.9452160423
+- 69481.7762790974
+- 69481.0428798217
+- 62833.9833242605
+- 51867.1740101547
+storage_exchanged_energy:
+  ultracapacitor: 0.5688
+  battery: 148930.0
+  hydraulic_accumulator: 0.5688

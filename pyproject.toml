@@ -64,10 +64,9 @@ classifiers = [
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
 dependencies = [
   "numpy",
-  "pandas>=1.5.3",
-  "openpyxl",
   "scipy",
   "matplotlib>=3.7.1",
+  "pyyaml",
 ]
 
 # You can define additional groups of dependencies here (e.g., development dependencies).
@@ -81,6 +80,11 @@ dev = [
   "pytest",
   "pytest-cov",
   "black",
+  ]
+# Only needed to re-run scripts/convert_excel_to_yaml.py
+convert = [
+  "pandas>=1.5.3",
+  "openpyxl",
   ]
 
 [project.urls]

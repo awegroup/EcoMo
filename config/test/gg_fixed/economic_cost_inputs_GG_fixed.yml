@@ -1,0 +1,106 @@
+metadata:
+  name: ECOMo GG fixed Cost Inputs
+  description: Economic cost model parameters for the ECOMo economic model
+  note: Converted from eco_cost_inputs_GG_fixed.xlsx. Prices in EUR; power-specific prices in EUR/kW,
+    energy-specific in EUR/kWh, mass-specific in EUR/kg, area-specific in EUR/m2.
+  awesIO_version: 0.1.0
+  # schema: economic_cost_inputs_schema.yml  # TODO: schema not yet defined in awesIO
+costs:
+  kite:
+    structure:
+      fixed:
+        cost_model: mass_area
+        mass_area:
+          price_mass: 250.0
+          price_wetted_area: 200.0
+        laminate:
+          price_uniax: 3.0
+          price_triax: 3.6
+          manufacturing_factor: 0.75
+    onboard_generator:
+      price_power: 120.0
+    onboard_battery:
+      price_energy: 150.0
+    avionics:
+      cost: 150000.0
+  tether:
+    price_mass: 80
+    conductive_manufacturing_factor: 2.5
+    creep_life_coefficients:
+    - -2.4
+    - 8.3
+    - -11.2
+    - 5.2
+    coating_mass_fraction: 0.1
+    fibre_area_fraction: 0.85
+    bending_life_a1: 6.5
+    bending_life_a2: 2.6
+    n_bends: 2
+    max_stress: 1500000000
+  ground_station:
+    winch:
+      material: steel
+      drum_to_tether_diameter_ratio: 100.0
+      safety_factor_diameter: 1.1
+      safety_factor_length: 1.1
+      materials:
+        aluminum:
+          price_mass: 10.0
+          density: 2700.0
+          max_stress: 300000000.0
+        steel:
+          price_mass: 7.0
+          density: 7850.0
+          max_stress: 500000000.0
+    drivetrain: electric
+    gearbox:
+      cost_model: power_based
+      power_based:
+        price_power: 70.0
+      mass_based:
+        price_mass: 12.9
+        mass_coefficient: 113.0
+        mass_exponent: 0.71
+    generator:
+      cost_model: power_based
+      power_based:
+        price_power: 120.0
+      mass_based:
+        price_mass: 12.4
+        mass_slope: 2.3
+        mass_offset: 3400.0
+    electrical_storage: ultracapacitor
+    ultracapacitor:
+      price_energy: 60000.0
+      cycle_life: 1000000.0
+    battery:
+      price_energy: 200.0
+      cycle_life: 10000.0
+    power_converter:
+      price_power: 100.0
+    pump_motor:
+      price_power: 100.0
+      maintenance_price_power: 75.0
+    hydraulic_accumulator:
+      price_energy: 30000.0
+      maintenance_price_energy: 1200.0
+    hydraulic_motor:
+      price_power: 200.0
+      maintenance_price_power: 80.0
+  balance_of_system:
+    site_preparation:
+      price_power: 40.0
+    foundation:
+      price_power: 55.0
+    installation:
+      price_power: 40.0
+    operations_maintenance:
+      price_power: 60.0
+    decommissioning:
+      installation_fraction: 0.5
+  balance_of_plant: {}
+market:
+  electricity_price:
+    intercept: 45.0
+    wind_speed_slope: -1.2
+  subsidy: 150.0

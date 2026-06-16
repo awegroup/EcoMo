@@ -1,0 +1,79 @@
+capacity_factor: 0.35722452475998406
+cluster_contributions:
+- aep_kwh: 6322.123501573899
+  aep_mwh: 6.3221235015739
+  aep_wh: 6322123.5015739
+  cluster_id: 1
+  expected_power_w: 721.7035960700799
+  frequency: 0.2284478824388463
+- aep_kwh: 5990.61827204058
+  aep_mwh: 5.990618272040581
+  aep_wh: 5990618.27204058
+  cluster_id: 2
+  expected_power_w: 683.8605333379658
+  frequency: 0.18768254837531945
+- aep_kwh: 4222.797905677259
+  aep_mwh: 4.222797905677259
+  aep_wh: 4222797.905677259
+  cluster_id: 3
+  expected_power_w: 482.0545554426095
+  frequency: 0.14833196422051845
+- aep_kwh: 2282.806509868903
+  aep_mwh: 2.282806509868903
+  aep_wh: 2282806.509868903
+  cluster_id: 4
+  expected_power_w: 260.5943504416556
+  frequency: 0.16884583789704272
+- aep_kwh: 1058.9201862051368
+  aep_mwh: 1.0589201862051367
+  aep_wh: 1058920.1862051368
+  cluster_id: 5
+  expected_power_w: 120.88129979510695
+  frequency: 0.09116009492515517
+- aep_kwh: 1731.0770226731063
+  aep_mwh: 1.7310770226731063
+  aep_wh: 1731077.0226731063
+  cluster_id: 6
+  expected_power_w: 197.61153226861944
+  frequency: 0.08036692223439211
+- aep_kwh: 321.5368727387239
+  aep_mwh: 0.3215368727387239
+  aep_wh: 321536.8727387239
+  cluster_id: 7
+  expected_power_w: 36.70512245875843
+  frequency: 0.05948795180722892
+- aep_kwh: 38.04019366960397
+  aep_mwh: 0.03804019366960397
+  aep_wh: 38040.19366960397
+  cluster_id: 8
+  expected_power_w: 4.342487861826937
+  frequency: 0.035676798101496904
+mean_power_kw: 2.507753477676623
+metadata:
+  calculation_timestamp: '2026-06-10T13:24:14.824824'
+  power_curve_source: '{''name'': ''Ground-Gen Power Curves (Optimization)'', ''description'':
+    ''Power curves for pumping ground-gen AWE system'', ''note'': ''Power curve data
+    generated from QSM optimization. Wind speeds at 200m reference height.'', ''awesIO_version'':
+    ''0.1.0'', ''schema'': ''power_curves_schema.yml'', ''time_created'': ''2026-06-10T13:24:03.517524'',
+    ''model_config'': {''wing_area'': 19.75, ''wing_mass'': 22.8}, ''wind_resource'':
+    {''n_clusters'': 8, ''n_profiles_calculated'': 8, ''profile_ids_calculated'':
+    [1, 2, 3, 4, 5, 6, 7, 8], ''reference_height'': 200.0}}'
+  wind_resource_source: '{''name'': ''Case study 1 Bangor Erris ERA5 Wind Profile
+    Clustering'', ''description'': ''This dataset contains the results of clustering
+    analysis performed on ERA5 reanalysis data for the Bangor Erris location in Ireland.
+    The clustering was conducted to identify typical wind profile shapes and their
+    probabilities based on the ERA5 data from 2010 to 2020, covering altitudes from
+    10 to 500 meters above ground level.'', ''note'': ''ERA5 reanalysis data processed
+    for wind profile clustering analysis'', ''awesIO_version'': ''0.1.0'', ''schema'':
+    ''wind_resource_schema.yml'', ''data_source'': ''ERA5'', ''time_created'': ''2026-05-31T15:01:07.429658'',
+    ''location'': {''latitude'': 54.12645912483461, ''longitude'': -9.781319131175586},
+    ''time_range'': {''start_date'': ''2010-01-01'', ''end_date'': ''2019-12-31''},
+    ''altitude_range'': [10, 500], ''n_clusters'': 8, ''n_wind_speed_bins'': 50, ''n_wind_direction_bins'':
+    10, ''wind_direction_bin_width'': 36.0, ''reference_height'': 200.0, ''total_samples'':
+    87648, ''wind_speed_range'': [0.2448429850151784, 33.26059689641678]}'
+rated_power_kw: 7.02010445492666
+total_aep:
+  gwh: 0.021967920464447215
+  kwh: 21967.920464447216
+  mwh: 21.967920464447214
+  wh: 21967920.464447215

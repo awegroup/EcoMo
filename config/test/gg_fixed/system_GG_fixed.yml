@@ -1,0 +1,62 @@
+metadata:
+  name: ECOMo GG fixed Example System
+  description: Physical system parameters of the ECOMo GG_fixed example case
+  note: Converted from eco_system_inputs_GG_fixed_example.xlsx. flat_wing_area carries the Excel wing
+    area verbatim; projected_surface_area is set to the same value for schema compliance.
+  awesIO_version: 0.1.0
+  schema: system_schema.yml
+assembly:
+  connectivity_matrix:
+  - - K1
+    - T1
+  - - T2
+    - G1
+components:
+  kites:
+  - name: ECOMo GG_fixed example kite
+    type: fixed_wing_gc
+    version: 1.0
+    joints:
+      kite_joint:
+        id: K1
+    wing:
+      name: ECOMo GG_fixed example wing
+      type: fixed_wing
+      version: 1.0
+      structure:
+        mass: 5543
+        projected_surface_area: 100
+        flat_wing_area: 100
+  tethers:
+  - name: tether
+    type: non_conductive_tether
+    version: 1.0
+    joints:
+      upper_tether_joint:
+        id: T1
+      lower_tether_joint:
+        id: T2
+    structure:
+      length: 2600.0
+      diameter: 0.0273
+      density: 970.0
+      conductive: false
+      material:
+        type: dyneema
+        breaking_strength: 1500000000.0
+  ground_station:
+    name: ECOMo GG_fixed example ground station
+    type: pumping_ground_gen_station
+    version: 1.0
+    joints:
+      drum_joint:
+        id: G1
+    structure:
+      mass: 0.0
+    storages:
+    - name: ultracapacitor bank
+      type: capacitor_bank
+      capacity: 11250.0
+    - name: battery bank
+      type: battery_bank
+      capacity: 1000000.0
