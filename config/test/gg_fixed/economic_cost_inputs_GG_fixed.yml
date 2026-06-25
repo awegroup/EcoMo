@@ -4,7 +4,7 @@ metadata:
   note: Converted from eco_cost_inputs_GG_fixed.xlsx. Prices in EUR; power-specific prices in EUR/kW,
     energy-specific in EUR/kWh, mass-specific in EUR/kg, area-specific in EUR/m2.
   awesIO_version: 0.1.0
-  # schema: economic_cost_inputs_schema.yml  # TODO: schema not yet defined in awesIO
+  schema: economic_schema.yml
 costs:
   kite:
     structure:

@@ -1,9 +1,5 @@
-metadata:
-  name: "ECOMo GG Soft-Wing Economic Settings"
-  description: "Economic model settings for ground-gen soft-wing AWE system"
-  note: null
-  awesIO_version: 0.1.0
-  # schema: economic_settings_schema.yml  # TODO: schema not yet defined in awesIO
+# ECOMo GG Soft-Wing Economic Settings
+# Economic model settings for ground-gen soft-wing AWE system
 
 topology:
   power: GG        # GG (ground-gen) or FG (fly-gen)

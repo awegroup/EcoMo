@@ -4,7 +4,6 @@ metadata:
   note: Converted from eco_system_inputs_FG_example.xlsx. Field names aligned with power_curves_schema.yml
     where possible.
   awesIO_version: 0.1.0
-  # schema: system_performance_schema.yml  # TODO: schema not yet defined in awesIO
 reference_wind_speeds:
 - 3.0
 - 3.33333333333333

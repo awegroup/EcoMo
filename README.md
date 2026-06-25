@@ -50,7 +50,7 @@ ECOMo computes capital expenditure (CAPEX), operational expenditure (OPEX), leve
 ## :eyes: Usage
 
 The model is configured from an awesIO YAML settings file and run through
-the `EcoMoEconomicModel` class. All inputs are YAML files; the settings
+the `EcoMo` class. All inputs are YAML files; the settings
 file references three input files per topology case:
 
 - a **system** file (awesIO `system_schema.yml` format) with the physical
@@ -69,9 +69,9 @@ python scripts/run_ecomo.py
 ```
 
 ```python
-from ecomo import EcoMoEconomicModel
+from ecomo import EcoMo
 
-model = EcoMoEconomicModel()
+model = EcoMo()
 model.load_configuration(
     economic_settings_path="config/example/economic_settings_GG_fixed.yml",
 )
@@ -104,7 +104,7 @@ python scripts/run_ecomo_from_awespa.py
 ```
 
 ```python
-model = EcoMoEconomicModel()
+model = EcoMo()
 model.load_configuration(
     economic_settings_path="config/example/economic_settings_GG_fixed_awespa.yml",
 )
@@ -157,7 +157,7 @@ ecomo/
 ├── src/
 │   └── ecomo/            # Python package
 │       ├── base.py              # EconomicModel abstract base class
-│       ├── ecomo_economic.py    # EcoMoEconomicModel concrete class
+│       ├── ecomo_economic.py    # EcoMo concrete class
 │       └── ecomo/               # Subsystem cost modules
 │           ├── eco_main.py             # Orchestrator
 │           ├── eco_inputs.py           # Typed input dataclasses

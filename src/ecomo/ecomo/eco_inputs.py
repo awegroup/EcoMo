@@ -172,6 +172,11 @@ class PerformanceData:
         externalAep: Externally computed annual energy production
             [MWh] (AWESPA-connected mode), or None to integrate the
             power curve over the wind distribution.
+        reelOutTimeFraction: Reel-out time fraction t_reel_out /
+            t_cycle per wind speed [-], used by the time-weighted
+            soft-wing loading factor; None for FG systems or when the
+            timing data are unavailable (falls back to the unweighted
+            loading factor with a warning).
     """
 
     windSpeeds: np.ndarray
@@ -184,6 +189,7 @@ class PerformanceData:
     tipSpeedRatio: Optional[float] = None
     turningRadius: Optional[float] = None
     externalAep: Optional[float] = None
+    reelOutTimeFraction: Optional[np.ndarray] = None
 
 
 @dataclass(frozen=True)

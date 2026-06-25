@@ -33,14 +33,31 @@ class KiteCosts:
         priceTriax: Triax laminate price [EUR/kg] (laminate model).
         manufacturingFactor: Manufacturing cost factor [-] (laminate
             model).
-        priceFabric: Soft-wing fabric price [EUR/m2].
-        priceBridle: Soft-wing bridle price [EUR/m2].
+        priceFabric: Soft-wing fabric price [EUR/m2] (flat-price model).
+        priceBridle: Soft-wing bridle price [EUR/m2] (flat-price model).
         structureLifetime: Soft-wing structural lifetime at full
             loading [flying years].
         onboardGeneratorPricePower: Onboard generator price [EUR/kW],
             or None.
         onboardBatteryPriceEnergy: Onboard battery price [EUR/kWh], or
             None.
+        materialCostRef: Soft-wing material cost at the reference area
+            [EUR] (two-term model). When set, the two-term model is
+            used instead of the flat-price model.
+        referenceArea: Reference flat wing area S_ref [m2] (two-term
+            model).
+        materialScalingExponent: Material cost scaling exponent b_mat
+            [-] (two-term model).
+        labourCostCoefficient: Labour cost coefficient C_lab [EUR/m2]
+            (two-term model).
+        avionicsCostFixed: Fixed avionics/electronics cost [EUR] (area-
+            scaled KCU model). When set, the scaled model is used
+            instead of the flat avionicsCost.
+        avionicsCostVarRef: Variable avionics/actuator cost at the
+            reference area [EUR] (area-scaled KCU model).
+        avionicsReferenceArea: Reference flat wing area for avionics
+            scaling [m2].
+        avionicsScalingExponent: Avionics cost scaling exponent [-].
     """
 
     avionicsCost: float
@@ -55,6 +72,17 @@ class KiteCosts:
     structureLifetime: Optional[float] = None
     onboardGeneratorPricePower: Optional[float] = None
     onboardBatteryPriceEnergy: Optional[float] = None
+    # Soft-wing two-term structure cost model (preferred over the flat
+    # priceFabric/priceBridle model when set)
+    materialCostRef: Optional[float] = None
+    referenceArea: Optional[float] = None
+    materialScalingExponent: Optional[float] = None
+    labourCostCoefficient: Optional[float] = None
+    # Area-scaled avionics (KCU) model (preferred over avionicsCost when set)
+    avionicsCostFixed: Optional[float] = None
+    avionicsCostVarRef: Optional[float] = None
+    avionicsReferenceArea: Optional[float] = None
+    avionicsScalingExponent: Optional[float] = None
 
 
 @dataclass(frozen=True)

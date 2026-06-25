@@ -1,9 +1,5 @@
-metadata:
-  name: "ECOMo GG Fixed-Wing Economic Settings (AWESPA-connected)"
-  description: "Economic model settings for ground-gen fixed-wing AWE system, using AWESPA power model outputs"
-  note: null
-  awesIO_version: 0.1.0
-  # schema: economic_settings_schema.yml  # TODO: schema not yet defined in awesIO
+# ECOMo GG Fixed-Wing Economic Settings (AWESPA-connected)
+# Economic model settings for ground-gen fixed-wing AWE system, using AWESPA power model outputs
 
 topology:
   power: GG        # GG (ground-gen) or FG (fly-gen)

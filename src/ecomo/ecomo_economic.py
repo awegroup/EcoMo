@@ -82,7 +82,11 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
 
     Returns:
         dict: Dictionary with keys ``'windRange'`` [m/s], ``'peAvg'``
-        [W], ``'dtCycle'`` [s], and ``'peRated'`` [W].
+        (electrical) [W], ``'dtCycle'`` [s], ``'peRated'`` [W],
+        ``'reelOutFraction'`` (t_reel_out / t_cycle per wind speed [-]),
+        ``'peakReelOutPower'`` (max average mechanical reel-out power
+        [W]) and ``'tetherForce'`` (cycle-maximum ground tether force
+        per wind speed [N], or None when not reported).
     """
     windRange = np.asarray(power_curves_data['reference_wind_speeds'],
                            dtype=float)
@@ -95,6 +99,10 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
     timeSum = np.zeros(nSpeeds)
     weightTotal = 0.0
     timeWeight = np.zeros(nSpeeds)
+    reelOutTimeSum = np.zeros(nSpeeds)
+    peakReelOutPower = 0.0
+    tetherForceSum = np.zeros(nSpeeds)
+    hasTetherForce = False
 
     isSingleProfile = len(curves) == 1
     for curve in curves:
@@ -111,19 +119,45 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
             if not entry.get('successful', False):
                 continue
             performance = entry['performance']
-            powerSum[i] += weight * performance['power']['average_cycle_power']
-            timeSum[i] += weight * performance['timing']['cycle_time']
+            mechPower = performance['power']
+            # The electrical power is the economically relevant output;
+            # fall back to the mechanical power for older power curves
+            # without a separate electrical_power block.
+            elecPower = performance.get('electrical_power', mechPower)
+            timing = performance['timing']
+            powerSum[i] += weight * elecPower['average_cycle_power']
+            cycleTime = timing.get('cycle_time', 0.0)
+            timeSum[i] += weight * cycleTime
             timeWeight[i] += weight
+            if cycleTime > 0:
+                reelOutTimeSum[i] += (weight *
+                                      timing.get('reel_out_time', 0.0) /
+                                      cycleTime)
+            # Peak mechanical power sizes the gearbox/generator/foundation
+            peakReelOutPower = max(
+                peakReelOutPower, mechPower.get('average_reel_out_power', 0.0))
+            # Peak (cycle-maximum) ground tether force, when reported
+            tetherForceGround = performance.get('tether_force_ground')
+            if tetherForceGround is not None:
+                hasTetherForce = True
+                tetherForceSum[i] += weight * tetherForceGround.get(
+                    'maximum_tether_force_cycle', 0.0)
 
     peAvg = powerSum / weightTotal
     with np.errstate(divide='ignore', invalid='ignore'):
         dtCycle = np.where(timeWeight > 0, timeSum / timeWeight, 0.0)
+        reelOutFraction = np.where(timeWeight > 0,
+                                   reelOutTimeSum / timeWeight, 0.0)
 
     return {
         'windRange': windRange,
         'peAvg': peAvg,
         'dtCycle': dtCycle,
         'peRated': float(np.max(peAvg)),
+        'reelOutFraction': reelOutFraction,
+        'peakReelOutPower': peakReelOutPower,
+        'tetherForce': (tetherForceSum / weightTotal
+                        if hasTetherForce else None),
     }
 
 
@@ -154,7 +188,7 @@ def _to_builtin(value):
     return value
 
 
-class EcoMoEconomicModel(EconomicModel):
+class EcoMo(EconomicModel):
     """ECOMo economic model for airborne wind energy systems.
 
     Computes subsystem costs (kite, tether, ground station, BoS, BoP)
@@ -195,13 +229,13 @@ class EcoMoEconomicModel(EconomicModel):
 
         Args:
             economic_settings_path (Path): Path to the economic
-                settings YAML file (awesIO format with topology,
-                input_files, wind_resource, business, replacements and
-                system_extras sections).
-            validate (bool): If True, attempt awesIO validation of the
-                input files. No economic settings schema is available
-                yet, so validation failures of the settings file are
-                reported but not fatal. Defaults to True.
+                settings YAML file (a plain configuration file with
+                topology, input_files, wind_resource, business,
+                replacements and system_extras sections). The settings
+                file itself is not schema-validated.
+            validate (bool): If True, validate the referenced data
+                files (e.g. the awesIO system file) with the awesIO
+                validator. Defaults to True.
 
         Raises:
             FileNotFoundError: If the settings or system file does not
@@ -232,15 +266,9 @@ class EcoMoEconomicModel(EconomicModel):
         with open(settingsPath, 'r', encoding='utf-8') as f:
             settings = yaml.safe_load(f)
 
-        # No economic settings schema is available yet, so validation
-        # failures are not fatal. TODO: make validation strict once
-        # awesIO provides an economic_settings_schema.yml.
-        if validate and awesio_validate is not None:
-            try:
-                awesio_validate(settings)
-            except Exception as e:
-                print(f"Note: awesIO validation skipped for "
-                      f"{settingsPath.name}: {e}")
+        # The settings file is a plain configuration file and is not
+        # validated against an awesIO schema (the same way AWESPA does
+        # not schema-validate its simulation settings files).
 
         topology = settings.get('topology')
         if topology is None:
@@ -366,20 +394,29 @@ class EcoMoEconomicModel(EconomicModel):
                 print(f"Note: awesIO validation skipped for "
                       f"{powerCurvesPath.name}: {e}")
 
-        if 'total_aep' not in aepData or 'kwh' not in aepData['total_aep']:
+        parsed = _parse_power_curves(powerCurvesData)
+
+        # AEP [MWh]: new schema annual_energy_production.total.aep_mwh,
+        # or legacy schema total_aep.kwh
+        total = aepData.get('annual_energy_production', {}).get('total', {})
+        legacy = aepData.get('total_aep', {})
+        if 'aep_mwh' in total:
+            parsed['aepMwh'] = float(total['aep_mwh'])
+        elif 'kwh' in legacy:
+            parsed['aepMwh'] = float(legacy['kwh']) / 1e3
+        else:
             raise ValueError(
-                f"Missing 'total_aep.kwh' field in {aepPath}"
+                f"Could not find the annual energy production in {aepPath}"
             )
 
-        parsed = _parse_power_curves(powerCurvesData)
-        # AEP is stored in MWh, matching the units used in eco_metrics
-        parsed['aepMwh'] = float(aepData['total_aep']['kwh']) / 1e3
-
-        # Prefer the rated power reported with the AEP results (max
-        # power across all profiles) over the weighted-average maximum.
-        ratedPowerKw = aepData.get('rated_power_kw')
-        if ratedPowerKw is not None:
-            parsed['peRated'] = float(ratedPowerKw) * 1e3
+        # Rated power [W]: new schema power_summary.max_rated_power_w, or
+        # legacy schema rated_power_kw. Preferred over the weighted-
+        # average maximum computed from the power curves.
+        powerSummary = aepData.get('power_summary', {})
+        if 'max_rated_power_w' in powerSummary:
+            parsed['peRated'] = float(powerSummary['max_rated_power_w'])
+        elif aepData.get('rated_power_kw') is not None:
+            parsed['peRated'] = float(aepData['rated_power_kw']) * 1e3
 
         self.awespaData = parsed
 
@@ -596,10 +633,12 @@ class EcoMoEconomicModel(EconomicModel):
     ) -> Tuple[PerformanceData, Dict[str, Any], bool]:
         """Build the performance data from the loaded AWESPA outputs.
 
-        The performance file from the settings is ignored; the tether
-        force comes from ``system_extras.tether_force_override`` and
-        the storage exchanged energy falls back to half the rated
-        capacity.
+        The performance file from the settings is ignored. The tether
+        force is taken from the power curves
+        (``tether_force_ground.maximum_tether_force_cycle``) when
+        available, or from ``system_extras.tether_force_override`` (which
+        takes precedence). The storage exchanged energy falls back to
+        half the rated capacity.
 
         Args:
             topology (Topology): System topology.
@@ -609,21 +648,38 @@ class EcoMoEconomicModel(EconomicModel):
         """
         data = self.awespaData
         windRange = data['windRange']
+
+        # Tether force priority: an explicit override (for what-if
+        # studies), else the per-wind-speed force from the power curves,
+        # else none (replacement costs cannot be estimated).
         override = (self.settings.get('system_extras') or {}).get(
             'tether_force_override')
-        if override is None:
+        curveForce = data.get('tetherForce')
+        if override is not None:
+            forceValue = override
+        elif curveForce is not None and np.any(np.asarray(curveForce) > 0):
+            forceValue = curveForce
+        else:
+            forceValue = None
             warnings.warn(
-                "No tether force available; tether force is not provided "
-                "by the AWESPA power model outputs. Tether and soft-kite "
-                "replacement costs will not be estimated. Set "
-                "'system_extras.tether_force_override' in the settings "
-                "YAML to enable these calculations.",
+                "No tether force available; it is neither in the power "
+                "curves (no 'tether_force_ground' block) nor set as "
+                "'system_extras.tether_force_override'. Tether and "
+                "soft-kite replacement costs will not be estimated.",
                 UserWarning, stacklevel=2,
             )
-        tetherForce, available = self._resolve_tether_force(override, windRange)
+        tetherForce, available = self._resolve_tether_force(
+            forceValue, windRange)
 
-        peakMechanicalPower = (peak_mechanical_power_fallback(data['peRated'])
-                               if topology.power == 'GG' else None)
+        # Peak mechanical power: the actual peak reel-out power from the
+        # power curves, falling back to the 2.5x rated estimate only when
+        # the reel-out power is unavailable.
+        peakMechanicalPower = None
+        if topology.power == 'GG':
+            peakMechanicalPower = data.get('peakReelOutPower') or None
+            if peakMechanicalPower is None:
+                peakMechanicalPower = peak_mechanical_power_fallback(
+                    data['peRated'])
 
         performance = PerformanceData(
             windSpeeds=windRange,
@@ -636,6 +692,7 @@ class EcoMoEconomicModel(EconomicModel):
             tipSpeedRatio=None,
             turningRadius=None,
             externalAep=data['aepMwh'],
+            reelOutTimeFraction=data.get('reelOutFraction'),
         )
         return performance, {}, available
 

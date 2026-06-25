@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
-# NOTE: Development artifact — run once to convert the original Excel input files
+# NOTE: Development artifact, run once to convert the original Excel input files
 # to YAML. The Excel files in data/ and this script can be archived once the
-# generated YAML files in config/test/ are verified. Do not rely on this script
+# generated YAML files in config/test/ are verified. This script is not intended to be included
 # in the normal model workflow.
 """Convert the legacy ECOMo Excel input files to YAML input files.
 
@@ -16,9 +15,6 @@ The Excel values are carried over verbatim; only key names, type codes
 (integer -> string) and units (storage kWh -> Wh in the system YAML)
 are translated. Data oddities are noted in the metadata of the
 generated files rather than silently corrected.
-
-Usage:
-    python scripts/convert_excel_to_yaml.py
 """
 
 import sys
@@ -284,7 +280,7 @@ def convert_cost_inputs(case, info):
             f"Converted from {info['cost_file']}.xlsx. Prices in EUR; "
             "power-specific prices in EUR/kW, energy-specific in EUR/kWh, "
             "mass-specific in EUR/kg, area-specific in EUR/m2.",
-            "economic_cost_inputs_schema.yml",
+            "economic_schema.yml",
         ),
         "costs": {
             "kite": kite,

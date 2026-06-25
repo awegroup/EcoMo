@@ -11,21 +11,21 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from ecomo import EcoMoEconomicModel
+from ecomo import EcoMo
 
 
 def main():
     """Run the ECOMo model in standalone mode and export results."""
     # ---- paths ------------------------------------------------------------
-    configDir = PROJECT_ROOT / "config" / "test" / "gg_fixed"
-    settingsPath = configDir / "economic_settings_GG_fixed.yml"
+    configDir = PROJECT_ROOT / "config" / "test" / "gg_soft"
+    settingsPath = configDir / "economic_settings_GG_soft.yml"
 
     resultsDir = PROJECT_ROOT / "results" / "example"
     resultsDir.mkdir(parents=True, exist_ok=True)
     outputPath = resultsDir / "ecomo_results.yml"
 
     # ---- initialise and load model -----------------------------------------
-    model = EcoMoEconomicModel()
+    model = EcoMo()
     model.load_configuration(economic_settings_path=settingsPath)
 
     # ---- compute economics --------------------------------------------------
@@ -40,7 +40,7 @@ def main():
     print("ECONOMIC ANALYSIS COMPLETE")
     print("=" * 60)
     print(f"\n  Output: {outputPath}")
-    print("\nAll done!")
+    print("\nComplete ")
 
 
 if __name__ == "__main__":

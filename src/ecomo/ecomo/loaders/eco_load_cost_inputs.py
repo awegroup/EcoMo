@@ -55,9 +55,18 @@ def _require(section: Dict[str, Any], key: str, context: str):
 def _load_kite_costs(kite: Dict[str, Any], power: Optional[str]) -> KiteCosts:
     """Build the kite cost parameters from the YAML kite section."""
     structure = kite.get('structure', {})
+    avionics = _require(kite, 'avionics', 'costs.kite')
     fields: Dict[str, Any] = {
-        'avionicsCost': _require(kite, 'avionics', 'costs.kite')['cost'],
+        'avionicsCost': avionics['cost'],
     }
+    if 'cost_fixed' in avionics:
+        fields['avionicsCostFixed'] = avionics['cost_fixed']
+        fields['avionicsCostVarRef'] = _require(
+            avionics, 'cost_var_ref', 'costs.kite.avionics')
+        fields['avionicsReferenceArea'] = _require(
+            avionics, 'reference_area', 'costs.kite.avionics')
+        fields['avionicsScalingExponent'] = avionics.get(
+            'scaling_exponent', 1.0)
 
     if 'fixed' in structure:
         fixed = structure['fixed']
@@ -72,10 +81,22 @@ def _load_kite_costs(kite: Dict[str, Any], power: Optional[str]) -> KiteCosts:
         fields['manufacturingFactor'] = laminate.get('manufacturing_factor')
     if 'soft' in structure:
         soft = structure['soft']
-        fields['priceFabric'] = _require(soft, 'price_fabric',
-                                         'costs.kite.structure.soft')
-        fields['priceBridle'] = _require(soft, 'price_bridle',
-                                         'costs.kite.structure.soft')
+        # Two-term scaling model (preferred) or flat-price model
+        if 'material_cost_ref' in soft:
+            fields['materialCostRef'] = soft['material_cost_ref']
+            fields['referenceArea'] = _require(
+                soft, 'reference_area', 'costs.kite.structure.soft')
+            fields['materialScalingExponent'] = _require(
+                soft, 'material_scaling_exponent',
+                'costs.kite.structure.soft')
+            fields['labourCostCoefficient'] = _require(
+                soft, 'labour_cost_coefficient',
+                'costs.kite.structure.soft')
+        else:
+            fields['priceFabric'] = _require(soft, 'price_fabric',
+                                             'costs.kite.structure.soft')
+            fields['priceBridle'] = _require(soft, 'price_bridle',
+                                             'costs.kite.structure.soft')
         fields['structureLifetime'] = _require(soft, 'lifetime_flying_years',
                                                'costs.kite.structure.soft')
 

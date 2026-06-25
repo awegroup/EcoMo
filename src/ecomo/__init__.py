@@ -5,8 +5,8 @@ MATLAB.
 """
 
 from .base import EconomicModel
-from .ecomo_economic import EcoMoEconomicModel
+from .ecomo_economic import EcoMo
 
 __version__ = "1.0.0"
 
-__all__ = ["EconomicModel", "EcoMoEconomicModel"]
+__all__ = ["EconomicModel", "EcoMo"]

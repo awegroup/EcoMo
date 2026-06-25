@@ -5,7 +5,6 @@ metadata:
     where possible. storage_exchanged_energy.battery carried verbatim from Excel (148930); the unit looks
     inconsistent with the kWh values of the other components.
   awesIO_version: 0.1.0
-  # schema: system_performance_schema.yml  # TODO: schema not yet defined in awesIO
 reference_wind_speeds:
 - 4.0
 - 5.0
