@@ -1,0 +1,94 @@
+# ECOMo Example: TU Delft V3.25 soft kite, GG, AWESPA-connected
+#
+# First LCoE insight for the V3.25 system. The performance comes from the
+# AWESPA power model outputs (aep_results.yml + power_curves.yml), so the
+# `performance` file below is ignored. All paths resolve relative to this file.
+
+topology:
+  power: GG        # GG (ground-gen) or FG (fly-gen)
+  wing: soft       # fixed or soft
+
+input_files:
+  system: "tudelft V3_25.yml"                 # awesIO system_schema.yml (V3.25 kite)
+  cost_inputs: economic_cost_inputs_V3.yml
+  performance: null                           # ignored in AWESPA-connected mode
+  aep_results: ../../data/aep_results.yml     # AWESPA calculate_aep() output
+  power_curves: ../../data/power_curves.yml   # awesIO power_curves_schema.yml
+
+wind_resource:
+  # awesIO wind_resource_schema.yml file (relative to this settings file).
+  # When set, the site wind-speed distribution from this file is used for the
+  # economic integrals; otherwise the Weibull parameters below are used.
+  resource_file: ../../data/power_law_case_1.yml
+  weibull_shape: 2
+  weibull_scale: 8     # m/s
+
+business:
+  n_years: 25
+  cost_of_debt: 0.08
+  cost_of_equity: 0.12
+  tax_rate: 0.25
+  debt_to_equity: 2.3333333333333335   # 70/30 debt-to-equity ratio
+
+# Explicit labour OPEX (the dominant operating cost for small, manually-
+# supervised AWE prototypes; the per-kW BoS O&M term only covers non-labour
+# overhead such as land lease and insurance, so there is no double-counting).
+# Split into supervision (fixed), launch/recovery (per operation) and
+# maintenance (per flight hour). Omit this block to skip the labour OPEX.
+operations:
+  operator_hours_per_week: 10             # supervision h/week (fixed, size-indep.)
+  maintenance_hours_per_flight_hour: 0.05 # h per flight hour
+  labour_price: 30                        # EUR/h
+  # Availability scales both the operating hours (labour) AND the net AEP, so
+  # downtime raises cost and lowers energy consistently. Baseline 1.0.
+  availability: 1.0                       # fraction of operating-wind time flown
+  # Launch/recovery labour: (1 - automation) * operations_per_year *
+  # hours_per_operation * labour_price. automation=0 is fully manual.
+  # TODO: operations_per_year (N_op) and hours_per_operation (h_LR) are
+  #       PLACEHOLDERS, not derived values. The launch/recovery frequency
+  #       cannot be obtained from this framework: it needs a wind *time
+  #       series* + a landing policy (when to launch/land), not the wind
+  #       *distribution* the model integrates over. So:
+  #         - set N_op from an explicit operating-pattern assumption, and
+  #         - treat N_op (and h_LR) as swept / uncertain inputs
+  #           (see PARAMS['launch_operations_per_year'] in the analysis layer).
+  #       Reconcile N_op with the operating pattern implied by H_flight:
+  #         - continuous flight  -> few start-ups (N_op small);
+  #         - daily crewed ops   -> more start-ups AND H_flight should be
+  #           capped to daytime hours (this model does not yet cap it).
+  launch_recovery:
+    operations_per_year: 250              # N_op [1/yr] (PLACEHOLDER - see TODO)
+    hours_per_operation: 1.0              # h_LR crew-hours per launch+recovery
+    automation: 0.0                       # alpha_auto in [0,1]; 0 = fully manual
+
+# Replacement frequencies [1/year].
+# null = auto-estimate from the load/cycle models, 0 = never replaced.
+replacements:
+  kite_structure: null
+  tether: null
+  ultracapacitor: null
+  battery: null
+  hydraulic_accumulator: 0.1
+  hydraulic_motor: 0.083
+  pump_motor: 0.125
+
+# Inputs that have no field in the awesIO system schema yet.
+# TODO: propose awesIO schema extensions for these.
+system_extras:
+  onboard_generator_rated_power: 1000.0    # W
+  onboard_battery_capacity: 0.0            # kWh
+  hydraulic_accumulator_capacity: 1.1377   # kWh
+  # Tether force used in AWESPA-connected mode. The V3 power_curves.yml already
+  # carries the ground tether force, so this override is left null (the model
+  # reads the traction-phase force from the power curves).
+  tether_force_override: null
+
+# Optional analysis/plotting layer (OFF by default). When enabled, the run
+# script calls run_analysis() after compute_economics() and writes figures to
+# results_example/analysis/. It only re-runs the model (sweeps); it never
+# changes the economics. See ecomo.ecomo.analysis.
+analysis:
+  enabled: true
+  # plots: [stacked_bar, tornado, sweeps, contour, tether_life, power_curve]
+  # n_points: 7        # points per 1D sweep
+  # grid: [6, 6]       # 2D contour resolution (n_x, n_y)

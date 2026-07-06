@@ -1,0 +1,155 @@
+metadata:
+  name: TU Delft V3.25 Cost Inputs
+  description: Economic cost model parameters for the TU Delft V3.25 soft-kite GG system
+  note: Soft-wing cost model. Prices in EUR; power-specific prices in EUR/kW, energy-specific
+    in EUR/kWh, mass-specific in EUR/kg, area-specific in EUR/m2.
+  awesIO_version: 0.1.0
+  schema: economic_schema.yml
+costs:
+  kite:
+    structure:
+      soft:
+        # Two-term kite cost model: C_kite = C_mat_ref*(S/S_ref)^b_mat + C_lab*S
+        # Anchor: lean AWE-optimised 60 m2 LEI kite (Scenario B). The V3.25 has a
+        # 25 m2 flat wing, so the model is extrapolated down from the 60 m2 anchor.
+        material_cost_ref: 3220.0        # [EUR] material cost at reference area
+        reference_area: 60.0             # [m2]  S_ref
+        material_scaling_exponent: 1.14  # [-]   b_mat; range 1.00-1.22
+        labour_cost_coefficient: 13.0    # [EUR/m2] C_lab
+        # Reel-out-hour canopy replacement model: the canopy is consumed by
+        # accumulated reel-out (traction) hours, so f_repl = H_reelout /
+        # canopy_lifetime_flight_hours. This scales with how much the kite
+        # actually operates (calendar-independent) and matches the reference
+        # Excel; it replaces the old calendar lifetime_flying_years model.
+        # TODO: canopy_lifetime_flight_hours = 250 h is the midpoint of the
+        #       observed 100-500 h range; target is 5000-10000 h. Update as
+        #       V3 wear data accrue.
+        canopy_lifetime_flight_hours: 250.0   # [h] loaded (reel-out) hours
+        # Optional load-weighted (Miner's rule + power-law S-N) canopy life.
+        # canopy_load_exponent m weights each reel-out hour by (F/F_ref)^m, so
+        # partial-load hours consume less life (a lighter-loaded canopy lasts
+        # longer). m=0 / omitted = the load-independent hour model above.
+        # When set, canopy_lifetime_flight_hours is the life AT the reference
+        # load canopy_reference_force (default: the peak traction force in the
+        # power curves, ~8200 N for V3). For V3 the loaded hours span ~14-100%
+        # of peak, so m~2 stretches the effective life ~2x.
+        # TODO: m and F_ref need canopy fatigue data (RIGO/Kitepower); left off
+        #       (load-independent) until then.
+        # canopy_load_exponent: 2.0
+        # canopy_reference_force: 8200.0        # [N]
+        # Optional per-cycle wear: canopy life fraction consumed per pumping
+        # cycle. It multiplies the annual pumping-cycle count (hundreds of
+        # thousands per year), so it is a tiny fatigue fraction (~1e-6), not
+        # a per-deployment cost. Omit or set to 0 to disable; largely
+        # redundant with the reel-out-hours term for V3.
+        # per_cycle_penalty: 1.0e-6
+    onboard_generator:
+      price_power: 120.0
+    onboard_battery:
+      price_energy: 150.0
+    avionics:
+      cost: 30000.0  # fallback fixed cost [EUR] (kept for backward compat.)
+      # Scaled KCU model: C_avionics = C_fixed + C_var_ref*(S/S_ref)^beta
+      cost_fixed: 2400.0      # [EUR] fixed electronics/sensors/computing
+      cost_var_ref: 5600.0    # [EUR] variable actuators at reference area
+      reference_area: 60.0    # [m2]  S_ref for KCU scaling (same as kite cost)
+      scaling_exponent: 1.0   # [-]   beta; range 0.5-1.5
+      # KCU/avionics service life: drives a replacement OPEX (1/life)*CAPEX,
+      # capped at the project life (matches section 5.3). 5 yr < 25 yr project.
+      lifetime_years: 5.0     # [yr]
+  tether:
+    price_mass: 80
+    conductive_manufacturing_factor: 2.5
+    creep_life_coefficients:
+    - -2.4
+    - 8.3
+    - -11.2
+    - 5.2
+    coating_mass_fraction: 0.1
+    fibre_area_fraction: 0.85
+    bending_life_a1: 6.5
+    bending_life_a2: 2.6
+    n_bends: 2
+    max_stress: 1500000000
+    # Empirical operational (non-fatigue) tether life in flight hours. The
+    # bending/creep fatigue models are stress-driven and predict a near-
+    # infinite life at the V3's low stress; the operational life captures
+    # UV, abrasion, particle ingress and handling wear. The governing
+    # replacement mode is the shortest of bending, creep and operational.
+    # TODO: operational_life_flight_hours = 250 h is a placeholder pending
+    #       RIGO/Kitepower field data; update when received.
+    operational_life_flight_hours: 250.0   # [h]
+  ground_station:
+    winch:
+      material: steel
+      drum_to_tether_diameter_ratio: 100.0
+      safety_factor_diameter: 1.1
+      safety_factor_length: 1.1
+      materials:
+        aluminum:
+          price_mass: 10.0
+          density: 2700.0
+          max_stress: 300000000.0
+        steel:
+          price_mass: 7.0
+          density: 7850.0
+          max_stress: 500000000.0
+    drivetrain: electric
+    gearbox:
+      cost_model: power_based
+      power_based:
+        price_power: 70.0
+      mass_based:
+        price_mass: 12.9
+        mass_coefficient: 113.0
+        mass_exponent: 0.71
+    generator:
+      cost_model: power_based
+      power_based:
+        price_power: 120.0
+      mass_based:
+        price_mass: 12.4
+        mass_slope: 2.3
+        mass_offset: 3400.0
+    electrical_storage: ultracapacitor
+    ultracapacitor:
+      price_energy: 6000.0 #changed to 6000 instead of 60000
+      cycle_life: 1000000.0
+    battery:
+      price_energy: 200.0
+      cycle_life: 10000.0
+    power_converter:
+      price_power: 100.0
+    pump_motor:
+      price_power: 100.0
+      maintenance_price_power: 75.0
+    hydraulic_accumulator:
+      price_energy: 30000.0
+      maintenance_price_energy: 1200.0
+    hydraulic_motor:
+      price_power: 200.0
+      maintenance_price_power: 80.0
+    # Launch & land (take-off & landing) system: fixed CAPEX, annualised over the
+    # project lifetime via the capital recovery factor (like all other CAPEX). Its
+    # service life drives a replacement OPEX when shorter than the project (here
+    # 20 yr < 25 yr -> one re-buy).
+    launch_land:
+      cost: 10000.0          # [EUR]
+      lifetime_years: 20.0   # service life (240 months); null = no replacement
+  balance_of_system:
+    site_preparation:
+      price_power: 40.0
+    foundation:
+      price_power: 55.0
+    installation:
+      price_power: 40.0
+    operations_maintenance:
+      price_power: 60.0
+    decommissioning:
+      installation_fraction: 0.5
+  balance_of_plant: {}
+market:
+  electricity_price:
+    intercept: 45.0
+    wind_speed_slope: -1.2
+  subsidy: 150.0

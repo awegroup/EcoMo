@@ -15,6 +15,7 @@ from ..constants import (
     SECONDS_PER_HOUR,
 )
 from ..eco_costs import TetherCosts
+from ..eco_hours import annual_flight_hours
 from ..eco_inputs import BusinessInputs, PerformanceData, TetherInputs, Topology
 
 
@@ -73,12 +74,35 @@ def _creep_replacement_frequency(
     return 1 / lifeCreep
 
 
+def _operational_replacement_frequency(
+    performance: PerformanceData,
+    costs: TetherCosts,
+    availability: float,
+) -> float:
+    """Estimate the tether replacement frequency due to operational wear.
+
+    Non-fatigue degradation (UV, abrasion, particle ingress, handling) is
+    not stress-driven, so it is modelled as an empirical life in flight
+    hours consumed at the annual flight-hour rate.
+
+    Args:
+        performance (PerformanceData): System performance data.
+        costs (TetherCosts): Tether cost parameters.
+        availability (float): Fraction of operating-wind time flown [-].
+
+    Returns:
+        float: Replacement frequency due to operational wear [1/year].
+    """
+    return annual_flight_hours(performance, availability) / costs.operationalLife
+
+
 def eco_tether(
     tether: TetherInputs,
     performance: PerformanceData,
     costs: TetherCosts,
     business: BusinessInputs,
     topology: Topology,
+    availability: float = 1.0,
 ) -> Dict[str, Any]:
     """Calculate cost and operational parameters related to the tether.
 
@@ -89,6 +113,9 @@ def eco_tether(
         business (BusinessInputs): Financial parameters (for the
             project lifetime).
         topology (Topology): System topology.
+        availability (float): Fraction of the operating-wind time the
+            system is flown [-], used by the operational-wear life model.
+            Defaults to 1.0.
 
     Returns:
         dict: The ``eco['tether']`` results subtree.
@@ -110,8 +137,12 @@ def eco_tether(
         costs.maxStress)
     eco['sigma'] = tetherStress
 
-    # OPEX: replacement frequency from the bending (GG) and creep
-    # (GG and FG) life models
+    # OPEX: replacement frequency from the bending (GG), creep (GG and
+    # FG) and operational-wear (optional) life models. The governing mode
+    # is the shortest life, i.e. the highest replacement frequency.
+    # Bending and creep are stress-driven, so at the low stress of a
+    # soft-wing system they predict a near-infinite life; the empirical
+    # operational life then governs instead.
     replacementBend = None
     if topology.power == 'GG':
         replacementBend = _bending_replacement_frequency(
@@ -120,12 +151,19 @@ def eco_tether(
     replacementCreep = _creep_replacement_frequency(
         tetherStress, performance, costs)
     eco['f_repl_creep'] = replacementCreep
+    replacementOper = None
+    if costs.operationalLife is not None:
+        replacementOper = _operational_replacement_frequency(
+            performance, costs, availability)
+        eco['f_repl_oper'] = replacementOper
 
     if tether.replacementFrequency is None:
-        if topology.power == 'GG':
-            replacementFrequency = max(replacementBend, replacementCreep)
-        else:  # FG
-            replacementFrequency = replacementCreep
+        frequencies = [replacementCreep]
+        if replacementBend is not None:
+            frequencies.append(replacementBend)
+        if replacementOper is not None:
+            frequencies.append(replacementOper)
+        replacementFrequency = max(frequencies)
     else:
         replacementFrequency = tether.replacementFrequency
 

@@ -169,6 +169,7 @@ def eco_compute_metrics(
     business: BusinessInputs,
     performance: PerformanceData,
     market: MarketCosts,
+    availability: float = 1.0,
 ) -> Dict[str, Any]:
     """Calculate the economic metrics for the ECOMo simulation.
 
@@ -179,11 +180,20 @@ def eco_compute_metrics(
     is always normalized with the integrated production, so it stays a
     proper weighted average when an external AEP is provided.
 
+    The ``availability`` (fraction of the operating-wind time the system
+    is actually flown) scales the delivered energy, so the net AEP is
+    ``a * AEP_gross``. This keeps downtime consistent: it reduces both
+    the revenue/energy and the operating hours (hence the labour and
+    load-driven O&M scale with the same ``a``). Baseline ``a = 1`` (no
+    downtime) leaves the result unchanged.
+
     Args:
         eco (dict): Assembled subsystem results (without metrics).
         business (BusinessInputs): Financial parameters.
         performance (PerformanceData): System performance data.
         market (MarketCosts): Market and electricity price parameters.
+        availability (float): Fraction of the operating-wind time flown
+            [-]; scales the net AEP. Defaults to 1.0.
 
     Returns:
         dict: The ``eco['metrics']`` results subtree.
@@ -204,11 +214,14 @@ def eco_compute_metrics(
     integratedAep = (HOURS_PER_YEAR *
                      np.trapezoid(performance.averagePower * windPdf,
                                   windSpeeds) / W_PER_MW)
-    metrics['AEP'] = (float(performance.externalAep)
-                      if performance.externalAep is not None
-                      else integratedAep)
+    grossAep = (float(performance.externalAep)
+                if performance.externalAep is not None
+                else integratedAep)
+    # Net AEP after downtime; the price weighting below keeps the gross
+    # integral as its (intensive) normalization, so ``p`` is unchanged.
+    metrics['AEP'] = availability * grossAep
 
-    # Capacity Factor
+    # Capacity Factor (on the net, delivered energy)
     metrics['CF'] = (metrics['AEP'] /
                      (performance.ratedPower / W_PER_MW * HOURS_PER_YEAR))
 

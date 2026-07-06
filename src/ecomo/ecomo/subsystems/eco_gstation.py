@@ -25,6 +25,7 @@ from ..eco_costs import (
     WinchCosts,
 )
 from ..eco_inputs import (
+    BusinessInputs,
     GroundStationInputs,
     PerformanceData,
     StorageInputs,
@@ -192,6 +193,7 @@ def eco_gstation(
     performance: PerformanceData,
     costs: GroundStationCosts,
     tether_max_stress: float,
+    business: BusinessInputs,
     topology: Topology,
 ) -> Dict[str, Any]:
     """Calculate costs related to the ground station subsystem.
@@ -203,6 +205,8 @@ def eco_gstation(
         costs (GroundStationCosts): Ground station cost parameters.
         tether_max_stress (float): Maximum tether fibre stress [Pa],
             used to size the winch drum thickness.
+        business (BusinessInputs): Financial parameters (for the
+            project lifetime used in the launch & land replacement).
         topology (Topology): System topology.
 
     Returns:
@@ -306,8 +310,22 @@ def eco_gstation(
             'OPEX': 0,
         }
 
-    # Common components for both FG and GG (not modelled)
-    eco['lls'] = {'CAPEX': 0, 'OPEX': 0}
+    # Common components for both FG and GG. The launch & land
+    # (take-off & landing) system is a fixed CAPEX when provided. Its
+    # service life drives a replacement OPEX when it is shorter than the
+    # project lifetime; a life beyond the project means no replacement
+    # (the same convention as the tether).
+    launchLandCapex = costs.launchLandCost or 0.0
+    launchLandLife = costs.launchLandLifetime
+    if (launchLandLife is not None and 0 < launchLandLife and
+            launchLandLife <= business.nYears):
+        launchLandReplacement = 1.0 / launchLandLife
+    else:
+        launchLandReplacement = 0.0
+    eco['lls'] = {
+        'CAPEX': launchLandCapex,
+        'OPEX': launchLandReplacement * launchLandCapex,
+    }
     eco['yaw'] = {'CAPEX': 0, 'OPEX': 0}
     eco['controlStation'] = {'CAPEX': 0, 'OPEX': 0}
 

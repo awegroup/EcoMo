@@ -27,6 +27,7 @@ from .ecomo.eco_inputs import (
     EcoInputs,
     GroundStationInputs,
     KiteInputs,
+    OperationsInputs,
     PerformanceData,
     StorageInputs,
     TetherInputs,
@@ -55,6 +56,9 @@ VALID_WING_TYPES = ('fixed', 'soft')
 
 # Turning radius to wingspan ratio (Joshi & Trevisi 2024, Eq. 23)
 TURNING_RADIUS_TO_SPAN = 5
+
+# Energy unit conversion
+JOULES_PER_KWH = 3.6e6
 
 
 def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -85,8 +89,11 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
         (electrical) [W], ``'dtCycle'`` [s], ``'peRated'`` [W],
         ``'reelOutFraction'`` (t_reel_out / t_cycle per wind speed [-]),
         ``'peakReelOutPower'`` (max average mechanical reel-out power
-        [W]) and ``'tetherForce'`` (cycle-maximum ground tether force
-        per wind speed [N], or None when not reported).
+        [W]), ``'tetherForce'`` (cycle-maximum ground tether force per
+        wind speed [N]), ``'tractionTetherForce'`` (traction-phase
+        maximum force per wind speed [N]) and ``'exchangedEnergy'``
+        (storage energy buffered per cycle per wind speed [kWh]). The
+        last three are None when not reported.
     """
     windRange = np.asarray(power_curves_data['reference_wind_speeds'],
                            dtype=float)
@@ -102,7 +109,10 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
     reelOutTimeSum = np.zeros(nSpeeds)
     peakReelOutPower = 0.0
     tetherForceSum = np.zeros(nSpeeds)
+    tractionForceSum = np.zeros(nSpeeds)
     hasTetherForce = False
+    exchangedEnergySum = np.zeros(nSpeeds)
+    hasExchangedEnergy = False
 
     isSingleProfile = len(curves) == 1
     for curve in curves:
@@ -127,21 +137,37 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
             timing = performance['timing']
             powerSum[i] += weight * elecPower['average_cycle_power']
             cycleTime = timing.get('cycle_time', 0.0)
+            reelOutTime = timing.get('reel_out_time', 0.0)
             timeSum[i] += weight * cycleTime
             timeWeight[i] += weight
             if cycleTime > 0:
-                reelOutTimeSum[i] += (weight *
-                                      timing.get('reel_out_time', 0.0) /
-                                      cycleTime)
+                reelOutTimeSum[i] += weight * reelOutTime / cycleTime
             # Peak mechanical power sizes the gearbox/generator/foundation
             peakReelOutPower = max(
                 peakReelOutPower, mechPower.get('average_reel_out_power', 0.0))
-            # Peak (cycle-maximum) ground tether force, when reported
+            # Ground tether force: cycle maximum (for stress) and peak
+            # traction-phase force (for the soft-kite loading factor)
             tetherForceGround = performance.get('tether_force_ground')
             if tetherForceGround is not None:
                 hasTetherForce = True
                 tetherForceSum[i] += weight * tetherForceGround.get(
                     'maximum_tether_force_cycle', 0.0)
+                tractionForceSum[i] += weight * tetherForceGround.get(
+                    'maximum_tether_force_traction', 0.0)
+            # Storage exchanged energy per cycle [kWh]: the electrical
+            # energy buffered during reel-out above the smooth average
+            # output, i.e. reel_out_energy - P_avg * t_reel_out
+            elecEnergy = (performance.get('electrical_energy') or
+                          performance.get('energy'))
+            if elecEnergy is not None and cycleTime > 0:
+                hasExchangedEnergy = True
+                netEnergy = elecEnergy.get(
+                    'net_cycle_energy_exported',
+                    elecEnergy.get('cycle_energy', 0.0))
+                bufferedJoules = max(
+                    elecEnergy.get('reel_out_energy', 0.0) -
+                    netEnergy / cycleTime * reelOutTime, 0.0)
+                exchangedEnergySum[i] += weight * bufferedJoules / JOULES_PER_KWH
 
     peAvg = powerSum / weightTotal
     with np.errstate(divide='ignore', invalid='ignore'):
@@ -158,6 +184,10 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
         'peakReelOutPower': peakReelOutPower,
         'tetherForce': (tetherForceSum / weightTotal
                         if hasTetherForce else None),
+        'tractionTetherForce': (tractionForceSum / weightTotal
+                                if hasTetherForce else None),
+        'exchangedEnergy': (exchangedEnergySum / weightTotal
+                            if hasExchangedEnergy else None),
     }
 
 
@@ -488,6 +518,7 @@ class EcoMo(EconomicModel):
             tether=self._build_tether(),
             groundStation=self._build_ground_station(topology, exchangedEnergy),
             performance=performance,
+            operations=self._build_operations(),
         )
         costs = eco_load_cost_inputs(
             self.costInputsPath,
@@ -637,8 +668,9 @@ class EcoMo(EconomicModel):
         force is taken from the power curves
         (``tether_force_ground.maximum_tether_force_cycle``) when
         available, or from ``system_extras.tether_force_override`` (which
-        takes precedence). The storage exchanged energy falls back to
-        half the rated capacity.
+        takes precedence). The storage exchanged energy is taken from
+        the power curves when reported, otherwise it falls back to half
+        the rated capacity in :meth:`_build_storage`.
 
         Args:
             topology (Topology): System topology.
@@ -670,6 +702,10 @@ class EcoMo(EconomicModel):
             )
         tetherForce, available = self._resolve_tether_force(
             forceValue, windRange)
+        # The traction-phase force is only meaningful alongside the
+        # power-curve force, not a manual override.
+        tractionTetherForce = (None if override is not None
+                               else data.get('tractionTetherForce'))
 
         # Peak mechanical power: the actual peak reel-out power from the
         # power curves, falling back to the 2.5x rated estimate only when
@@ -693,8 +729,20 @@ class EcoMo(EconomicModel):
             turningRadius=None,
             externalAep=data['aepMwh'],
             reelOutTimeFraction=data.get('reelOutFraction'),
+            tractionTetherForce=tractionTetherForce,
         )
-        return performance, {}, available
+
+        # Storage exchanged energy per cycle from the power curves (same
+        # value for every storage bank); empty when not reported, which
+        # triggers the half-rated-capacity fallback in _build_storage.
+        curveExchanged = data.get('exchangedEnergy')
+        if curveExchanged is not None:
+            exchangedEnergy = {name: curveExchanged for name in
+                               ('ultracapacitor', 'battery',
+                                'hydraulic_accumulator')}
+        else:
+            exchangedEnergy = {}
+        return performance, exchangedEnergy, available
 
     def _build_business(self) -> BusinessInputs:
         """Build the business inputs from the settings."""
@@ -705,6 +753,30 @@ class EcoMo(EconomicModel):
             costOfEquity=float(business['cost_of_equity']),
             taxRate=float(business['tax_rate']),
             debtToEquity=float(business['debt_to_equity']),
+        )
+
+    def _build_operations(self) -> Optional[OperationsInputs]:
+        """Build the operations inputs from the settings.
+
+        Returns:
+            OperationsInputs: The labour parameters, or None when the
+            settings have no ``operations`` block (no explicit labour
+            OPEX is then added).
+        """
+        operations = self.settings.get('operations')
+        if not operations:
+            return None
+        launchRecovery = operations.get('launch_recovery') or {}
+        return OperationsInputs(
+            labourPrice=float(operations['labour_price']),
+            operatorHoursPerWeek=float(operations['operator_hours_per_week']),
+            maintenanceHoursPerFlightHour=float(
+                operations['maintenance_hours_per_flight_hour']),
+            availability=float(operations.get('availability', 1.0)),
+            operationsPerYear=launchRecovery.get('operations_per_year'),
+            launchRecoveryHoursPerOperation=launchRecovery.get(
+                'hours_per_operation'),
+            launchAutomation=float(launchRecovery.get('automation', 0.0)),
         )
 
     def _build_kite(self, force_available: bool) -> KiteInputs:

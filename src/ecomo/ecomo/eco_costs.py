@@ -36,7 +36,29 @@ class KiteCosts:
         priceFabric: Soft-wing fabric price [EUR/m2] (flat-price model).
         priceBridle: Soft-wing bridle price [EUR/m2] (flat-price model).
         structureLifetime: Soft-wing structural lifetime at full
-            loading [flying years].
+            loading [flying years]. Legacy calendar replacement model;
+            used only when ``canopyLifetimeFlightHours`` is not set.
+        canopyLifetimeFlightHours: Soft-wing canopy service life,
+            expressed in loaded (reel-out) hours [h]. When set, the
+            reel-out-hour replacement model is used: the canopy is
+            consumed by accumulated reel-out (traction) hours rather
+            than calendar time.
+        perCyclePenalty: Optional canopy life fraction consumed per
+            pumping cycle [-]; adds a cycle-count term to the reel-out-
+            hour replacement model. As it multiplies the annual pumping-
+            cycle count (hundreds of thousands per year), it is a tiny
+            per-cycle fatigue fraction (~1e-6), not a per-deployment cost.
+            None or 0 disables it.
+        canopyLoadExponent: Optional S-N (Wohler) exponent m [-] for the
+            load-weighted canopy life. When set (and non-zero), each
+            reel-out hour is weighted by ``(F / F_ref)^m`` (Miner's rule
+            with a power-law S-N curve), so partial-load hours consume
+            less life. m = 0 or None reproduces the load-independent
+            hour model. When set, ``canopyLifetimeFlightHours`` is the
+            life at the reference load ``canopyReferenceForce``.
+        canopyReferenceForce: Reference traction force F_ref [N] for the
+            load-weighted canopy life; None uses the peak traction force
+            in the power curves (i.e. the life is anchored at peak load).
         onboardGeneratorPricePower: Onboard generator price [EUR/kW],
             or None.
         onboardBatteryPriceEnergy: Onboard battery price [EUR/kWh], or
@@ -58,6 +80,9 @@ class KiteCosts:
         avionicsReferenceArea: Reference flat wing area for avionics
             scaling [m2].
         avionicsScalingExponent: Avionics cost scaling exponent [-].
+        avionicsLifetime: Avionics/KCU service life [years]; drives a
+            replacement OPEX ``(1/life) * CAPEX`` (capped at the project
+            life). None means no avionics replacement is charged.
     """
 
     avionicsCost: float
@@ -70,6 +95,10 @@ class KiteCosts:
     priceFabric: Optional[float] = None
     priceBridle: Optional[float] = None
     structureLifetime: Optional[float] = None
+    canopyLifetimeFlightHours: Optional[float] = None
+    perCyclePenalty: Optional[float] = None
+    canopyLoadExponent: Optional[float] = None
+    canopyReferenceForce: Optional[float] = None
     onboardGeneratorPricePower: Optional[float] = None
     onboardBatteryPriceEnergy: Optional[float] = None
     # Soft-wing two-term structure cost model (preferred over the flat
@@ -83,6 +112,7 @@ class KiteCosts:
     avionicsCostVarRef: Optional[float] = None
     avionicsReferenceArea: Optional[float] = None
     avionicsScalingExponent: Optional[float] = None
+    avionicsLifetime: Optional[float] = None
 
 
 @dataclass(frozen=True)
@@ -103,6 +133,13 @@ class TetherCosts:
         bendingLifeA1: Bending fatigue coefficient a1 [-], or None.
         bendingLifeA2: Bending fatigue coefficient a2 [-], or None.
         nBends: Number of bends (pulleys) per cycle [-], or None.
+        operationalLife: Empirical operational (non-fatigue) tether life
+            in flight hours [h], or None. Captures UV, abrasion, particle
+            ingress and handling wear, which are not stress-driven. When
+            set, it adds a degradation mode so the replacement frequency
+            is governed by the shortest of bending, creep and operational
+            life (fatigue still governs at high stress, the operational
+            life governs at the low stress of soft-wing systems).
     """
 
     priceMass: float
@@ -114,6 +151,7 @@ class TetherCosts:
     bendingLifeA1: Optional[float] = None
     bendingLifeA2: Optional[float] = None
     nBends: Optional[float] = None
+    operationalLife: Optional[float] = None
 
 
 @dataclass(frozen=True)
@@ -242,6 +280,10 @@ class GroundStationCosts:
             None.
         hydraulicMotorMaintenancePricePower: Hydraulic motor
             maintenance price [EUR/kW], or None.
+        launchLandCost: Launch & land (take-off & landing) system fixed
+            cost [EUR], or None (treated as zero).
+        launchLandLifetime: Launch & land system service life [years],
+            or None for no replacement.
     """
 
     winch: WinchCosts
@@ -258,6 +300,8 @@ class GroundStationCosts:
     hydraulicAccumulatorMaintenancePriceEnergy: Optional[float] = None
     hydraulicMotorPricePower: Optional[float] = None
     hydraulicMotorMaintenancePricePower: Optional[float] = None
+    launchLandCost: Optional[float] = None
+    launchLandLifetime: Optional[float] = None
 
     def storage(self, storage_type: StorageType) -> StorageCosts:
         """Return the cost parameters of one storage type.

@@ -58,6 +58,7 @@ def _load_kite_costs(kite: Dict[str, Any], power: Optional[str]) -> KiteCosts:
     avionics = _require(kite, 'avionics', 'costs.kite')
     fields: Dict[str, Any] = {
         'avionicsCost': avionics['cost'],
+        'avionicsLifetime': avionics.get('lifetime_years'),
     }
     if 'cost_fixed' in avionics:
         fields['avionicsCostFixed'] = avionics['cost_fixed']
@@ -97,8 +98,19 @@ def _load_kite_costs(kite: Dict[str, Any], power: Optional[str]) -> KiteCosts:
                                              'costs.kite.structure.soft')
             fields['priceBridle'] = _require(soft, 'price_bridle',
                                              'costs.kite.structure.soft')
-        fields['structureLifetime'] = _require(soft, 'lifetime_flying_years',
-                                               'costs.kite.structure.soft')
+        # Replacement model. The reel-out-hour model (preferred) uses the
+        # canopy life in loaded hours; the legacy calendar model uses the
+        # lifetime in flying years. Require one of the two.
+        if 'canopy_lifetime_flight_hours' in soft:
+            fields['canopyLifetimeFlightHours'] = (
+                soft['canopy_lifetime_flight_hours'])
+            fields['perCyclePenalty'] = soft.get('per_cycle_penalty')
+            fields['canopyLoadExponent'] = soft.get('canopy_load_exponent')
+            fields['canopyReferenceForce'] = soft.get('canopy_reference_force')
+            fields['structureLifetime'] = soft.get('lifetime_flying_years')
+        else:
+            fields['structureLifetime'] = _require(
+                soft, 'lifetime_flying_years', 'costs.kite.structure.soft')
 
     if 'onboard_generator' in kite:
         fields['onboardGeneratorPricePower'] = (
@@ -137,6 +149,7 @@ def _load_tether_costs(tether: Dict[str, Any],
         bendingLifeA1=tether.get('bending_life_a1'),
         bendingLifeA2=tether.get('bending_life_a2'),
         nBends=tether.get('n_bends'),
+        operationalLife=tether.get('operational_life_flight_hours'),
     )
 
 
@@ -222,6 +235,10 @@ def _load_gstation_costs(gs: Dict[str, Any]) -> GroundStationCosts:
             gs['hydraulic_motor']['maintenance_price_power'])
     elif isHydraulic:
         _warn_missing_hydraulic('hydraulic_motor')
+
+    if 'launch_land' in gs:
+        fields['launchLandCost'] = gs['launch_land']['cost']
+        fields['launchLandLifetime'] = gs['launch_land'].get('lifetime_years')
 
     return GroundStationCosts(**fields)
 

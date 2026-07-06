@@ -28,6 +28,20 @@ business:
   tax_rate: 0.25
   debt_to_equity: 2.3333333333333335   # 70/30 debt-to-equity ratio
 
+# Explicit operator and maintenance labour OPEX (the dominant operating
+# cost for small, manually-supervised AWE; the per-kW BoS O&M term only
+# covers non-labour overhead such as land lease and insurance, so there
+# is no double-counting). Omit this block to skip the labour OPEX.
+operations:
+  operator_hours_per_week: 10            # h/week (fixed, size-independent)
+  maintenance_hours_per_flight_hour: 0.2 # h per flight hour
+  labour_price: 50                       # EUR/h
+  # WARNING: availability currently scales flight hours (maintenance
+  # labour) only, NOT the AEP. Lowering it cuts maintenance cost while
+  # keeping full energy in the LCoE denominator, which flatters LCoE
+  # (backwards). TODO: couple downtime to AEP before sweeping this.
+  availability: 1.0                      # fraction of operating-wind time flown
+
 # Replacement frequencies [1/year].
 # null = auto-estimate from the load/cycle models, 0 = never replaced.
 replacements:

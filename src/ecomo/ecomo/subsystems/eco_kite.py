@@ -11,7 +11,12 @@ from typing import Dict, Any
 
 from ..constants import KiteStructureCostModel, W_PER_KW
 from ..eco_costs import KiteCosts
-from ..eco_inputs import KiteInputs, PerformanceData, Topology
+from ..eco_hours import (
+    annual_cycle_count,
+    annual_flight_hours,
+    annual_reelout_hours,
+)
+from ..eco_inputs import BusinessInputs, KiteInputs, PerformanceData, Topology
 
 
 def _soft_structure_capex(kite: KiteInputs, costs: KiteCosts) -> float:
@@ -89,8 +94,141 @@ def _soft_structure_replacement_frequency(
     kite: KiteInputs,
     costs: KiteCosts,
     performance: PerformanceData,
+    availability: float,
 ) -> float:
     """Estimate the soft-wing structure replacement frequency.
+
+    Dispatches between two models:
+
+    - Reel-out-hour model (preferred, when ``canopyLifetimeFlightHours``
+      is set): the canopy is consumed by accumulated reel-out (traction)
+      hours. This scales with how much the kite actually operates and
+      matches the physical intuition that the canopy is loaded only on
+      reel-out.
+    - Legacy calendar model (fallback): a stress-weighted loading factor
+      divided by a calendar structural lifetime.
+
+    Args:
+        kite (KiteInputs): Kite parameters.
+        costs (KiteCosts): Kite cost parameters.
+        performance (PerformanceData): System performance data.
+        availability (float): Fraction of operating-wind time flown [-].
+
+    Returns:
+        float: Replacement frequency [1/year].
+    """
+    if costs.canopyLifetimeFlightHours is not None:
+        return _reelout_hour_replacement_frequency(
+            costs, performance, availability)
+    return _calendar_replacement_frequency(kite, costs, performance)
+
+
+def _canopy_load_weight(costs: KiteCosts,
+                        performance: PerformanceData):
+    """Per-wind-speed S-N load weight ``(F/F_ref)^m`` for the canopy.
+
+    Applies a Miner's-rule damage weighting so that partial-load reel-out
+    hours consume less canopy life than peak-load hours. Returns None when
+    no load weighting is requested (``canopyLoadExponent`` unset or zero)
+    or when no tether force is available (with a warning), in which case
+    the plain, load-independent hour count is used.
+
+    Args:
+        costs (KiteCosts): Kite cost parameters.
+        performance (PerformanceData): System performance data.
+
+    Returns:
+        np.ndarray: The per-wind-speed weight, or None for no weighting.
+    """
+    exponent = costs.canopyLoadExponent
+    if not exponent:
+        return None
+
+    # Structural fatigue accrues during the traction (reel-out) phase, so
+    # prefer the traction-phase force when available.
+    force = (performance.tractionTetherForce
+             if performance.tractionTetherForce is not None
+             else performance.tetherForce)
+    force = None if force is None else np.asarray(force, dtype=float)
+    if force is None or not np.any(force > 0):
+        warnings.warn(
+            "canopy_load_exponent is set but no tether force is available; "
+            "using unweighted reel-out hours (load-independent canopy "
+            "life).",
+            UserWarning, stacklevel=3,
+        )
+        return None
+
+    referenceForce = costs.canopyReferenceForce or float(np.max(force))
+    with np.errstate(divide='ignore', invalid='ignore'):
+        weight = (force / referenceForce) ** exponent
+    return np.nan_to_num(weight, nan=0.0, posinf=0.0, neginf=0.0)
+
+
+def _reelout_hour_replacement_frequency(
+    costs: KiteCosts,
+    performance: PerformanceData,
+    availability: float,
+) -> float:
+    """Reel-out-hour soft-wing structure replacement frequency.
+
+    The canopy survives ``canopyLifetimeFlightHours`` of loaded
+    (reel-out) operation, so the replacement frequency is the annual
+    reel-out hours divided by that life::
+
+        f_repl = H_reelout / canopy_life_hours
+                 (+ per_cycle_penalty * n_cycles)
+
+    where ``H_reelout = H_flight * reel-out fraction`` (integrated over
+    the wind distribution). The optional per-cycle term adds the wear of
+    each pumping cycle's load reversal; as it multiplies the annual
+    pumping-cycle count it is a tiny per-cycle fatigue fraction, not a
+    per-deployment cost.
+
+    Load-weighted variant (Miner's rule + power-law S-N): when
+    ``canopyLoadExponent`` m is set, each reel-out hour is weighted by
+    ``(F / F_ref)^m``, so partial-load hours consume less life::
+
+        H_reelout = integral( pdf * reel-out-fraction * (F/F_ref)^m )
+
+    and ``canopyLifetimeFlightHours`` is then the life at the reference
+    load ``canopyReferenceForce`` (default: the peak traction force).
+    m = 0 recovers the load-independent form above.
+
+    Args:
+        costs (KiteCosts): Kite cost parameters.
+        performance (PerformanceData): System performance data.
+        availability (float): Fraction of operating-wind time flown [-].
+
+    Returns:
+        float: Replacement frequency [1/year].
+    """
+    loadWeight = _canopy_load_weight(costs, performance)
+    reelOutHours = annual_reelout_hours(performance, availability,
+                                        load_weight=loadWeight)
+    if reelOutHours is None:
+        warnings.warn(
+            "reel-out time fraction not available; counting all flight "
+            "hours as loaded (reel-out fraction = 1) for the canopy "
+            "replacement frequency. Provide 'reel_out_time' in the power "
+            "curves for the reel-out-weighted estimate.",
+            UserWarning, stacklevel=3,
+        )
+        reelOutHours = annual_flight_hours(performance, availability)
+
+    frequency = reelOutHours / costs.canopyLifetimeFlightHours
+    if costs.perCyclePenalty:
+        frequency += (costs.perCyclePenalty *
+                      annual_cycle_count(performance, availability))
+    return frequency
+
+
+def _calendar_replacement_frequency(
+    kite: KiteInputs,
+    costs: KiteCosts,
+    performance: PerformanceData,
+) -> float:
+    """Legacy calendar soft-wing structure replacement frequency.
 
     The equivalent used lifetime per year follows from the loading
     factor (the wind-distribution-weighted tether force relative to the
@@ -107,8 +245,12 @@ def _soft_structure_replacement_frequency(
     Returns:
         float: Replacement frequency [1/year].
     """
-    relativeForce = (performance.tetherForce /
-                     np.max(performance.tetherForce))
+    # Structural fatigue accrues during the traction (reel-out) phase,
+    # so prefer the traction-phase force when available.
+    force = (performance.tractionTetherForce
+             if performance.tractionTetherForce is not None
+             else performance.tetherForce)
+    relativeForce = force / np.max(force)
     if (performance.reelOutTimeFraction is not None and
             np.any(performance.reelOutTimeFraction > 0)):
         # Time-weighted loading factor for pumping kites (corrected
@@ -147,6 +289,8 @@ def eco_kite(
     performance: PerformanceData,
     costs: KiteCosts,
     topology: Topology,
+    business: BusinessInputs,
+    availability: float = 1.0,
 ) -> Dict[str, Any]:
     """Calculate costs related to the kite subsystem.
 
@@ -155,9 +299,17 @@ def eco_kite(
         performance (PerformanceData): System performance data.
         costs (KiteCosts): Kite cost parameters.
         topology (Topology): System topology.
+        business (BusinessInputs): Financial parameters (for the project
+            lifetime used in the avionics/KCU replacement cap).
+        availability (float): Fraction of the operating-wind time the
+            system is flown [-], used by the reel-out-hour canopy
+            replacement model. Defaults to 1.0.
 
     Returns:
-        dict: The ``eco['kite']`` results subtree.
+        dict: The ``eco['kite']`` results subtree. The kite structure
+        replacement (``structure.OPEX``) charges the structure CAPEX
+        only; the avionics/KCU carries its own replacement OPEX, so the
+        two are not bundled.
     """
     eco: Dict[str, Any] = {}
 
@@ -181,7 +333,7 @@ def eco_kite(
         replacementFrequency = kite.structureReplacementFrequency
         if replacementFrequency is None:
             replacementFrequency = _soft_structure_replacement_frequency(
-                kite, costs, performance)
+                kite, costs, performance, availability)
         eco['structure'] = {
             'CAPEX': capex,
             'OPEX': replacementFrequency * capex,
@@ -208,7 +360,20 @@ def eco_kite(
             'OPEX': 0,
         }
 
-    # Avionics
-    eco['avionics'] = {'CAPEX': _avionics_capex(kite, costs), 'OPEX': 0}
+    # Avionics / KCU. The control unit and its sensors wear out faster
+    # than the project, so they carry a replacement OPEX = f_repl * CAPEX
+    # with f_repl = 1 / avionicsLifetime, capped like the tether and
+    # launch/land: a life beyond the project means no replacement.
+    avionicsCapex = _avionics_capex(kite, costs)
+    avionicsLife = costs.avionicsLifetime
+    if (avionicsLife is not None and 0 < avionicsLife and
+            avionicsLife <= business.nYears):
+        avionicsReplacement = 1.0 / avionicsLife
+    else:
+        avionicsReplacement = 0.0
+    eco['avionics'] = {
+        'CAPEX': avionicsCapex,
+        'OPEX': avionicsReplacement * avionicsCapex,
+    }
 
     return eco

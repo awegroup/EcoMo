@@ -1,6 +1,7 @@
 # User defined files and folders
 processed_data/
 results/
+results_example/
 tests/
 
 # Pickle files

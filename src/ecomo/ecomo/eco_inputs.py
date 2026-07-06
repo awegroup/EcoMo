@@ -58,6 +58,39 @@ class BusinessInputs:
 
 
 @dataclass(frozen=True)
+class OperationsInputs:
+    """Operator and maintenance labour parameters.
+
+    Attributes:
+        labourPrice: Labour rate [EUR/h].
+        operatorHoursPerWeek: Supervision labour [h/week] (fixed,
+            size-independent).
+        maintenanceHoursPerFlightHour: Maintenance labour per flight
+            hour [h/h].
+        availability: Fraction of the operating-wind time the system is
+            actually flown [-]. Defaults to 1.0. It scales the flight
+            hours (labour and load-driven O&M) and, via
+            ``eco_compute_metrics``, the net AEP -- so downtime raises
+            cost and lowers energy consistently.
+        operationsPerYear: Number of launch/recovery operations per year
+            [1/year], or None to omit the launch/recovery labour term.
+        launchRecoveryHoursPerOperation: Hands-on labour per
+            launch/recovery operation [h], or None.
+        launchAutomation: Launch/recovery automation fraction [-] in
+            [0, 1]; the labour term scales with ``(1 - launchAutomation)``
+            so 0 is fully manual and 1 fully automated. Defaults to 0.0.
+    """
+
+    labourPrice: float
+    operatorHoursPerWeek: float
+    maintenanceHoursPerFlightHour: float
+    availability: float = 1.0
+    operationsPerYear: Optional[float] = None
+    launchRecoveryHoursPerOperation: Optional[float] = None
+    launchAutomation: float = 0.0
+
+
+@dataclass(frozen=True)
 class KiteInputs:
     """Physical kite parameters.
 
@@ -177,6 +210,11 @@ class PerformanceData:
             soft-wing loading factor; None for FG systems or when the
             timing data are unavailable (falls back to the unweighted
             loading factor with a warning).
+        tractionTetherForce: Peak traction-phase (reel-out) tether
+            force [N] per wind speed, used by the soft-wing loading
+            factor (structural fatigue accrues during the traction
+            phase); None when not available, in which case the loading
+            factor uses ``tetherForce``.
     """
 
     windSpeeds: np.ndarray
@@ -190,6 +228,7 @@ class PerformanceData:
     turningRadius: Optional[float] = None
     externalAep: Optional[float] = None
     reelOutTimeFraction: Optional[np.ndarray] = None
+    tractionTetherForce: Optional[np.ndarray] = None
 
 
 @dataclass(frozen=True)
@@ -203,6 +242,8 @@ class EcoInputs:
         tether: Tether parameters.
         groundStation: Ground station parameters.
         performance: System performance data.
+        operations: Operator/maintenance labour parameters, or None to
+            omit the explicit labour OPEX.
     """
 
     topology: Topology
@@ -211,3 +252,4 @@ class EcoInputs:
     tether: TetherInputs
     groundStation: GroundStationInputs
     performance: PerformanceData
+    operations: Optional[OperationsInputs] = None

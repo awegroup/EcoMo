@@ -113,6 +113,13 @@ costs:
     hydraulic_motor:
       price_power: 200.0
       maintenance_price_power: 80.0
+    # Launch & land (take-off & landing) system: fixed CAPEX, annualised
+    # over the project lifetime via the capital recovery factor (like all
+    # other CAPEX). Its service life drives a replacement OPEX when it is
+    # shorter than the project (here 20 yr < 25 yr -> one re-buy).
+    launch_land:
+      cost: 10000.0          # [EUR]
+      lifetime_years: 20.0   # service life (240 months); null = no replacement
   balance_of_system:
     site_preparation:
       price_power: 40.0
