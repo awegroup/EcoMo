@@ -139,6 +139,8 @@ class TetherCosts:
         conductiveManufacturingFactor: Manufacturing factor for
             conductive (FG) tethers [-], or None.
         bendingLifeA1: Bending fatigue coefficient a1 [-], or None.
+            Legacy semi-log S-N intercept; used only when the master
+            curve below is not configured (dormant fallback).
         bendingLifeA2: Bending fatigue coefficient a2 [-], or None.
         nBends: Number of bends (pulleys) per cycle [-], or None.
         operationalLife: Empirical operational (non-fatigue) tether life
@@ -148,6 +150,21 @@ class TetherCosts:
             is governed by the shortest of bending, creep and operational
             life (fatigue still governs at high stress, the operational
             life governs at the low stress of soft-wing systems).
+        masterCurveCoeff: Meuwissen/Bosman bearing-pressure master-curve
+            coefficient C [-] (with p_N in MPa), or None. When set, the
+            bending life uses ``N_f = C * p_N ** (-B)`` instead of the
+            a1/a2 semi-log model.
+        masterCurveExponent: Master-curve slope B [-], or None.
+        bearingPressureCoeff: Bearing-pressure coefficient k_pw [-]
+            (their Eq. 3, ``p_N = k_pw * sigma_MPa / (D/d)``), or None.
+        pwLimitMpa: Low-pressure clamp on p_N [MPa], or None; bending
+            actions below it are treated as occurring at it.
+        bendingDdRatio: Winch drum-to-tether diameter ratio D/d [-] used
+            by the master curve, or None. Taken from the ground station
+            winch, threaded through the loader.
+        designSafetyFactor: Bending retirement margin SF [-], or None.
+            The replacement frequency is scaled up by SF (retire at
+            CTF/SF, i.e. before cycles-to-failure).
     """
 
     priceMass: float
@@ -160,6 +177,14 @@ class TetherCosts:
     bendingLifeA2: Optional[float] = None
     nBends: Optional[float] = None
     operationalLife: Optional[float] = None
+    # Meuwissen/Bosman bearing-pressure bending master curve (preferred
+    # over the a1/a2 semi-log model when configured)
+    masterCurveCoeff: Optional[float] = None
+    masterCurveExponent: Optional[float] = None
+    bearingPressureCoeff: Optional[float] = None
+    pwLimitMpa: Optional[float] = None
+    bendingDdRatio: Optional[float] = None
+    designSafetyFactor: Optional[float] = None
 
 
 @dataclass(frozen=True)
@@ -355,9 +380,15 @@ class BalanceOfSystemCosts:
         sitePreparationPricePower: Site preparation price [EUR/kW].
         foundationPricePower: Foundation price [EUR/kW].
         installationPricePower: Installation price [EUR/kW].
-        operationsMaintenancePricePower: O&M price [EUR/kW/year].
+        operationsMaintenancePricePower: Per-kW O&M overhead price
+            [EUR/kW/year] (size-dependent upkeep; no labour, no
+            consumables).
         decommissioningInstallationFraction: Decommissioning cost as a
             fraction of the installation cost [-].
+        consumablesEurPerYear: Recurring consumables bundle (AWT, kite
+            bag, weak link, sensors) replaced yearly [EUR/year].
+        consumablesMaturity: Maturity factor multiplying the consumables
+            cost [-]; matures down (<1) as the system matures. Default 1.
     """
 
     sitePreparationPricePower: float
@@ -365,6 +396,8 @@ class BalanceOfSystemCosts:
     installationPricePower: float
     operationsMaintenancePricePower: float
     decommissioningInstallationFraction: float
+    consumablesEurPerYear: float = 0.0
+    consumablesMaturity: float = 1.0
 
 
 @dataclass(frozen=True)

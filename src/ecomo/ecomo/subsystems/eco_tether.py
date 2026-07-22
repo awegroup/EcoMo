@@ -11,11 +11,45 @@ from typing import Dict, Any
 from ..constants import (
     HOURS_PER_YEAR,
     PA_PER_GPA,
+    PA_PER_MPA,
     SECONDS_PER_HOUR,
 )
 from ..eco_costs import TetherCosts
 from ..eco_hours import annual_flight_hours
 from ..eco_inputs import BusinessInputs, PerformanceData, TetherInputs, Topology
+
+
+def _cycles_to_failure(tetherStress: np.ndarray,
+                       costs: TetherCosts) -> np.ndarray:
+    """Bending cycles to failure per wind speed [-].
+
+    Uses the Meuwissen/Bosman bearing-pressure master curve when it is
+    configured (``masterCurveCoeff`` set), otherwise the legacy a1/a2
+    semi-log S-N model.
+
+    Master curve (their Eq. 3 + fitted line, p_N in MPa):
+        p_N = k_pw * sigma_MPa / (D/d),  clamped up to pw_limit
+        N_f = C * p_N ** (-B)
+
+    Args:
+        tetherStress (np.ndarray): Fibre stress per wind speed [Pa].
+        costs (TetherCosts): Tether cost parameters.
+
+    Returns:
+        np.ndarray: Cycles to failure per wind speed.
+    """
+    if costs.masterCurveCoeff is not None:
+        sigmaMpa = tetherStress / PA_PER_MPA
+        bearingPressure = (costs.bearingPressureCoeff * sigmaMpa /
+                           costs.bendingDdRatio)
+        if costs.pwLimitMpa is not None:
+            bearingPressure = np.maximum(bearingPressure, costs.pwLimitMpa)
+        return costs.masterCurveCoeff * bearingPressure ** (
+            -costs.masterCurveExponent)
+    # Legacy semi-log S-N fallback (dormant when the master curve is set)
+    bendExponent = (costs.bendingLifeA1 -
+                    costs.bendingLifeA2 * tetherStress / PA_PER_GPA)
+    return 10 ** bendExponent
 
 
 def _bending_replacement_frequency(
@@ -25,6 +59,11 @@ def _bending_replacement_frequency(
 ) -> float:
     """Estimate the GG tether replacement frequency due to bending.
 
+    The wind-distribution damage integral is unchanged; only the
+    cycles-to-failure model (:func:`_cycles_to_failure`) is selectable.
+    A design retirement safety factor, when configured, scales the
+    resulting frequency up (retire at CTF/SF, before failure).
+
     Args:
         tetherStress (np.ndarray): Fibre stress per wind speed [Pa].
         performance (PerformanceData): System performance data.
@@ -33,18 +72,23 @@ def _bending_replacement_frequency(
     Returns:
         float: Replacement frequency due to bending fatigue [1/year].
     """
-    bendExponent = (costs.bendingLifeA1 -
-                    costs.bendingLifeA2 * tetherStress / PA_PER_GPA)
-    nBends = 10 ** bendExponent
+    nFail = _cycles_to_failure(tetherStress, costs)
     with np.errstate(divide='ignore', invalid='ignore'):
         integralTerm = (performance.windPdf /
                         (performance.cycleTime / HOURS_PER_YEAR /
-                         SECONDS_PER_HOUR * nBends))
+                         SECONDS_PER_HOUR * nFail))
     integralTerm = np.nan_to_num(integralTerm, nan=0.0,
                                  posinf=0.0, neginf=0.0)
     lifeBend = 1 / (costs.nBends *
                     np.trapezoid(integralTerm, performance.windSpeeds))
-    return 1 / lifeBend
+    frequency = 1 / lifeBend
+    # The design retirement margin is part of the master-curve calibration,
+    # so it only derates the master-curve life -- not the dormant a1/a2
+    # fallback (e.g. the maturity roadmap, which turns the master curve off).
+    if (costs.masterCurveCoeff is not None and
+            costs.designSafetyFactor is not None):
+        frequency = costs.designSafetyFactor * frequency
+    return frequency
 
 
 def _creep_replacement_frequency(

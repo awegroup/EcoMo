@@ -15,6 +15,7 @@ W_PER_KW = 1e3
 W_PER_MW = 1e6
 KWH_PER_MWH = 1e3
 PA_PER_GPA = 1e9
+PA_PER_MPA = 1e6
 
 
 class WinchMaterial(IntEnum):

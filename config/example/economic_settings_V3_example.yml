@@ -37,15 +37,15 @@ business:
 # days per year (the windy fraction of the year, from the wind resource),
 # each with a fixed, size-independent labour allowance:
 #   C_op    = (1 - automation) * labour_price * N_op * operating_hours_per_day
-#   C_maint =                    labour_price * N_op * maintenance_hours_per_day
-# The per-day hours are size-independent on purpose: one crew runs one system
+#   C_maint =        labour_price * maintenance_hours_per_flight_hour * H_flight
+# The operating hours are size-independent on purpose: one crew runs one system
 # regardless of wing area, so a fixed crew is amortised over a larger, more
 # energetic system as it scales (economy of scale in labour). For V3,
 # f_wind ~ 0.87 -> N_op ~ 318 days/yr. Omit this block to skip the labour OPEX.
 operations:
-  operating_hours_per_day: 2.0            # h/operating-day
-  maintenance_hours_per_day: 1.0          # h/operating-day
-  labour_price: 30                        # EUR/h
+  operating_hours_per_day: 2.0            # h/operating-day (base crew)
+  maintenance_hours_per_flight_hour: 0.5  # h per flight hour (maintenance)
+  labour_price: 50                        # EUR/h
   # Availability scales the flight hours (canopy/tether wear) AND the net AEP,
   # so downtime raises cost and lowers energy consistently. It does NOT change
   # the operating-day count (labour is a standing cost). Baseline 0.90, derived

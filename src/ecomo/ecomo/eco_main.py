@@ -39,9 +39,10 @@ def eco_main(inputs: EcoInputs, costs: EcoCosts) -> Dict[str, Any]:
     availability = (inputs.operations.availability
                     if inputs.operations is not None else 1.0)
 
-    # The operator/maintenance labour is folded into BoS.OM (it is an
-    # operating expense of the same nature as the per-kW O&M overhead),
-    # so there is no separate operations subsystem.
+    # The BoS subtree carries three separate operating leaves: the per-kW
+    # O&M overhead (BoS.OM), the operator/maintenance crew labour
+    # (BoS.labour, whose maintenance term is per flight hour and so needs
+    # the availability) and the recurring consumables (BoS.consumables).
     eco: Dict[str, Any] = {
         'kite': eco_kite(inputs.kite, inputs.performance,
                          costs.kite, inputs.topology, inputs.business,
@@ -55,7 +56,7 @@ def eco_main(inputs: EcoInputs, costs: EcoCosts) -> Dict[str, Any]:
                                  inputs.topology,
                                  kite_flat_area=inputs.kite.flatArea),
         'BoS': eco_bos(inputs.performance, costs.balanceOfSystem,
-                       inputs.operations),
+                       inputs.operations, availability),
         'BoP': eco_bop(),
     }
 

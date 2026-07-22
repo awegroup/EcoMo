@@ -164,9 +164,14 @@ costs:
     installation:
       price_power: 40.0
     operations_maintenance:
-      price_power: 60.0
+      price_power: 60.0        # [EUR/kW/yr] per-kW O&M overhead (size-dependent)
     decommissioning:
       installation_fraction: 0.5
+    # Recurring consumables bundle (AWT, kite bag, weak link, sensors)
+    # replaced yearly. Charged as its own BoS.consumables OPEX leaf,
+    # scaled by the maturity factor (matures down as reliability improves).
+    consumables_eur_per_year: 2000.0
+    consumables_maturity: 1.0
   balance_of_plant: {}
 market:
   electricity_price:

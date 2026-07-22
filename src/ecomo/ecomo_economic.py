@@ -774,18 +774,20 @@ class EcoMo(EconomicModel):
                 "N_op * operating_hours_per_day. Set 'operations.automation' "
                 "(and adjust operating_hours_per_day) instead."
             )
-        for legacy in ('operator_hours_per_week',
-                       'maintenance_hours_per_flight_hour'):
-            if legacy in operations:
-                raise ValueError(
-                    f"'operations.{legacy}' was replaced by the operating-day "
-                    "labour model. Use 'operating_hours_per_day' and "
-                    "'maintenance_hours_per_day' instead (labour is now "
-                    "C_lab = labour_price * N_op * "
-                    "[(1 - automation) * operating_hours_per_day + "
-                    "maintenance_hours_per_day], with N_op the annual "
-                    "operating days from the wind resource)."
-                )
+        if 'operator_hours_per_week' in operations:
+            raise ValueError(
+                "'operations.operator_hours_per_week' was replaced by the "
+                "operating-day labour model. Use 'operating_hours_per_day' "
+                "for the base-crew operating labour."
+            )
+        if 'maintenance_hours_per_day' in operations:
+            raise ValueError(
+                "'operations.maintenance_hours_per_day' was replaced: "
+                "maintenance labour is now charged per flight hour. Use "
+                "'operations.maintenance_hours_per_flight_hour' instead "
+                "(C_maint = labour_price * maintenance_hours_per_flight_hour "
+                "* annual_flight_hours)."
+            )
         automation = float(operations.get('automation', 0.0))
         if not 0.0 <= automation <= 1.0:
             raise ValueError(
@@ -795,8 +797,8 @@ class EcoMo(EconomicModel):
         return OperationsInputs(
             labourPrice=float(operations['labour_price']),
             operatingHoursPerDay=float(operations['operating_hours_per_day']),
-            maintenanceHoursPerDay=float(
-                operations['maintenance_hours_per_day']),
+            maintenanceHoursPerFlightHour=float(
+                operations['maintenance_hours_per_flight_hour']),
             availability=float(operations.get('availability', 1.0)),
             automation=automation,
         )

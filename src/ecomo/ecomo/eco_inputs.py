@@ -72,7 +72,11 @@ class OperationsInputs:
     therefore::
 
         C_op    = (1 - automation) * labourPrice * N_op * operatingHoursPerDay
-        C_maint = labourPrice * N_op * maintenanceHoursPerDay
+        C_maint = labourPrice * maintenanceHoursPerFlightHour * flightHours
+
+    Maintenance is charged per flight hour (it accrues with the time
+    actually flown, not with the operating calendar), while the base-crew
+    operating labour stays per operating day.
 
     Attributes:
         labourPrice: Labour rate [EUR/h].
@@ -80,10 +84,11 @@ class OperationsInputs:
             [h/day] (fixed, size-independent): setting up, launching,
             supervising, landing and packing down the system. Reduced by
             automation via ``(1 - automation)``.
-        maintenanceHoursPerDay: Maintenance-labour hours per operating
-            day [h/day] (fixed, size-independent): routine inspection and
-            upkeep of the wearing airborne parts. Independent of
-            automation (the hardware wears regardless).
+        maintenanceHoursPerFlightHour: Maintenance-labour hours per
+            flight hour [h/h]: routine inspection and upkeep of the
+            wearing airborne parts, accruing with the annual flight
+            hours. Independent of automation (the hardware wears
+            regardless).
         availability: Fraction of the operating-wind time the system is
             actually flown [-]. Defaults to 1.0. It scales the flight
             hours (load-driven canopy/tether O&M) and, via
@@ -98,7 +103,7 @@ class OperationsInputs:
 
     labourPrice: float
     operatingHoursPerDay: float
-    maintenanceHoursPerDay: float
+    maintenanceHoursPerFlightHour: float
     availability: float = 1.0
     automation: float = 0.0
 

@@ -49,7 +49,8 @@ FIXED_PERF_CAVEAT = ("performance held fixed; full trend requires "
                      "AWESPA in the loop")
 
 # Subsystems aggregated in the per-run cost breakdown. The operator/
-# maintenance labour is folded into BoS.OM (no separate operations node).
+# maintenance crew labour and the recurring consumables are separate
+# leaves under the BoS subtree (BoS.labour, BoS.consumables).
 SUBSYSTEMS = ('kite', 'tether', 'gStation', 'BoS')
 
 
@@ -104,8 +105,8 @@ PARAMS: Dict[str, Param] = {
         'Operating hours', 'h/day', 1.0, 4.0),
     'maintenance_hours': Param(
         'maintenance_hours', 'settings',
-        'operations.maintenance_hours_per_day',
-        'Maintenance', 'h/day', 0.5, 3.0),
+        'operations.maintenance_hours_per_flight_hour',
+        'Maintenance', 'h/flight-h', 0.05, 0.5),
     'availability': Param(
         'availability', 'settings', 'operations.availability',
         'Availability', '-', 0.3, 1.0),
@@ -306,11 +307,12 @@ def display_breakdown(eco: Dict[str, Any]) -> Dict[str, Tuple[float, float]]:
     # gsOpex -= llsOpex
 
     bos = eco.get('BoS', {})
-    om = bos.get('OM', {})
-    crewOpex = ((om.get('operation_labour_opex', 0.0) or 0.0) +
-                (om.get('maintenance_labour_opex', 0.0) or 0.0))
+    # The crew labour is now its own BoS.labour leaf group; pull it out
+    # for the 'Ground crew' display band, leaving the overhead + recurring
+    # consumables + BoS CAPEX under 'bos'.
+    crewOpex = bos.get('labour', {}).get('OPEX', 0.0) or 0.0
     bosCapex, bosOpex = _walk_capex_opex(bos)
-    bosOpex -= crewOpex  # remove labour from BoS.OM, leaving the overhead
+    bosOpex -= crewOpex  # remove labour, leaving overhead + consumables
 
     return {
         'kite': kite,

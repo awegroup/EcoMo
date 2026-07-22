@@ -245,7 +245,44 @@ def _load_tether_costs(tether: Dict[str, Any],
         bendingLifeA2=tether.get('bending_life_a2'),
         nBends=tether.get('n_bends'),
         operationalLife=_resolve_operational_life(tether),
+        **_master_curve_fields(tether, drum_to_tether_ratio),
     )
+
+
+def _master_curve_fields(tether: Dict[str, Any],
+                         drum_to_tether_ratio: Optional[float]) -> Dict[str, Any]:
+    """Read the optional Meuwissen/Bosman bending master-curve block.
+
+    Returns the TetherCosts master-curve fields (all None when the block
+    is absent, so the a1/a2 fallback stays active). When the block is
+    present, the winch D/d ratio is required to evaluate the bearing
+    pressure.
+
+    Args:
+        tether (dict): YAML ``costs.tether`` section.
+        drum_to_tether_ratio (float): The winch's D/d [-], or None.
+
+    Raises:
+        KeyError: If the master curve is configured but the winch D/d is
+            not available.
+    """
+    mc = tether.get('master_curve')
+    if mc is None:
+        return {}
+    if drum_to_tether_ratio is None:
+        raise KeyError(
+            "'costs.tether.master_curve' is set but "
+            "'costs.ground_station.winch.drum_to_tether_diameter_ratio' "
+            "is not; the bearing-pressure master curve needs the winch D/d."
+        )
+    return {
+        'masterCurveCoeff': mc.get('coefficient'),
+        'masterCurveExponent': mc.get('exponent'),
+        'bearingPressureCoeff': mc.get('bearing_pressure_coeff'),
+        'pwLimitMpa': mc.get('pw_limit_mpa'),
+        'designSafetyFactor': mc.get('design_safety_factor'),
+        'bendingDdRatio': drum_to_tether_ratio,
+    }
 
 
 def _load_gstation_costs(gs: Dict[str, Any]) -> GroundStationCosts:
@@ -409,6 +446,9 @@ def eco_load_cost_inputs(cost_inputs_path: Path,
                 bos['operations_maintenance']['price_power']),
             decommissioningInstallationFraction=(
                 bos['decommissioning']['installation_fraction']),
+            consumablesEurPerYear=float(
+                bos.get('consumables_eur_per_year', 0.0)),
+            consumablesMaturity=float(bos.get('consumables_maturity', 1.0)),
         ),
         market=MarketCosts(
             electricityPriceIntercept=market['electricity_price']['intercept'],

@@ -34,7 +34,7 @@ business:
 # is no double-counting). Omit this block to skip the labour OPEX.
 operations:
   operating_hours_per_day: 2.0           # h/operating-day (fixed, size-indep.)
-  maintenance_hours_per_day: 1.0         # h/operating-day (fixed, size-indep.)
+  maintenance_hours_per_flight_hour: 0.5  # h per flight hour (maintenance)
   labour_price: 50                       # EUR/h
   # WARNING: availability currently scales flight hours (maintenance
   # labour) only, NOT the AEP. Lowering it cuts maintenance cost while
