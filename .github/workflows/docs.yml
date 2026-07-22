@@ -14,14 +14,16 @@ jobs:
         with:
           python-version: '3.10'
       - name: Install dependencies
+        if: hashFiles('docs/**') != ''
         run: |
           pip install -r requirements.txt
       - name: Sphinx build
+        if: hashFiles('docs/**') != ''
         run: |
           sphinx-build docs/ docs/_build/
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        if: ${{ hashFiles('docs/**') != '' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
