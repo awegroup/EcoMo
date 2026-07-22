@@ -61,33 +61,46 @@ class BusinessInputs:
 class OperationsInputs:
     """Operator and maintenance labour parameters.
 
+    The labour follows an operating-day model. The plant is manned on
+    ``N_op = f_wind * 365`` operating days per year (the windy fraction of
+    the year, from :func:`annual_operating_days`); each operating day
+    carries a fixed operating-labour allowance (rig-up, launch, monitor,
+    land, pack-down) and a fixed maintenance allowance. The per-day hours
+    are size-independent: the crew runs one system regardless of wing
+    area, so a fixed crew is amortised over a larger, more energetic
+    system as it scales up (economy of scale in labour). The labour is
+    therefore::
+
+        C_op    = (1 - automation) * labourPrice * N_op * operatingHoursPerDay
+        C_maint = labourPrice * N_op * maintenanceHoursPerDay
+
     Attributes:
         labourPrice: Labour rate [EUR/h].
-        operatorHoursPerWeek: Supervision labour [h/week] (fixed,
-            size-independent).
-        maintenanceHoursPerFlightHour: Maintenance labour per flight
-            hour [h/h].
+        operatingHoursPerDay: Operating-labour hours per operating day
+            [h/day] (fixed, size-independent): setting up, launching,
+            supervising, landing and packing down the system. Reduced by
+            automation via ``(1 - automation)``.
+        maintenanceHoursPerDay: Maintenance-labour hours per operating
+            day [h/day] (fixed, size-independent): routine inspection and
+            upkeep of the wearing airborne parts. Independent of
+            automation (the hardware wears regardless).
         availability: Fraction of the operating-wind time the system is
             actually flown [-]. Defaults to 1.0. It scales the flight
-            hours (labour and load-driven O&M) and, via
+            hours (load-driven canopy/tether O&M) and, via
             ``eco_compute_metrics``, the net AEP -- so downtime raises
-            cost and lowers energy consistently.
-        operationsPerYear: Number of launch/recovery operations per year
-            [1/year], or None to omit the launch/recovery labour term.
-        launchRecoveryHoursPerOperation: Hands-on labour per
-            launch/recovery operation [h], or None.
-        launchAutomation: Launch/recovery automation fraction [-] in
-            [0, 1]; the labour term scales with ``(1 - launchAutomation)``
-            so 0 is fully manual and 1 fully automated. Defaults to 0.0.
+            cost and lowers energy consistently. It does not change the
+            operating-day count (labour is a standing cost).
+        automation: Operations automation fraction [-] in [0, 1]; the
+            operating labour scales with ``(1 - automation)`` so 0 is
+            fully manual and 1 fully automated (no operator presence).
+            Defaults to 0.0.
     """
 
     labourPrice: float
-    operatorHoursPerWeek: float
-    maintenanceHoursPerFlightHour: float
+    operatingHoursPerDay: float
+    maintenanceHoursPerDay: float
     availability: float = 1.0
-    operationsPerYear: Optional[float] = None
-    launchRecoveryHoursPerOperation: Optional[float] = None
-    launchAutomation: float = 0.0
+    automation: float = 0.0
 
 
 @dataclass(frozen=True)

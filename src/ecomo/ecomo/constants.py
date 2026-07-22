@@ -16,9 +16,6 @@ W_PER_MW = 1e6
 KWH_PER_MWH = 1e3
 PA_PER_GPA = 1e9
 
-# Tether life estimation
-BEND_LIFE_CORRECTION = 3
-
 
 class WinchMaterial(IntEnum):
     """Winch drum material code (cost inputs: gStation.winch.material)."""

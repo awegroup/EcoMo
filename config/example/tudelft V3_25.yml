@@ -50,10 +50,19 @@ components:
           id: T2
       structure:
         length: 500
-        diameter: 0.006
+        diameter: 0.006 # m, as-built (fixed input in standalone runs;
+                        # TEF derives it from allowable_stress instead)
         density: 724.0
         max_tether_force: 8200.0 # N
         conductive: false
+        material:
+          # Rope-level ultimate strength (EcoMo max-stress: life-curve
+          # cap and winch drum sizing). Distinct from the allowable
+          # working stress below, which documents the sizing design
+          # intent (d = sqrt(4 F / (pi f_At sigma_allow)); the V3's
+          # 6 mm tether corresponds to 0.3412 GPa fibre stress).
+          breaking_strength: 1500000000.0 # Pa (1.5 GPa)
+          allowable_stress: 341194910.6806645 # Pa
 
   ground_station:
     name: Kitepower Ground Station
@@ -70,13 +79,13 @@ components:
     generators:
       - type: permanent_magnet_synchronous
         max_power: 40000.0 # W
-        efficiency: 1.0
+        efficiency: 0.85
     storages:
       - name: ultracapacitor bank #TODO: Choose between ultracapacitor and battery bank for the AWESPA-connected mode. The AWESPA power model outputs the exchanged energy, which is used to size the storage in the economic model. So in the economic settings, you do not need to choose anymore.
         type: capacitor_bank
         capacity: 1137.7 #Wh
-        efficiency: 1.0
+        efficiency: 0.85
       - name: battery bank
         type: battery_bank
         capacity: 1137.7 #Wh
-        efficiency: 1.0
+        efficiency: 0.95

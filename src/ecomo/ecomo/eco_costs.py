@@ -83,6 +83,11 @@ class KiteCosts:
         avionicsLifetime: Avionics/KCU service life [years]; drives a
             replacement OPEX ``(1/life) * CAPEX`` (capped at the project
             life). None means no avionics replacement is charged.
+        sensorCost: Airborne sensor suite (GNSS/IMU) cost [EUR], itemised
+            separately from the KCU electronics. None (treated as zero).
+        sensorLifetime: Sensor service life [years]; drives a replacement
+            OPEX ``(1/life) * CAPEX`` (capped at the project life). None
+            means no sensor replacement is charged.
     """
 
     avionicsCost: float
@@ -113,6 +118,9 @@ class KiteCosts:
     avionicsReferenceArea: Optional[float] = None
     avionicsScalingExponent: Optional[float] = None
     avionicsLifetime: Optional[float] = None
+    # Airborne sensor suite, priced separately from the KCU electronics
+    sensorCost: Optional[float] = None
+    sensorLifetime: Optional[float] = None
 
 
 @dataclass(frozen=True)
@@ -170,6 +178,9 @@ class WinchCosts:
         priceSteel: Steel price [EUR/kg].
         densitySteel: Steel density [kg/m3].
         maxStressSteel: Steel strength [Pa].
+        lifetime: Drum/winch service life [years]; drives a replacement
+            OPEX ``(1/life) * CAPEX`` when shorter than the project
+            life. None means no replacement is charged.
     """
 
     material: WinchMaterial
@@ -182,6 +193,7 @@ class WinchCosts:
     priceSteel: float
     densitySteel: float
     maxStressSteel: float
+    lifetime: Optional[float] = None
 
     @property
     def price(self) -> float:
@@ -213,6 +225,9 @@ class GearboxCosts:
         priceMass: Mass-based price [EUR/kg] (mass-based model).
         massCoefficient: Mass scaling coefficient (mass-based model).
         massExponent: Mass scaling exponent (mass-based model).
+        lifetime: Gearbox service life [years]; drives a replacement
+            OPEX ``(1/life) * CAPEX`` when shorter than the project
+            life. None means no replacement is charged.
     """
 
     costModel: ComponentCostModel
@@ -220,6 +235,7 @@ class GearboxCosts:
     priceMass: Optional[float] = None
     massCoefficient: Optional[float] = None
     massExponent: Optional[float] = None
+    lifetime: Optional[float] = None
 
 
 @dataclass(frozen=True)
@@ -232,6 +248,9 @@ class GeneratorCosts:
         priceMass: Mass-based price [EUR/kg] (mass-based model).
         massSlope: Mass scaling slope (mass-based model).
         massOffset: Mass offset (mass-based model).
+        lifetime: Generator service life [years]; drives a replacement
+            OPEX ``(1/life) * CAPEX`` when shorter than the project
+            life. None means no replacement is charged.
     """
 
     costModel: ComponentCostModel
@@ -239,6 +258,7 @@ class GeneratorCosts:
     priceMass: Optional[float] = None
     massSlope: Optional[float] = None
     massOffset: Optional[float] = None
+    lifetime: Optional[float] = None
 
 
 @dataclass(frozen=True)
@@ -264,6 +284,10 @@ class GroundStationCosts:
         ultracapacitor: Ultracapacitor cost parameters.
         battery: Battery cost parameters.
         powerConverterPricePower: Power converter price [EUR/kW].
+        powerConverterLifetime: Power converter service life [years];
+            drives a replacement OPEX ``(1/life) * CAPEX`` when shorter
+            than the project life. None means no replacement is
+            charged.
         drivetrain: Drivetrain type (GG systems), or None.
         gearbox: Gearbox cost parameters (electric drivetrain), or
             None.
@@ -282,6 +306,10 @@ class GroundStationCosts:
             maintenance price [EUR/kW], or None.
         launchLandCost: Launch & land (take-off & landing) system fixed
             cost [EUR], or None (treated as zero).
+        launchLandPriceArea: Launch & land system area-specific price
+            [EUR/m2]; when set, the L&L CAPEX is
+            ``launchLandPriceArea * flat_wing_area`` and takes precedence
+            over the fixed ``launchLandCost``. None uses the fixed cost.
         launchLandLifetime: Launch & land system service life [years],
             or None for no replacement.
     """
@@ -291,6 +319,7 @@ class GroundStationCosts:
     ultracapacitor: StorageCosts
     battery: StorageCosts
     powerConverterPricePower: float
+    powerConverterLifetime: Optional[float] = None
     drivetrain: Optional[DrivetrainType] = None
     gearbox: Optional[GearboxCosts] = None
     generator: Optional[GeneratorCosts] = None
@@ -301,6 +330,7 @@ class GroundStationCosts:
     hydraulicMotorPricePower: Optional[float] = None
     hydraulicMotorMaintenancePricePower: Optional[float] = None
     launchLandCost: Optional[float] = None
+    launchLandPriceArea: Optional[float] = None
     launchLandLifetime: Optional[float] = None
 
     def storage(self, storage_type: StorageType) -> StorageCosts:

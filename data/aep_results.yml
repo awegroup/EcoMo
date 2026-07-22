@@ -4,7 +4,7 @@ metadata:
   note: None
   awesIO_version: None
   schema: aep_schema.yml
-  time_created: '2026-06-19T11:07:21.631124'
+  time_created: '2026-07-21T17:24:56.357422'
 inputs:
   power_curve_metadata:
     name: Ground-Gen Power Curves (Optimization)
@@ -13,15 +13,15 @@ inputs:
       height.
     awesIO_version: 0.1.0
     schema: power_curves_schema.yml
-    time_created: '2026-06-19T11:07:18.213549'
+    time_created: '2026-07-21T17:24:51.286989'
     model_config:
       wing_area: 19.75
       wing_mass: 19.0
-      generator_efficiency: 1.0
-      motor_efficiency: 1.0
-      storage_efficiency: 1.0
+      generator_efficiency: 0.85
+      motor_efficiency: 0.85
+      storage_efficiency: 0.95
       nominal_mechanical_power: 13655.952495530975
-      nominal_electrical_power: 13655.952495530975
+      nominal_electrical_power: 9306.171800392875
       cut_in_wind_speed: 5.0
       cut_out_wind_speed: 25.0
     wind_resource:
@@ -62,74 +62,74 @@ inputs:
     - 0.07718358060235139
     - 32.69946158175998
 power_summary:
-  capacity_factor: 0.35789576826830855
-  max_rated_power_w: 13652.520032413306
-  max_rated_power_wind_speed_m_s: 18.019436481239044
-  mean_power_w: 4887.407609823584
+  capacity_factor: 0.36549325136149236
+  max_rated_power_w: 9282.512305729813
+  max_rated_power_wind_speed_m_s: 16.062099801169587
+  mean_power_w: 3401.3429890542247
   profiles:
   - profile_id: 1
-    rated_power_w: 13652.520032413306
-    rated_wind_speed_m_s: 18.019436481239044
+    rated_power_w: 9282.512305729813
+    rated_wind_speed_m_s: 16.062099801169587
 annual_energy_production:
   total:
-    aep_mwh: 42.81369066205459
+    aep_mwh: 29.79576458411501
   by_profile:
   - profile_id: 1
     frequency: 1.0000000000000002
-    rated_power_w: 13652.520032413306
-    rated_wind_speed_m_s: 18.019436481239044
-    aep_mwh: 42.81369066205459
+    rated_power_w: 9282.512305729813
+    rated_wind_speed_m_s: 16.062099801169587
+    aep_mwh: 29.79576458411501
   by_direction:
   - direction_id: 1
     direction_center_rad: 0.3141592653589793
     direction_bin_width_rad: 0.6283185307179586
     frequency: 0.1770034684191311
-    aep_mwh: 9.100467007578727
+    aep_mwh: 6.285568935601068
   - direction_id: 2
     direction_center_rad: 0.9424777960769379
     direction_bin_width_rad: 0.6283185307179586
     frequency: 0.17303304125593283
-    aep_mwh: 9.547197723505715
+    aep_mwh: 6.542497896956221
   - direction_id: 3
     direction_center_rad: 1.5707963267948966
     direction_bin_width_rad: 0.6283185307179586
     frequency: 0.11647727272727271
-    aep_mwh: 6.051667932680671
+    aep_mwh: 4.1711683944315
   - direction_id: 4
     direction_center_rad: 2.199114857512855
     direction_bin_width_rad: 0.6283185307179586
     frequency: 0.08758899233296824
-    aep_mwh: 4.03529861803837
+    aep_mwh: 2.8469706812713835
   - direction_id: 5
     direction_center_rad: 2.827433388230814
     direction_bin_width_rad: 0.6283185307179586
     frequency: 0.056167853231106235
-    aep_mwh: 1.782263978159461
+    aep_mwh: 1.2740827643529027
   - direction_id: 6
     direction_center_rad: 3.4557519189487724
     direction_bin_width_rad: 0.6283185307179586
     frequency: 0.04535186199342826
-    aep_mwh: 0.9464767909089384
+    aep_mwh: 0.6795754676566366
   - direction_id: 7
     direction_center_rad: 4.084070449666731
     direction_bin_width_rad: 0.6283185307179586
     frequency: 0.06254563709382988
-    aep_mwh: 1.2596162400131028
+    aep_mwh: 0.9055643946646977
   - direction_id: 8
     direction_center_rad: 4.71238898038469
     direction_bin_width_rad: 0.6283185307179586
     frequency: 0.06626506024096387
-    aep_mwh: 1.8413977225151197
+    aep_mwh: 1.3164385652951596
   - direction_id: 9
     direction_center_rad: 5.340707511102648
     direction_bin_width_rad: 0.6283185307179586
     frequency: 0.08295682730923697
-    aep_mwh: 2.57398610733589
+    aep_mwh: 1.8257186707185653
   - direction_id: 10
     direction_center_rad: 5.969026041820607
     direction_bin_width_rad: 0.6283185307179586
     frequency: 0.13260998539613006
-    aep_mwh: 5.67531854131859
+    aep_mwh: 3.9481788131668734
   by_wind_speed:
   - wind_speed_bin_id: 1
     wind_speed_m_s: 0.40340636061392765
@@ -158,171 +158,171 @@ annual_energy_production:
   - wind_speed_bin_id: 7
     wind_speed_m_s: 4.318079720752842
     frequency: 0.0339197699890471
-    aep_mwh: 0.010218483708714005
+    aep_mwh: 0.0006966755844354528
   - wind_speed_bin_id: 8
     wind_speed_m_s: 4.970525280775995
     frequency: 0.038939850310332244
-    aep_mwh: 0.03579305000155945
+    aep_mwh: 0.002440297869956875
   - wind_speed_bin_id: 9
     wind_speed_m_s: 5.622970840799148
     frequency: 0.0426364549105513
-    aep_mwh: 0.11987012080494928
+    aep_mwh: 0.055545712861764414
   - wind_speed_bin_id: 10
     wind_speed_m_s: 6.2754164008223
     frequency: 0.04838672873311428
-    aep_mwh: 0.2541206138655356
+    aep_mwh: 0.1473328469398541
   - wind_speed_bin_id: 11
     wind_speed_m_s: 6.927861960845453
     frequency: 0.05080549470609712
-    aep_mwh: 0.4247415005591682
+    aep_mwh: 0.2741806770714195
   - wind_speed_bin_id: 12
     wind_speed_m_s: 7.580307520868605
     frequency: 0.052437020810514795
-    aep_mwh: 0.6518019324340704
+    aep_mwh: 0.4525792982936381
   - wind_speed_bin_id: 13
     wind_speed_m_s: 8.232753080891758
     frequency: 0.053646403797006206
-    aep_mwh: 0.9111114397290362
+    aep_mwh: 0.6554476411361904
   - wind_speed_bin_id: 14
     wind_speed_m_s: 8.885198640914911
     frequency: 0.053908817086527935
-    aep_mwh: 1.19640978472486
+    aep_mwh: 0.8756537184636678
   - wind_speed_bin_id: 15
     wind_speed_m_s: 9.537644200938061
     frequency: 0.05284775465498357
-    aep_mwh: 1.500544617027531
+    aep_mwh: 1.117490117619204
   - wind_speed_bin_id: 16
     wind_speed_m_s: 10.190089760961214
     frequency: 0.051741055129609345
-    aep_mwh: 1.8199473108074458
+    aep_mwh: 1.367466292279891
   - wind_speed_bin_id: 17
     wind_speed_m_s: 10.842535320984368
     frequency: 0.048751825483753196
-    aep_mwh: 2.0890356152514102
+    aep_mwh: 1.5690652979467994
   - wind_speed_bin_id: 18
     wind_speed_m_s: 11.494980881007521
     frequency: 0.046629700620664474
-    aep_mwh: 2.4202894625703943
+    aep_mwh: 1.8173189812022024
   - wind_speed_bin_id: 19
     wind_speed_m_s: 12.147426441030671
     frequency: 0.04580823293172691
-    aep_mwh: 2.8314703331461843
+    aep_mwh: 2.1237786648202683
   - wind_speed_bin_id: 20
     wind_speed_m_s: 12.799872001053824
     frequency: 0.040502920774005115
-    aep_mwh: 2.9623201867578532
+    aep_mwh: 2.21478016584054
   - wind_speed_bin_id: 21
     wind_speed_m_s: 13.452317561076978
     frequency: 0.03656672143117926
-    aep_mwh: 3.087367643140934
+    aep_mwh: 2.2798003004450296
   - wind_speed_bin_id: 22
     wind_speed_m_s: 14.104763121100131
     frequency: 0.03266474990872582
-    aep_mwh: 3.115080323533249
+    aep_mwh: 2.265302142998572
   - wind_speed_bin_id: 23
     wind_speed_m_s: 14.75720868112328
     frequency: 0.02782721796276013
-    aep_mwh: 2.9080727824402604
+    aep_mwh: 2.0707916351412123
   - wind_speed_bin_id: 24
     wind_speed_m_s: 15.409654241146434
     frequency: 0.024929262504563707
-    aep_mwh: 2.799503299894347
+    aep_mwh: 1.9554505885770541
   - wind_speed_bin_id: 25
     wind_speed_m_s: 16.062099801169587
     frequency: 0.02050246440306681
-    aep_mwh: 2.4316808017938527
+    aep_mwh: 1.6671539523246748
   - wind_speed_bin_id: 26
     wind_speed_m_s: 16.71454536119274
     frequency: 0.019156170135085793
-    aep_mwh: 2.2673425837442718
+    aep_mwh: 1.5159672061365694
   - wind_speed_bin_id: 27
     wind_speed_m_s: 17.366990921215894
     frequency: 0.014911920408908359
-    aep_mwh: 1.7709078747673295
+    aep_mwh: 1.1536383462079103
   - wind_speed_bin_id: 28
     wind_speed_m_s: 18.019436481239044
     frequency: 0.012869660460021906
-    aep_mwh: 1.5391608838294648
+    aep_mwh: 0.9764402774085522
   - wind_speed_bin_id: 29
     wind_speed_m_s: 18.671882041262197
     frequency: 0.010701898503103323
-    aep_mwh: 1.2691032284159167
+    aep_mwh: 0.7847522564249574
   - wind_speed_bin_id: 30
     wind_speed_m_s: 19.324327601285347
     frequency: 0.008636820007301937
-    aep_mwh: 1.010819446381763
+    aep_mwh: 0.6138444804150077
   - wind_speed_bin_id: 31
     wind_speed_m_s: 19.9767731613085
     frequency: 0.0072562979189485215
-    aep_mwh: 0.8340224692890555
+    aep_mwh: 0.5014740881970328
   - wind_speed_bin_id: 32
     wind_speed_m_s: 20.629218721331654
     frequency: 0.005328130704636728
-    aep_mwh: 0.5996398019161336
+    aep_mwh: 0.34730317825084067
   - wind_speed_bin_id: 33
     wind_speed_m_s: 21.281664281354807
     frequency: 0.004883169039795546
-    aep_mwh: 0.5374005370396732
+    aep_mwh: 0.30072009930243987
   - wind_speed_bin_id: 34
     wind_speed_m_s: 21.93410984137796
     frequency: 0.003457009857612267
-    aep_mwh: 0.3714560914009393
+    aep_mwh: 0.20226064702092078
   - wind_speed_bin_id: 35
     wind_speed_m_s: 22.586555401401114
     frequency: 0.0023160825118656446
-    aep_mwh: 0.23829813249157122
+    aep_mwh: 0.12095403923913542
   - wind_speed_bin_id: 36
     wind_speed_m_s: 23.239000961424264
     frequency: 0.0020194414019715223
-    aep_mwh: 0.19948259564174178
+    aep_mwh: 0.09677784121511233
   - wind_speed_bin_id: 37
     wind_speed_m_s: 23.891446521447417
     frequency: 0.001665753924790069
-    aep_mwh: 0.1596466800120406
+    aep_mwh: 0.07941827866066112
   - wind_speed_bin_id: 38
     wind_speed_m_s: 24.543892081470567
     frequency: 0.0012664293537787514
-    aep_mwh: 0.11761662730980048
+    aep_mwh: 0.053431746502689295
   - wind_speed_bin_id: 39
     wind_speed_m_s: 25.19633764149372
     frequency: 0.0009926067907995617
-    aep_mwh: 0.09012280963285198
+    aep_mwh: 0.037346279809314584
   - wind_speed_bin_id: 40
     wind_speed_m_s: 25.848783201516873
     frequency: 0.0006275100401606426
-    aep_mwh: 0.05697418999777999
+    aep_mwh: 0.023609717120831066
   - wind_speed_bin_id: 41
     wind_speed_m_s: 26.501228761540027
     frequency: 0.0005590543994158451
-    aep_mwh: 0.050758823816203995
+    aep_mwh: 0.0210341116167404
   - wind_speed_bin_id: 42
     wind_speed_m_s: 27.15367432156318
     frequency: 0.0004905987586710478
-    aep_mwh: 0.044543457634628
+    aep_mwh: 0.01845850611264974
   - wind_speed_bin_id: 43
     wind_speed_m_s: 27.806119881586334
     frequency: 0.0004107338444687842
-    aep_mwh: 0.037292197089456
+    aep_mwh: 0.015453633024543967
   - wind_speed_bin_id: 44
     wind_speed_m_s: 28.458565441609483
     frequency: 0.00023959474260679082
-    aep_mwh: 0.021753781635516
+    aep_mwh: 0.009014619264317314
   - wind_speed_bin_id: 45
     wind_speed_m_s: 29.111011001632637
     frequency: 7.986491420226361e-05
-    aep_mwh: 0.007251260545172
+    aep_mwh: 0.0030048730881057717
   - wind_speed_bin_id: 46
     wind_speed_m_s: 29.763456561655786
     frequency: 0.0001255020080321285
-    aep_mwh: 0.011394837999555998
+    aep_mwh: 0.004721943424166212
   - wind_speed_bin_id: 47
     wind_speed_m_s: 30.41590212167894
     frequency: 5.7046367287331146e-05
-    aep_mwh: 0.00517947181798
+    aep_mwh: 0.0021463379200755512
   - wind_speed_bin_id: 48
     wind_speed_m_s: 31.068347681702093
     frequency: 2.2818546914932458e-05
-    aep_mwh: 0.002071788727192
+    aep_mwh: 0.0008585351680302205
   - wind_speed_bin_id: 49
     wind_speed_m_s: 31.720793241725247
     frequency: 0.0
@@ -330,58 +330,58 @@ annual_energy_production:
   - wind_speed_bin_id: 50
     wind_speed_m_s: 32.3732388017484
     frequency: 2.2818546914932458e-05
-    aep_mwh: 0.002071788727192
+    aep_mwh: 0.0008585351680302205
   by_profile_and_direction:
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     frequency: 0.17700346841913106
-    aep_mwh: 9.100467007578727
+    aep_mwh: 6.285568935601068
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     frequency: 0.17303304125593283
-    aep_mwh: 9.547197723505715
+    aep_mwh: 6.542497896956221
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     frequency: 0.11647727272727273
-    aep_mwh: 6.051667932680671
+    aep_mwh: 4.1711683944315
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     frequency: 0.08758899233296824
-    aep_mwh: 4.03529861803837
+    aep_mwh: 2.8469706812713835
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     frequency: 0.05616785323110625
-    aep_mwh: 1.782263978159461
+    aep_mwh: 1.2740827643529027
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     frequency: 0.04535186199342826
-    aep_mwh: 0.9464767909089384
+    aep_mwh: 0.6795754676566366
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     frequency: 0.06254563709382988
-    aep_mwh: 1.2596162400131028
+    aep_mwh: 0.9055643946646977
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     frequency: 0.06626506024096385
-    aep_mwh: 1.8413977225151197
+    aep_mwh: 1.3164385652951596
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     frequency: 0.08295682730923695
-    aep_mwh: 2.57398610733589
+    aep_mwh: 1.8257186707185653
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     frequency: 0.13260998539613
-    aep_mwh: 5.67531854131859
+    aep_mwh: 3.9481788131668734
   by_profile_and_direction_and_wind_speed:
   - profile_id: 1
     direction_id: 1
@@ -431,294 +431,294 @@ annual_energy_production:
     wind_speed_bin_id: 7
     wind_speed_m_s: 4.318079720752842
     frequency: 0.003822106608251186
-    aep_mwh: 0.0011514268558423112
+    aep_mwh: 7.850195788290503e-05
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 8
     wind_speed_m_s: 4.970525280775995
     frequency: 0.004951624680540343
-    aep_mwh: 0.004551474861024553
+    aep_mwh: 0.00031031036494617154
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 9
     wind_speed_m_s: 5.622970840799148
     frequency: 0.005613362541073384
-    aep_mwh: 0.015781669637686655
+    aep_mwh: 0.007312949084289025
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 10
     wind_speed_m_s: 6.2754164008223
     frequency: 0.006879791894852136
-    aep_mwh: 0.03613174490943597
+    aep_mwh: 0.020948292078456023
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 11
     wind_speed_m_s: 6.927861960845453
     frequency: 0.008248904709748083
-    aep_mwh: 0.06896207161560265
+    aep_mwh: 0.04451664709693157
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 12
     wind_speed_m_s: 7.580307520868605
     frequency: 0.009218692953632713
-    aep_mwh: 0.1145900699318383
+    aep_mwh: 0.0795657252004481
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 13
     wind_speed_m_s: 8.232753080891758
     frequency: 0.009161646586345381
-    aep_mwh: 0.1555981467678469
+    aep_mwh: 0.11193629430718008
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 14
     wind_speed_m_s: 8.885198640914911
     frequency: 0.00941265060240964
-    aep_mwh: 0.20889694653926127
+    aep_mwh: 0.1528919190968309
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 15
     wind_speed_m_s: 9.537644200938061
     frequency: 0.008899233296823659
-    aep_mwh: 0.2526823836963459
+    aep_mwh: 0.18817838768199033
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 16
     wind_speed_m_s: 10.190089760961214
     frequency: 0.009024735304855787
-    aep_mwh: 0.3174373369015854
+    aep_mwh: 0.2385150688408807
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 17
     wind_speed_m_s: 10.842535320984368
     frequency: 0.009173055859802848
-    aep_mwh: 0.39306918667496693
+    aep_mwh: 0.295232506330266
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 18
     wind_speed_m_s: 11.494980881007521
     frequency: 0.008853596202993794
-    aep_mwh: 0.45954113603000396
+    aep_mwh: 0.3450549374633984
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 19
     wind_speed_m_s: 12.147426441030671
     frequency: 0.008477090178897409
-    aep_mwh: 0.5239806868063798
+    aep_mwh: 0.39301806923074956
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 20
     wind_speed_m_s: 12.799872001053824
     frequency: 0.008853596202993794
-    aep_mwh: 0.6475381591335476
+    aep_mwh: 0.4841322278006363
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 21
     wind_speed_m_s: 13.452317561076978
     frequency: 0.008294541803577948
-    aep_mwh: 0.7003170909714381
+    aep_mwh: 0.5171341087124918
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 22
     wind_speed_m_s: 14.104763121100131
     frequency: 0.007107977364001461
-    aep_mwh: 0.6778536645341299
+    aep_mwh: 0.49293860813416346
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 23
     wind_speed_m_s: 14.75720868112328
     frequency: 0.006469058050383352
-    aep_mwh: 0.6760464401982894
+    aep_mwh: 0.4814017454387321
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 24
     wind_speed_m_s: 15.409654241146434
     frequency: 0.006012687112084703
-    aep_mwh: 0.6752120087159366
+    aep_mwh: 0.4716349932174407
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 25
     wind_speed_m_s: 16.062099801169587
     frequency: 0.004369751734209565
-    aep_mwh: 0.5182714229755401
+    aep_mwh: 0.3553255223930721
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 26
     wind_speed_m_s: 16.71454536119274
     frequency: 0.0043355239138371665
-    aep_mwh: 0.5131567491499841
+    aep_mwh: 0.3431015713709925
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 27
     wind_speed_m_s: 17.366990921215894
     frequency: 0.00320600584154801
-    aep_mwh: 0.38073841837002265
+    aep_mwh: 0.248027831128097
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 28
     wind_speed_m_s: 18.019436481239044
     frequency: 0.0028865461847389557
-    aep_mwh: 0.3452195953979208
+    aep_mwh: 0.2190065515818827
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 29
     wind_speed_m_s: 18.671882041262197
     frequency: 0.0024301752464403067
-    aep_mwh: 0.2881865540006292
+    aep_mwh: 0.17820067230118966
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 30
     wind_speed_m_s: 19.324327601285347
     frequency: 0.0021677619569185833
-    aep_mwh: 0.25370633396636055
+    aep_mwh: 0.15406928834722777
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 31
     wind_speed_m_s: 19.9767731613085
     frequency: 0.0015744797371303396
-    aep_mwh: 0.18096713956271962
+    aep_mwh: 0.1088104153635071
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 32
     wind_speed_m_s: 20.629218721331654
     frequency: 0.0013805220883534137
-    aep_mwh: 0.15536705788405178
+    aep_mwh: 0.08998647659175961
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 33
     wind_speed_m_s: 21.281664281354807
     frequency: 0.001095290251916758
-    aep_mwh: 0.12053843821450613
+    aep_mwh: 0.06745123722671549
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 34
     wind_speed_m_s: 21.93410984137796
     frequency: 0.0007758305951077035
-    aep_mwh: 0.08336308321869267
+    aep_mwh: 0.04539182837433207
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 35
     wind_speed_m_s: 22.586555401401114
     frequency: 0.00045637093829864917
-    aep_mwh: 0.04695529704267413
+    aep_mwh: 0.02383330822446018
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 36
     wind_speed_m_s: 23.239000961424264
     frequency: 0.0005932822197882439
-    aep_mwh: 0.05860505634672641
+    aep_mwh: 0.028431908153592325
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 37
     wind_speed_m_s: 23.891446521447417
     frequency: 0.00046778021175611535
-    aep_mwh: 0.044832286852696336
+    aep_mwh: 0.022302393322514425
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 38
     wind_speed_m_s: 24.543892081470567
     frequency: 0.00046778021175611535
-    aep_mwh: 0.043443979456773155
+    aep_mwh: 0.01973605051000235
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 39
     wind_speed_m_s: 25.19633764149372
     frequency: 0.0003080503833515882
-    aep_mwh: 0.027969147817092
+    aep_mwh: 0.011590224768407976
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 40
     wind_speed_m_s: 25.848783201516873
     frequency: 0.000251004016064257
-    aep_mwh: 0.022789675999111997
+    aep_mwh: 0.009443886848332424
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 41
     wind_speed_m_s: 26.501228761540027
     frequency: 0.0002738225629791895
-    aep_mwh: 0.024861464726303996
+    aep_mwh: 0.010302422016362646
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 42
     wind_speed_m_s: 27.15367432156318
     frequency: 0.00018254837531945966
-    aep_mwh: 0.016574309817536
+    aep_mwh: 0.006868281344241764
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 43
     wind_speed_m_s: 27.806119881586334
     frequency: 0.00018254837531945966
-    aep_mwh: 0.016574309817536
+    aep_mwh: 0.006868281344241764
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 44
     wind_speed_m_s: 28.458565441609483
     frequency: 0.00011409273457466229
-    aep_mwh: 0.01035894363596
+    aep_mwh: 0.0042926758401511025
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 45
     wind_speed_m_s: 29.111011001632637
     frequency: 5.7046367287331146e-05
-    aep_mwh: 0.00517947181798
+    aep_mwh: 0.0021463379200755512
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 46
     wind_speed_m_s: 29.763456561655786
     frequency: 9.127418765972983e-05
-    aep_mwh: 0.008287154908768
+    aep_mwh: 0.003434140672120882
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 47
     wind_speed_m_s: 30.41590212167894
     frequency: 2.2818546914932458e-05
-    aep_mwh: 0.002071788727192
+    aep_mwh: 0.0008585351680302205
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
     wind_speed_bin_id: 48
     wind_speed_m_s: 31.068347681702093
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001035894363596
+    aep_mwh: 0.00042926758401511025
   - profile_id: 1
     direction_id: 1
     direction_center_rad: 0.3141592653589793
@@ -732,7 +732,7 @@ annual_energy_production:
     wind_speed_bin_id: 50
     wind_speed_m_s: 32.3732388017484
     frequency: 2.2818546914932458e-05
-    aep_mwh: 0.002071788727192
+    aep_mwh: 0.0008585351680302205
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
@@ -781,294 +781,294 @@ annual_energy_production:
     wind_speed_bin_id: 7
     wind_speed_m_s: 4.318079720752842
     frequency: 0.0036281489594742603
-    aep_mwh: 0.001092996239277179
+    aep_mwh: 7.451827643810089e-05
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 8
     wind_speed_m_s: 4.970525280775995
     frequency: 0.004495253742241694
-    aep_mwh: 0.004131984090423211
+    aep_mwh: 0.00028171033131057973
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 9
     wind_speed_m_s: 5.622970840799148
     frequency: 0.005214037970062067
-    aep_mwh: 0.014658989887038218
+    aep_mwh: 0.0067927189665042366
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 10
     wind_speed_m_s: 6.2754164008223
     frequency: 0.006138189120116832
-    aep_mwh: 0.03223694653611369
+    aep_mwh: 0.018690184308804883
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 11
     wind_speed_m_s: 6.927861960845453
     frequency: 0.006697243519532676
-    aep_mwh: 0.0559899530267756
+    aep_mwh: 0.03614283796113255
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 12
     wind_speed_m_s: 7.580307520868605
     frequency: 0.007963672873311428
-    aep_mwh: 0.09898993664903855
+    aep_mwh: 0.06873375766078316
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 13
     wind_speed_m_s: 8.232753080891758
     frequency: 0.008054947060971157
-    aep_mwh: 0.13680235568879193
+    aep_mwh: 0.09841472450917702
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 14
     wind_speed_m_s: 8.885198640914911
     frequency: 0.008397225264695144
-    aep_mwh: 0.18636139715502578
+    aep_mwh: 0.13639812418820305
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 15
     wind_speed_m_s: 9.537644200938061
     frequency: 0.0086482292807594
-    aep_mwh: 0.24555544466901302
+    aep_mwh: 0.18287079213198543
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 16
     wind_speed_m_s: 10.190089760961214
     frequency: 0.008705275648046733
-    aep_mwh: 0.3062006170112638
+    aep_mwh: 0.23007205755447785
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 17
     wind_speed_m_s: 10.842535320984368
     frequency: 0.008579773640014604
-    aep_mwh: 0.36764680146713336
+    aep_mwh: 0.2761378666173632
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 18
     wind_speed_m_s: 11.494980881007521
     frequency: 0.008556955093099672
-    aep_mwh: 0.4441441392042563
+    aep_mwh: 0.33349381842467624
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 19
     wind_speed_m_s: 12.147426441030671
     frequency: 0.008910642570281124
-    aep_mwh: 0.5507791606941893
+    aep_mwh: 0.4131185895951754
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 20
     wind_speed_m_s: 12.799872001053824
     frequency: 0.008157630522088354
-    aep_mwh: 0.5966363193047507
+    aep_mwh: 0.4460754418523904
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 21
     wind_speed_m_s: 13.452317561076978
     frequency: 0.007712668857247171
-    aep_mwh: 0.651188931907417
+    aep_mwh: 0.48085647522647107
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 22
     wind_speed_m_s: 14.104763121100131
     frequency: 0.007507301935012778
-    aep_mwh: 0.715935331080991
+    aep_mwh: 0.5206317883664199
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 23
     wind_speed_m_s: 14.75720868112328
     frequency: 0.006400602409638554
-    aep_mwh: 0.6688925096141806
+    aep_mwh: 0.47630754707430106
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 24
     wind_speed_m_s: 15.409654241146434
     frequency: 0.005590543994158451
-    aep_mwh: 0.62780623201292
+    aep_mwh: 0.43852209995549496
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 25
     wind_speed_m_s: 16.062099801169587
     frequency: 0.005191219423147134
-    aep_mwh: 0.615701037738566
+    aep_mwh: 0.4221230096314564
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 26
     wind_speed_m_s: 16.71454536119274
     frequency: 0.005225447243519533
-    aep_mwh: 0.6184889239755073
+    aep_mwh: 0.4135276833892489
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 27
     wind_speed_m_s: 17.366990921215894
     frequency: 0.003685195326761592
-    aep_mwh: 0.43764593997693
+    aep_mwh: 0.28509960659920053
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 28
     wind_speed_m_s: 18.019436481239044
     frequency: 0.0037194231471339907
-    aep_mwh: 0.4448284114613525
+    aep_mwh: 0.282198165279422
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 29
     wind_speed_m_s: 18.671882041262197
     frequency: 0.0030120481927710845
-    aep_mwh: 0.3571889683388081
+    aep_mwh: 0.2208684389085168
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 30
     wind_speed_m_s: 19.324327601285347
     frequency: 0.002201989777290982
-    aep_mwh: 0.25771222345003997
+    aep_mwh: 0.1565019613211314
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 31
     wind_speed_m_s: 19.9767731613085
     frequency: 0.002201989777290982
-    aep_mwh: 0.2530917241710499
+    aep_mwh: 0.15217688525475992
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 32
     wind_speed_m_s: 20.629218721331654
     frequency: 0.0015744797371303396
-    aep_mwh: 0.17719548750412517
+    aep_mwh: 0.10262920470795724
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 33
     wind_speed_m_s: 21.281664281354807
     frequency: 0.0015972982840452717
-    aep_mwh: 0.17578522239615474
+    aep_mwh: 0.09836638762229341
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 34
     wind_speed_m_s: 21.93410984137796
     frequency: 0.0011751551661190215
-    aep_mwh: 0.12627055252243152
+    aep_mwh: 0.06875526944935592
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 35
     wind_speed_m_s: 22.586555401401114
     frequency: 0.0008214676889375684
-    aep_mwh: 0.08451953467681342
+    aep_mwh: 0.04289995480402833
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 36
     wind_speed_m_s: 23.239000961424264
     frequency: 0.0006731471339905075
-    aep_mwh: 0.06649419854724728
+    aep_mwh: 0.03225928040503745
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 37
     wind_speed_m_s: 23.891446521447417
     frequency: 0.00069596568090544
-    aep_mwh: 0.06670169507352382
+    aep_mwh: 0.03318160957739952
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 38
     wind_speed_m_s: 24.543892081470567
     frequency: 0.0004791894852135816
-    aep_mwh: 0.044503588711816394
+    aep_mwh: 0.020217417595612165
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 39
     wind_speed_m_s: 25.19633764149372
     frequency: 0.0004107338444687842
-    aep_mwh: 0.037292197089456
+    aep_mwh: 0.015453633024543967
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 40
     wind_speed_m_s: 25.848783201516873
     frequency: 0.00011409273457466229
-    aep_mwh: 0.01035894363596
+    aep_mwh: 0.0042926758401511025
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 41
     wind_speed_m_s: 26.501228761540027
     frequency: 0.00019395764877692587
-    aep_mwh: 0.017610204181132
+    aep_mwh: 0.007297548928256873
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 42
     wind_speed_m_s: 27.15367432156318
     frequency: 0.00021677619569185835
-    aep_mwh: 0.019681992908323998
+    aep_mwh: 0.008156084096287094
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 43
     wind_speed_m_s: 27.806119881586334
     frequency: 0.0001597298284045272
-    aep_mwh: 0.014502521090343999
+    aep_mwh: 0.006009746176211543
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 44
     wind_speed_m_s: 28.458565441609483
     frequency: 0.00010268346111719605
-    aep_mwh: 0.009323049272364
+    aep_mwh: 0.003863408256135992
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 45
     wind_speed_m_s: 29.111011001632637
     frequency: 2.2818546914932458e-05
-    aep_mwh: 0.002071788727192
+    aep_mwh: 0.0008585351680302205
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 46
     wind_speed_m_s: 29.763456561655786
     frequency: 3.4227820372398685e-05
-    aep_mwh: 0.0031076830907879995
+    aep_mwh: 0.0012878027520453307
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 47
     wind_speed_m_s: 30.41590212167894
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001035894363596
+    aep_mwh: 0.00042926758401511025
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
     wind_speed_bin_id: 48
     wind_speed_m_s: 31.068347681702093
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001035894363596
+    aep_mwh: 0.00042926758401511025
   - profile_id: 1
     direction_id: 2
     direction_center_rad: 0.9424777960769379
@@ -1131,259 +1131,259 @@ annual_energy_production:
     wind_speed_bin_id: 7
     wind_speed_m_s: 4.318079720752842
     frequency: 0.0033429171230376048
-    aep_mwh: 0.0010070688619755138
+    aep_mwh: 6.865992137221246e-05
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 8
     wind_speed_m_s: 4.970525280775995
     frequency: 0.003548284045271997
-    aep_mwh: 0.0032615407414254283
+    aep_mwh: 0.00022236526151672665
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 9
     wind_speed_m_s: 5.622970840799148
     frequency: 0.0039590178897407815
-    aep_mwh: 0.011130567813571688
+    aep_mwh: 0.005157710024894902
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 10
     wind_speed_m_s: 6.2754164008223
     frequency: 0.004107338444687842
-    aep_mwh: 0.02157119099070804
+    aep_mwh: 0.012506443031914045
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 11
     wind_speed_m_s: 6.927861960845453
     frequency: 0.004963033953997809
-    aep_mwh: 0.041491702839263005
+    aep_mwh: 0.02678387480935717
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 12
     wind_speed_m_s: 7.580307520868605
     frequency: 0.004449616648411829
-    aep_mwh: 0.05530956345719917
+    aep_mwh: 0.03840424854972125
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 13
     wind_speed_m_s: 8.232753080891758
     frequency: 0.005179810149689668
-    aep_mwh: 0.08797205309165938
+    aep_mwh: 0.06328652255972574
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 14
     wind_speed_m_s: 8.885198640914911
     frequency: 0.006046914932457101
-    aep_mwh: 0.13420046262522237
+    aep_mwh: 0.09822147529857012
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 15
     wind_speed_m_s: 9.537644200938061
     frequency: 0.0061153705732018985
-    aep_mwh: 0.1736381508477454
+    aep_mwh: 0.12931232794557285
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 16
     wind_speed_m_s: 10.190089760961214
     frequency: 0.006024096385542169
-    aep_mwh: 0.21189243221749315
+    aep_mwh: 0.15921106997216816
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 17
     wind_speed_m_s: 10.842535320984368
     frequency: 0.005533497626871121
-    aep_mwh: 0.23711263126537185
+    aep_mwh: 0.17809423578380473
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 18
     wind_speed_m_s: 11.494980881007521
     frequency: 0.005465041986126323
-    aep_mwh: 0.2836600569051184
+    aep_mwh: 0.2129913853672266
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 19
     wind_speed_m_s: 12.147426441030671
     frequency: 0.005601953267615918
-    aep_mwh: 0.3462644915503802
+    aep_mwh: 0.25971988155087217
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 20
     wind_speed_m_s: 12.799872001053824
     frequency: 0.005008671047827674
-    aep_mwh: 0.36632635548921055
+    aep_mwh: 0.2738840824799991
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 21
     wind_speed_m_s: 13.452317561076978
     frequency: 0.004791894852135816
-    aep_mwh: 0.40458483935076195
+    aep_mwh: 0.2987569816495826
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 22
     wind_speed_m_s: 14.104763121100131
     frequency: 0.004438207374954363
-    aep_mwh: 0.42325052247797196
+    aep_mwh: 0.30778991743850653
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 23
     wind_speed_m_s: 14.75720868112328
     frequency: 0.0037764695144213217
-    aep_mwh: 0.3946585038900067
+    aep_mwh: 0.281029943104445
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 24
     wind_speed_m_s: 15.409654241146434
     frequency: 0.003970427163198248
-    aep_mwh: 0.44587054844999224
+    aep_mwh: 0.31144018527451484
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 25
     wind_speed_m_s: 16.062099801169587
     frequency: 0.0035140562248995983
-    aep_mwh: 0.4167822409307215
+    aep_mwh: 0.2857448065197551
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 26
     wind_speed_m_s: 16.71454536119274
     frequency: 0.0032744614822928075
-    aep_mwh: 0.3875683868580143
+    aep_mwh: 0.2591319762723023
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 27
     wind_speed_m_s: 17.366990921215894
     frequency: 0.002955001825483753
-    aep_mwh: 0.35092971657592836
+    aep_mwh: 0.22860928207180475
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 28
     wind_speed_m_s: 18.019436481239044
     frequency: 0.002407356699525374
-    aep_mwh: 0.2879104135532067
+    aep_mwh: 0.1826497327422026
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 29
     wind_speed_m_s: 18.671882041262197
     frequency: 0.0020194414019715223
-    aep_mwh: 0.23947896740897356
+    aep_mwh: 0.14808224881366466
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 30
     wind_speed_m_s: 19.324327601285347
     frequency: 0.0015060240963855422
-    aep_mwh: 0.17625913728189263
+    aep_mwh: 0.10703761085175827
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 31
     wind_speed_m_s: 19.9767731613085
     frequency: 0.0012093829864914202
-    aep_mwh: 0.13900374488150927
+    aep_mwh: 0.08357901469950545
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 32
     wind_speed_m_s: 20.629218721331654
     frequency: 0.0009355604235122307
-    aep_mwh: 0.10529007228505988
+    aep_mwh: 0.06098257091342386
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 33
     wind_speed_m_s: 21.281664281354807
     frequency: 0.0009355604235122307
-    aep_mwh: 0.10295991597489065
+    aep_mwh: 0.057614598464486154
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 34
     wind_speed_m_s: 21.93410984137796
     frequency: 0.0006503285870755749
-    aep_mwh: 0.06987787858037471
+    aep_mwh: 0.038049032607895994
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 35
     wind_speed_m_s: 22.586555401401114
     frequency: 0.00034227820372398685
-    aep_mwh: 0.03521647278200559
+    aep_mwh: 0.017874981168345135
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 36
     wind_speed_m_s: 23.239000961424264
     frequency: 0.00029664110989412195
-    aep_mwh: 0.029302528173363204
+    aep_mwh: 0.014215954076796163
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 37
     wind_speed_m_s: 23.891446521447417
     frequency: 0.0002395947426067908
-    aep_mwh: 0.022962878631868855
+    aep_mwh: 0.01142317706762934
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 38
     wind_speed_m_s: 24.543892081470567
     frequency: 0.00018254837531945966
-    aep_mwh: 0.016953748080691958
+    aep_mwh: 0.007701873369757016
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 39
     wind_speed_m_s: 25.19633764149372
     frequency: 0.00011409273457466229
-    aep_mwh: 0.01035894363596
+    aep_mwh: 0.0042926758401511025
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 40
     wind_speed_m_s: 25.848783201516873
     frequency: 0.0001255020080321285
-    aep_mwh: 0.011394837999555998
+    aep_mwh: 0.004721943424166212
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 41
     wind_speed_m_s: 26.501228761540027
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001035894363596
+    aep_mwh: 0.00042926758401511025
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 42
     wind_speed_m_s: 27.15367432156318
     frequency: 3.4227820372398685e-05
-    aep_mwh: 0.0031076830907879995
+    aep_mwh: 0.0012878027520453307
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
     wind_speed_bin_id: 43
     wind_speed_m_s: 27.806119881586334
     frequency: 2.2818546914932458e-05
-    aep_mwh: 0.002071788727192
+    aep_mwh: 0.0008585351680302205
   - profile_id: 1
     direction_id: 3
     direction_center_rad: 1.5707963267948966
@@ -1481,210 +1481,210 @@ annual_energy_production:
     wind_speed_bin_id: 7
     wind_speed_m_s: 4.318079720752842
     frequency: 0.0025214494341000366
-    aep_mwh: 0.0007595980153467187
+    aep_mwh: 5.178785878245378e-05
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 8
     wind_speed_m_s: 4.970525280775995
     frequency: 0.0028751369112814894
-    aep_mwh: 0.0026427918547884495
+    aep_mwh: 0.00018018021190422865
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 9
     wind_speed_m_s: 5.622970840799148
     frequency: 0.0032516429353778753
-    aep_mwh: 0.009141820826708736
+    aep_mwh: 0.004236159530533277
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 10
     wind_speed_m_s: 6.2754164008223
     frequency: 0.003502646951442132
-    aep_mwh: 0.01839543231707602
+    aep_mwh: 0.010665216696660032
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 11
     wind_speed_m_s: 6.927861960845453
     frequency: 0.0031945965680905434
-    aep_mwh: 0.026707302976996874
+    aep_mwh: 0.017240195279586222
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 12
     wind_speed_m_s: 7.580307520868605
     frequency: 0.0037080138736765244
-    aep_mwh: 0.04609130288099931
+    aep_mwh: 0.03200354045810103
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 13
     wind_speed_m_s: 8.232753080891758
     frequency: 0.0039590178897407815
-    aep_mwh: 0.06723855159208328
+    aep_mwh: 0.04837097649388729
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 14
     wind_speed_m_s: 8.885198640914911
     frequency: 0.004940215407082877
-    aep_mwh: 0.10963924588060621
+    aep_mwh: 0.08024509208354881
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 15
     wind_speed_m_s: 9.537644200938061
     frequency: 0.005042898868200073
-    aep_mwh: 0.14318668409459598
+    aep_mwh: 0.10663441968646119
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 16
     wind_speed_m_s: 10.190089760961214
     frequency: 0.005407995618838992
-    aep_mwh: 0.1902216152861586
+    aep_mwh: 0.1429281196341055
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 17
     wind_speed_m_s: 10.842535320984368
     frequency: 0.005145582329317269
-    aep_mwh: 0.22049030247563445
+    aep_mwh: 0.16560927904844522
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 18
     wind_speed_m_s: 11.494980881007521
     frequency: 0.005350949251551661
-    aep_mwh: 0.2777381350490617
+    aep_mwh: 0.20854480112156423
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 19
     wind_speed_m_s: 12.147426441030671
     frequency: 0.004837531945965681
-    aep_mwh: 0.2990145507481898
+    aep_mwh: 0.22427949038201586
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 20
     wind_speed_m_s: 12.799872001053824
     frequency: 0.004107338444687842
-    aep_mwh: 0.3004043006289654
+    aep_mwh: 0.22459742526833643
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 21
     wind_speed_m_s: 13.452317561076978
     frequency: 0.0031717780211756117
-    aep_mwh: 0.26779663176074253
+    aep_mwh: 0.1977486688061523
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 22
     wind_speed_m_s: 14.104763121100131
     frequency: 0.0032288243884629423
-    aep_mwh: 0.3079174752217636
+    aep_mwh: 0.2239191430208158
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 23
     wind_speed_m_s: 14.75720868112328
     frequency: 0.002989229645856152
-    aep_mwh: 0.3123883021727545
+    aep_mwh: 0.22244666191348822
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 24
     wind_speed_m_s: 15.409654241146434
     frequency: 0.0026241328952172327
-    aep_mwh: 0.2946845578836155
+    aep_mwh: 0.2058369040607426
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 25
     wind_speed_m_s: 16.062099801169587
     frequency: 0.0021791712303760495
-    aep_mwh: 0.2584591169408046
+    aep_mwh: 0.1771988897573806
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 26
     wind_speed_m_s: 16.71454536119274
     frequency: 0.0018254837531945967
-    aep_mwh: 0.2160659996420986
+    aep_mwh: 0.14446381952462847
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 27
     wind_speed_m_s: 17.366990921215894
     frequency: 0.0016543446513326032
-    aep_mwh: 0.1964664436428943
+    aep_mwh: 0.12798589150738104
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 28
     wind_speed_m_s: 18.019436481239044
     frequency: 0.0010268346111719606
-    aep_mwh: 0.12280538966724454
+    aep_mwh: 0.07790746894217172
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 29
     wind_speed_m_s: 18.671882041262197
     frequency: 0.0007872398685651698
-    aep_mwh: 0.09335620763400665
+    aep_mwh: 0.057726978351089614
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 30
     wind_speed_m_s: 19.324327601285347
     frequency: 0.0006161007667031764
-    aep_mwh: 0.07210601070622878
+    aep_mwh: 0.043788113530264745
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 31
     wind_speed_m_s: 19.9767731613085
     frequency: 0.0005704636728733114
-    aep_mwh: 0.06556780418939118
+    aep_mwh: 0.03942406353750257
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 32
     wind_speed_m_s: 20.629218721331654
     frequency: 0.0003194596568090544
-    aep_mwh: 0.03595270760953263
+    aep_mwh: 0.020823316897266683
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 33
     wind_speed_m_s: 21.281664281354807
     frequency: 0.0002738225629791895
-    aep_mwh: 0.030134609553626533
+    aep_mwh: 0.016862809306678873
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 34
     wind_speed_m_s: 21.93410984137796
     frequency: 0.00018254837531945966
-    aep_mwh: 0.019614843110280628
+    aep_mwh: 0.010680430205725193
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 35
     wind_speed_m_s: 22.586555401401114
     frequency: 0.0001255020080321285
-    aep_mwh: 0.012912706686735382
+    aep_mwh: 0.0065541597617265485
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 36
     wind_speed_m_s: 23.239000961424264
     frequency: 9.127418765972983e-05
-    aep_mwh: 0.009016162514880985
+    aep_mwh: 0.004374139715937281
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
@@ -1698,21 +1698,21 @@ annual_energy_production:
     wind_speed_bin_id: 38
     wind_speed_m_s: 24.543892081470567
     frequency: 4.5637093829864916e-05
-    aep_mwh: 0.004238437020172989
+    aep_mwh: 0.001925468342439254
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 39
     wind_speed_m_s: 25.19633764149372
     frequency: 3.4227820372398685e-05
-    aep_mwh: 0.0031076830907879995
+    aep_mwh: 0.0012878027520453307
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
     wind_speed_bin_id: 40
     wind_speed_m_s: 25.848783201516873
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001035894363596
+    aep_mwh: 0.00042926758401511025
   - profile_id: 1
     direction_id: 4
     direction_center_rad: 2.199114857512855
@@ -1831,217 +1831,217 @@ annual_energy_production:
     wind_speed_bin_id: 7
     wind_speed_m_s: 4.318079720752842
     frequency: 0.002646951442132165
-    aep_mwh: 0.0007974060613594513
+    aep_mwh: 5.4365535011444685e-05
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 8
     wind_speed_m_s: 4.970525280775995
     frequency: 0.003148959474260679
-    aep_mwh: 0.0028944863171492547
+    aep_mwh: 0.00019734023208558377
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 9
     wind_speed_m_s: 5.622970840799148
     frequency: 0.002840909090909091
-    aep_mwh: 0.007987064511756053
+    aep_mwh: 0.003701065695097495
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 10
     wind_speed_m_s: 6.2754164008223
     frequency: 0.0029778203723986856
-    aep_mwh: 0.01563911346826333
+    aep_mwh: 0.009067171198137682
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 11
     wind_speed_m_s: 6.927861960845453
     frequency: 0.0031717780211756117
-    aep_mwh: 0.026516536527161187
+    aep_mwh: 0.017117051027589182
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 12
     wind_speed_m_s: 7.580307520868605
     frequency: 0.0029778203723986856
-    aep_mwh: 0.037014861698279444
+    aep_mwh: 0.025701304798659598
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 13
     wind_speed_m_s: 8.232753080891758
     frequency: 0.003240233661920409
-    aep_mwh: 0.055030975942800146
+    aep_mwh: 0.03958892600652447
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 14
     wind_speed_m_s: 8.885198640914911
     frequency: 0.0028294998174516247
-    aep_mwh: 0.06279568817180217
+    aep_mwh: 0.04596023749819885
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 15
     wind_speed_m_s: 9.537644200938061
     frequency: 0.002703997809419496
-    aep_mwh: 0.07677657043081279
+    aep_mwh: 0.057177279334143204
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 16
     wind_speed_m_s: 10.190089760961214
     frequency: 0.0031831872946330776
-    aep_mwh: 0.1119658874785617
+    aep_mwh: 0.08412857674665704
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 17
     wind_speed_m_s: 10.842535320984368
     frequency: 0.0026013143483022997
-    aep_mwh: 0.11146738129588614
+    aep_mwh: 0.0837226510488814
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 18
     wind_speed_m_s: 11.494980881007521
     frequency: 0.002646951442132165
-    aep_mwh: 0.13738858706051663
+    aep_mwh: 0.10316075449936653
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 19
     wind_speed_m_s: 12.147426441030671
     frequency: 0.002806681270536692
-    aep_mwh: 0.17348485727371388
+    aep_mwh: 0.13012442130654694
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 20
     wind_speed_m_s: 12.799872001053824
     frequency: 0.0022133990507484484
-    aep_mwh: 0.1618845397833869
+    aep_mwh: 0.12103305695015908
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 21
     wind_speed_m_s: 13.452317561076978
     frequency: 0.0020308506754289886
-    aep_mwh: 0.17146690810579915
+    aep_mwh: 0.12661605412768026
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 22
     wind_speed_m_s: 14.104763121100131
     frequency: 0.0015060240963855422
-    aep_mwh: 0.14362228526244808
+    aep_mwh: 0.10444285116165263
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 23
     wind_speed_m_s: 14.75720868112328
     frequency: 0.0011409273457466229
-    aep_mwh: 0.1192321764018147
+    aep_mwh: 0.08490330607385044
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 24
     wind_speed_m_s: 15.409654241146434
     frequency: 0.0008214676889375684
-    aep_mwh: 0.09224907898965355
+    aep_mwh: 0.06443590040162377
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 25
     wind_speed_m_s: 16.062099801169587
     frequency: 0.0004791894852135816
-    aep_mwh: 0.056833941945098394
+    aep_mwh: 0.038965200889057514
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 26
     wind_speed_m_s: 16.71454536119274
     frequency: 0.0004107338444687842
-    aep_mwh: 0.04861484991947218
+    aep_mwh: 0.0325043593930414
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 27
     wind_speed_m_s: 17.366990921215894
     frequency: 0.0002852318364366557
-    aep_mwh: 0.03387352476601626
+    aep_mwh: 0.02206653301851397
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 28
     wind_speed_m_s: 18.019436481239044
     frequency: 0.00017113910186199342
-    aep_mwh: 0.02046756494454076
+    aep_mwh: 0.012984578157028618
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 29
     wind_speed_m_s: 18.671882041262197
     frequency: 0.0002053669222343921
-    aep_mwh: 0.024353793295827823
+    aep_mwh: 0.015059211743762508
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 30
     wind_speed_m_s: 19.324327601285347
     frequency: 0.00019395764877692587
-    aep_mwh: 0.02270004040751647
+    aep_mwh: 0.013785146852120381
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 31
     wind_speed_m_s: 19.9767731613085
     frequency: 0.00017113910186199342
-    aep_mwh: 0.019670341256817353
+    aep_mwh: 0.01182721906125077
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 32
     wind_speed_m_s: 20.629218721331654
     frequency: 0.00011409273457466229
-    aep_mwh: 0.01284025271769023
+    aep_mwh: 0.007436898891880959
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 33
     wind_speed_m_s: 21.281664281354807
     frequency: 0.00010268346111719605
-    aep_mwh: 0.011300478582609949
+    aep_mwh: 0.006323553490004577
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 34
     wind_speed_m_s: 21.93410984137796
     frequency: 6.845564074479737e-05
-    aep_mwh: 0.007355566166355234
+    aep_mwh: 0.004005161327146947
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 35
     wind_speed_m_s: 22.586555401401114
     frequency: 7.98649142022636e-05
-    aep_mwh: 0.008217176982467973
+    aep_mwh: 0.004170828939280531
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 36
     wind_speed_m_s: 23.239000961424264
     frequency: 5.7046367287331146e-05
-    aep_mwh: 0.0056351015718006155
+    aep_mwh: 0.002733837322460801
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
     wind_speed_bin_id: 37
     wind_speed_m_s: 23.891446521447417
     frequency: 2.2818546914932458e-05
-    aep_mwh: 0.0021869408220827483
+    aep_mwh: 0.0010879216254885086
   - profile_id: 1
     direction_id: 5
     direction_center_rad: 2.827433388230814
@@ -2181,175 +2181,175 @@ annual_energy_production:
     wind_speed_bin_id: 7
     wind_speed_m_s: 4.318079720752842
     frequency: 0.0030006389193136186
-    aep_mwh: 0.0009039560092135162
+    aep_mwh: 6.162989529314636e-05
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 8
     wind_speed_m_s: 4.970525280775995
     frequency: 0.0031147316538882803
-    aep_mwh: 0.002863024509354154
+    aep_mwh: 0.00019519522956291436
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 9
     wind_speed_m_s: 5.622970840799148
     frequency: 0.0033200985761226726
-    aep_mwh: 0.009334280212534182
+    aep_mwh: 0.004325341836439241
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 10
     wind_speed_m_s: 6.2754164008223
     frequency: 0.0032972800292077396
-    aep_mwh: 0.01731687276754062
+    aep_mwh: 0.01003989454506433
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 11
     wind_speed_m_s: 6.927861960845453
     frequency: 0.002989229645856152
-    aep_mwh: 0.02499040492847565
+    aep_mwh: 0.016131897011612824
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 12
     wind_speed_m_s: 7.580307520868605
     frequency: 0.002407356699525374
-    aep_mwh: 0.02992389202427955
+    aep_mwh: 0.020777683189720977
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 13
     wind_speed_m_s: 8.232753080891758
     frequency: 0.002407356699525374
-    aep_mwh: 0.04088568987299589
+    aep_mwh: 0.029412899251326275
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 14
     wind_speed_m_s: 8.885198640914911
     frequency: 0.0021563526834611174
-    aep_mwh: 0.0478563913889944
+    aep_mwh: 0.03502614873854671
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 15
     wind_speed_m_s: 9.537644200938061
     frequency: 0.0020650784958013875
-    aep_mwh: 0.058635271088511035
+    aep_mwh: 0.043667036115949034
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 16
     wind_speed_m_s: 10.190089760961214
     frequency: 0.0021791712303760495
-    aep_mwh: 0.07665048210897953
+    aep_mwh: 0.05759339841796234
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 17
     wind_speed_m_s: 10.842535320984368
     frequency: 0.0017912559328221978
-    aep_mwh: 0.07675604764672862
+    aep_mwh: 0.057651123748571835
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 18
     wind_speed_m_s: 11.494980881007521
     frequency: 0.0016657539247900692
-    aep_mwh: 0.08646005909842856
+    aep_mwh: 0.06492012998667031
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 19
     wind_speed_m_s: 12.147426441030671
     frequency: 0.0014147499087258123
-    aep_mwh: 0.08744765163390457
+    aep_mwh: 0.06559117171549521
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 20
     wind_speed_m_s: 12.799872001053824
     frequency: 0.0010724717050018256
-    aep_mwh: 0.0784389007197854
+    aep_mwh: 0.05864488326451007
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 21
     wind_speed_m_s: 13.452317561076978
     frequency: 0.0007073749543629062
-    aep_mwh: 0.05972442866606487
+    aep_mwh: 0.04410222110065267
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 22
     wind_speed_m_s: 14.104763121100131
     frequency: 0.0007301935012778386
-    aep_mwh: 0.06963504739997482
+    aep_mwh: 0.05063895813898309
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 23
     wind_speed_m_s: 14.75720868112328
     frequency: 0.00044496166484118293
-    aep_mwh: 0.04650054879670774
+    aep_mwh: 0.03311228936880168
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 24
     wind_speed_m_s: 15.409654241146434
     frequency: 0.00022818546914932458
-    aep_mwh: 0.025624744163792658
+    aep_mwh: 0.017898861222673267
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 25
     wind_speed_m_s: 16.062099801169587
     frequency: 0.00022818546914932458
-    aep_mwh: 0.027063781878618288
+    aep_mwh: 0.018554857566217862
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 26
     wind_speed_m_s: 16.71454536119274
     frequency: 0.0003080503833515882
-    aep_mwh: 0.03646113743960414
+    aep_mwh: 0.02437826954478105
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 27
     wind_speed_m_s: 17.366990921215894
     frequency: 9.127418765972983e-05
-    aep_mwh: 0.010839527925125202
+    aep_mwh: 0.007061290565924471
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 28
     wind_speed_m_s: 18.019436481239044
     frequency: 0.00011409273457466229
-    aep_mwh: 0.013645043296360505
+    aep_mwh: 0.00865638543801908
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 29
     wind_speed_m_s: 18.671882041262197
     frequency: 5.7046367287331146e-05
-    aep_mwh: 0.006764942582174395
+    aep_mwh: 0.004183114373267364
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 30
     wind_speed_m_s: 19.324327601285347
     frequency: 5.7046367287331146e-05
-    aep_mwh: 0.006676482472798962
+    aep_mwh: 0.004054454956505995
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
     wind_speed_bin_id: 31
     wind_speed_m_s: 19.9767731613085
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.0013113560837878233
+    aep_mwh: 0.0007884812707500514
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
@@ -2363,7 +2363,7 @@ annual_energy_production:
     wind_speed_bin_id: 33
     wind_speed_m_s: 21.281664281354807
     frequency: 3.4227820372398685e-05
-    aep_mwh: 0.0037668261942033167
+    aep_mwh: 0.002107851163334859
   - profile_id: 1
     direction_id: 6
     direction_center_rad: 3.4557519189487724
@@ -2531,168 +2531,168 @@ annual_energy_production:
     wind_speed_bin_id: 7
     wind_speed_m_s: 4.318079720752842
     frequency: 0.003879152975538518
-    aep_mwh: 0.0011686123313026445
+    aep_mwh: 7.967362889608273e-05
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 8
     wind_speed_m_s: 4.970525280775995
     frequency: 0.004107338444687842
-    aep_mwh: 0.0037754169354120713
+    aep_mwh: 0.00025740030272032664
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 9
     wind_speed_m_s: 5.622970840799148
     frequency: 0.004791894852135816
-    aep_mwh: 0.013472157007781293
+    aep_mwh: 0.006242761413417461
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 10
     wind_speed_m_s: 6.2754164008223
     frequency: 0.0047576670317634176
-    aep_mwh: 0.024986629564236817
+    aep_mwh: 0.014486629845300435
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 11
     wind_speed_m_s: 6.927861960845453
     frequency: 0.00468921139101862
-    aep_mwh: 0.0392025054412347
+    aep_mwh: 0.025306143785392636
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 12
     wind_speed_m_s: 7.580307520868605
     frequency: 0.0046778021175611535
-    aep_mwh: 0.05814595132679913
+    aep_mwh: 0.04037369719329669
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 13
     wind_speed_m_s: 8.232753080891758
     frequency: 0.003981836436655714
-    aep_mwh: 0.06762609367618751
+    aep_mwh: 0.04864977174745437
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 14
     wind_speed_m_s: 8.885198640914911
     frequency: 0.0034341913106973347
-    aep_mwh: 0.0762157344343244
+    aep_mwh: 0.05578238502805587
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 15
     wind_speed_m_s: 9.537644200938061
     frequency: 0.0034113727637824025
-    aep_mwh: 0.09686158041693259
+    aep_mwh: 0.07213504861142964
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 16
     wind_speed_m_s: 10.190089760961214
     frequency: 0.0028294998174516247
-    aep_mwh: 0.09952523331427708
+    aep_mwh: 0.07478095710813959
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 17
     wind_speed_m_s: 10.842535320984368
     frequency: 0.0021677619569185833
-    aep_mwh: 0.09288948441323847
+    aep_mwh: 0.06976887587406783
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 18
     wind_speed_m_s: 11.494980881007521
     frequency: 0.002099306316173786
-    aep_mwh: 0.10896336215144423
+    aep_mwh: 0.08181715012018724
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 19
     wind_speed_m_s: 12.147426441030671
     frequency: 0.0019738043081416576
-    aep_mwh: 0.12200357848923783
+    aep_mwh: 0.09151026376436026
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 20
     wind_speed_m_s: 12.799872001053824
     frequency: 0.0013805220883534137
-    aep_mwh: 0.1009692232669578
+    aep_mwh: 0.0754896901596353
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 21
     wind_speed_m_s: 13.452317561076978
     frequency: 0.001049653158086893
-    aep_mwh: 0.08862334576254786
+    aep_mwh: 0.06544200550419428
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 22
     wind_speed_m_s: 14.104763121100131
     frequency: 0.0007187842278203724
-    aep_mwh: 0.06854699978435021
+    aep_mwh: 0.04984772441806147
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 23
     wind_speed_m_s: 14.75720868112328
     frequency: 0.0006046914932457101
-    aep_mwh: 0.0631930534929618
+    aep_mwh: 0.04499875221914074
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 24
     wind_speed_m_s: 15.409654241146434
     frequency: 0.0002738225629791895
-    aep_mwh: 0.030749692996551184
+    aep_mwh: 0.021478633467207922
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 25
     wind_speed_m_s: 16.062099801169587
     frequency: 0.0002053669222343921
-    aep_mwh: 0.024357403690756455
+    aep_mwh: 0.01669937180959608
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 26
     wind_speed_m_s: 16.71454536119274
     frequency: 0.0002395947426067908
-    aep_mwh: 0.02835866245302544
+    aep_mwh: 0.018960876312607483
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 27
     wind_speed_m_s: 17.366990921215894
     frequency: 0.00013691128148959474
-    aep_mwh: 0.016259291887687804
+    aep_mwh: 0.010591935848886708
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 28
     wind_speed_m_s: 18.019436481239044
     frequency: 9.127418765972983e-05
-    aep_mwh: 0.010916034637088406
+    aep_mwh: 0.006925108350415264
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 29
     wind_speed_m_s: 18.671882041262197
     frequency: 6.845564074479737e-05
-    aep_mwh: 0.008117931098609274
+    aep_mwh: 0.0050197372479208364
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
     wind_speed_bin_id: 30
     wind_speed_m_s: 19.324327601285347
     frequency: 0.0001255020080321285
-    aep_mwh: 0.014688261440157715
+    aep_mwh: 0.008919800904313187
   - profile_id: 1
     direction_id: 7
     direction_center_rad: 4.084070449666731
@@ -2881,210 +2881,210 @@ annual_energy_production:
     wind_speed_bin_id: 7
     wind_speed_m_s: 4.318079720752842
     frequency: 0.003742241694048923
-    aep_mwh: 0.001127367190197845
+    aep_mwh: 7.686161846445626e-05
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 8
     wind_speed_m_s: 4.970525280775995
     frequency: 0.003685195326761592
-    aep_mwh: 0.003387387972605831
+    aep_mwh: 0.0002309452716074042
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 9
     wind_speed_m_s: 5.622970840799148
     frequency: 0.0038335158817086527
-    aep_mwh: 0.010777725606225036
+    aep_mwh: 0.004994209130733969
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 10
     wind_speed_m_s: 6.2754164008223
     frequency: 0.003981836436655714
-    aep_mwh: 0.020912071265991962
+    aep_mwh: 0.012124301717050007
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 11
     wind_speed_m_s: 6.927861960845453
     frequency: 0.004529481562614093
-    aep_mwh: 0.03786714029238486
+    aep_mwh: 0.024444134021413325
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 12
     wind_speed_m_s: 7.580307520868605
     frequency: 0.0037764695144213217
-    aep_mwh: 0.0469422192418793
+    aep_mwh: 0.03259437505117367
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 13
     wind_speed_m_s: 8.232753080891758
     frequency: 0.00459793720335889
-    aep_mwh: 0.07808972994700163
+    aep_mwh: 0.05617724359376536
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 14
     wind_speed_m_s: 8.885198640914911
     frequency: 0.003753650967506389
-    aep_mwh: 0.08330557019565689
+    aep_mwh: 0.06097144410043316
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 15
     wind_speed_m_s: 9.537644200938061
     frequency: 0.0034570098576122673
-    aep_mwh: 0.09815738751281128
+    aep_mwh: 0.07310006598415777
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 16
     wind_speed_m_s: 10.190089760961214
     frequency: 0.0028523183643665573
-    aep_mwh: 0.10032785616358578
+    aep_mwh: 0.07538402934288266
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 17
     wind_speed_m_s: 10.842535320984368
     frequency: 0.0029778203723986856
-    aep_mwh: 0.12760081806239598
+    aep_mwh: 0.09584040317437739
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 18
     wind_speed_m_s: 11.494980881007521
     frequency: 0.0024872216137276377
-    aep_mwh: 0.12909789646203718
+    aep_mwh: 0.09693553655543924
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 19
     wind_speed_m_s: 12.147426441030671
     frequency: 0.0027268163563344285
-    aep_mwh: 0.16854829629438056
+    aep_mwh: 0.1264216938709948
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 20
     wind_speed_m_s: 12.799872001053824
     frequency: 0.0020650784958013875
-    aep_mwh: 0.1510366067051187
+    aep_mwh: 0.11292259437102471
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 21
     wind_speed_m_s: 13.452317561076978
     frequency: 0.0018483023001095293
-    aep_mwh: 0.15605415232100825
+    aep_mwh: 0.11523483577912474
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 22
     wind_speed_m_s: 14.104763121100131
     frequency: 0.0011637458926615552
-    aep_mwh: 0.11098085679370985
+    aep_mwh: 0.08070583953400427
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 23
     wind_speed_m_s: 14.75720868112328
     frequency: 0.0012778386272362175
-    aep_mwh: 0.13354003757003247
+    aep_mwh: 0.09509170280271251
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 24
     wind_speed_m_s: 15.409654241146434
     frequency: 0.0009355604235122307
-    aep_mwh: 0.10506145107154989
+    aep_mwh: 0.0733853310129604
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 25
     wind_speed_m_s: 16.062099801169587
     frequency: 0.0007073749543629062
-    aep_mwh: 0.08389772382371667
+    aep_mwh: 0.05752005845527537
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 26
     wind_speed_m_s: 16.71454536119274
     frequency: 0.0004107338444687842
-    aep_mwh: 0.04861484991947218
+    aep_mwh: 0.0325043593930414
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 27
     wind_speed_m_s: 17.366990921215894
     frequency: 0.0003080503833515882
-    aep_mwh: 0.036583406747297556
+    aep_mwh: 0.02383185565999509
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 28
     wind_speed_m_s: 18.019436481239044
     frequency: 0.00018254837531945966
-    aep_mwh: 0.021832069274176812
+    aep_mwh: 0.013850216700830528
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 29
     wind_speed_m_s: 18.671882041262197
     frequency: 0.00022818546914932458
-    aep_mwh: 0.02705977032869758
+    aep_mwh: 0.016732457493069456
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 30
     wind_speed_m_s: 19.324327601285347
     frequency: 0.0001597298284045272
-    aep_mwh: 0.01869415092383709
+    aep_mwh: 0.011352473878216784
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 31
     wind_speed_m_s: 19.9767731613085
     frequency: 0.0001255020080321285
-    aep_mwh: 0.014424916921666055
+    aep_mwh: 0.008673293978250566
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 32
     wind_speed_m_s: 20.629218721331654
     frequency: 0.0001255020080321285
-    aep_mwh: 0.014124277989459252
+    aep_mwh: 0.008180588781069054
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 33
     wind_speed_m_s: 21.281664281354807
     frequency: 7.98649142022636e-05
-    aep_mwh: 0.008789261119807738
+    aep_mwh: 0.004918319381114671
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 34
     wind_speed_m_s: 21.93410984137796
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.0012259276943925393
+    aep_mwh: 0.0006675268878578246
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 35
     wind_speed_m_s: 22.586555401401114
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.0011738824260668532
+    aep_mwh: 0.0005958327056115045
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
     wind_speed_bin_id: 36
     wind_speed_m_s: 23.239000961424264
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001127020314360123
+    aep_mwh: 0.0005467674644921601
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
@@ -3105,7 +3105,7 @@ annual_energy_production:
     wind_speed_bin_id: 39
     wind_speed_m_s: 25.19633764149372
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001035894363596
+    aep_mwh: 0.00042926758401511025
   - profile_id: 1
     direction_id: 8
     direction_center_rad: 4.71238898038469
@@ -3231,196 +3231,196 @@ annual_energy_production:
     wind_speed_bin_id: 7
     wind_speed_m_s: 4.318079720752842
     frequency: 0.003491237677984666
-    aep_mwh: 0.0010517510981723798
+    aep_mwh: 7.170626600647446e-05
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 8
     wind_speed_m_s: 4.970525280775995
     frequency: 0.004187203358890106
-    aep_mwh: 0.003848827820267306
+    aep_mwh: 0.0002624053086065552
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 9
     wind_speed_m_s: 5.622970840799148
     frequency: 0.004586527929901424
-    aep_mwh: 0.012894778850304952
+    aep_mwh: 0.0059752144956995695
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 10
     wind_speed_m_s: 6.2754164008223
     frequency: 0.005442223439211391
-    aep_mwh: 0.028581828062688153
+    aep_mwh: 0.016571037017286107
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 11
     wind_speed_m_s: 6.927861960845453
     frequency: 0.005544906900328588
-    aep_mwh: 0.04635624731007316
+    aep_mwh: 0.02992405323528181
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 12
     wind_speed_m_s: 7.580307520868605
     frequency: 0.005670408908360716
-    aep_mwh: 0.07048423855955895
+    aep_mwh: 0.04894079879284989
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 13
     wind_speed_m_s: 8.232753080891758
     frequency: 0.00529390288426433
-    aep_mwh: 0.08990976351218052
+    aep_mwh: 0.06468049882756109
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 14
     wind_speed_m_s: 8.885198640914911
     frequency: 0.005145582329317269
-    aep_mwh: 0.1141969974414628
+    aep_mwh: 0.08358091577293421
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 15
     wind_speed_m_s: 9.537644200938061
     frequency: 0.004700620664476086
-    aep_mwh: 0.13346813087550577
+    aep_mwh: 0.09939678939100001
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 16
     wind_speed_m_s: 10.190089760961214
     frequency: 0.004449616648411829
-    aep_mwh: 0.15651145561519383
+    aep_mwh: 0.11759908577489694
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 17
     wind_speed_m_s: 10.842535320984368
     frequency: 0.003685195326761592
-    aep_mwh: 0.15791212350250539
+    aep_mwh: 0.11860708898591531
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 18
     wind_speed_m_s: 11.494980881007521
     frequency: 0.003365735669952538
-    aep_mwh: 0.1746966947536742
+    aep_mwh: 0.13117423524703936
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 19
     wind_speed_m_s: 12.147426441030671
     frequency: 0.0028865461847389557
-    aep_mwh: 0.17842141825304722
+    aep_mwh: 0.13382714874209908
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 20
     wind_speed_m_s: 12.799872001053824
     frequency: 0.0025670865279299017
-    aep_mwh: 0.18775268789310337
+    aep_mwh: 0.1403733907927103
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 21
     wind_speed_m_s: 13.452317561076978
     frequency: 0.002236217597663381
-    aep_mwh: 0.18880625836368894
+    aep_mwh: 0.13941992476980525
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 22
     wind_speed_m_s: 14.104763121100131
     frequency: 0.0019738043081416576
-    aep_mwh: 0.18823223750305695
+    aep_mwh: 0.13688343371943865
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 23
     wind_speed_m_s: 14.75720868112328
     frequency: 0.0012550200803212851
-    aep_mwh: 0.1311553940419962
+    aep_mwh: 0.09339363668123549
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 24
     wind_speed_m_s: 15.409654241146434
     frequency: 0.0013234757210660824
-    aep_mwh: 0.1486235161499974
+    aep_mwh: 0.10381339509150495
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 25
     wind_speed_m_s: 16.062099801169587
     frequency: 0.0011751551661190215
-    aep_mwh: 0.13937847667488415
+    aep_mwh: 0.095557516466022
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 26
     wind_speed_m_s: 16.71454536119274
     frequency: 0.0008556955093099671
-    aep_mwh: 0.10128093733223371
+    aep_mwh: 0.06771741540216958
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 27
     wind_speed_m_s: 17.366990921215894
     frequency: 0.0007644213216502373
-    aep_mwh: 0.09078104637292354
+    aep_mwh: 0.05913830848961744
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 28
     wind_speed_m_s: 18.019436481239044
     frequency: 0.0006275100401606426
-    aep_mwh: 0.07504773812998276
+    aep_mwh: 0.047610119909104937
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 29
     wind_speed_m_s: 18.671882041262197
     frequency: 0.00039932457101131793
-    aep_mwh: 0.047354598075220765
+    aep_mwh: 0.029281800612871535
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 30
     wind_speed_m_s: 19.324327601285347
     frequency: 0.00034227820372398685
-    aep_mwh: 0.04005889483679377
+    aep_mwh: 0.024326729739035966
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 31
     wind_speed_m_s: 19.9767731613085
     frequency: 0.00017113910186199342
-    aep_mwh: 0.019670341256817353
+    aep_mwh: 0.01182721906125077
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 32
     wind_speed_m_s: 20.629218721331654
     frequency: 0.00014832055494706098
-    aep_mwh: 0.0166923285329973
+    aep_mwh: 0.009667968559445248
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 33
     wind_speed_m_s: 21.281664281354807
     frequency: 0.00013691128148959474
-    aep_mwh: 0.015067304776813267
+    aep_mwh: 0.008431404653339436
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 34
     wind_speed_m_s: 21.93410984137796
     frequency: 5.7046367287331146e-05
-    aep_mwh: 0.006129638471962696
+    aep_mwh: 0.0033376344392891224
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
@@ -3434,14 +3434,14 @@ annual_energy_production:
     wind_speed_bin_id: 36
     wind_speed_m_s: 23.239000961424264
     frequency: 2.2818546914932458e-05
-    aep_mwh: 0.002254040628720246
+    aep_mwh: 0.0010935349289843202
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
     wind_speed_bin_id: 37
     wind_speed_m_s: 23.891446521447417
     frequency: 2.2818546914932458e-05
-    aep_mwh: 0.0021869408220827483
+    aep_mwh: 0.0010879216254885086
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
@@ -3455,7 +3455,7 @@ annual_energy_production:
     wind_speed_bin_id: 39
     wind_speed_m_s: 25.19633764149372
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001035894363596
+    aep_mwh: 0.00042926758401511025
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
@@ -3469,7 +3469,7 @@ annual_energy_production:
     wind_speed_bin_id: 41
     wind_speed_m_s: 26.501228761540027
     frequency: 2.2818546914932458e-05
-    aep_mwh: 0.002071788727192
+    aep_mwh: 0.0008585351680302205
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
@@ -3490,7 +3490,7 @@ annual_energy_production:
     wind_speed_bin_id: 44
     wind_speed_m_s: 28.458565441609483
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001035894363596
+    aep_mwh: 0.00042926758401511025
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
@@ -3511,7 +3511,7 @@ annual_energy_production:
     wind_speed_bin_id: 47
     wind_speed_m_s: 30.41590212167894
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001035894363596
+    aep_mwh: 0.00042926758401511025
   - profile_id: 1
     direction_id: 9
     direction_center_rad: 5.340707511102648
@@ -3581,266 +3581,266 @@ annual_energy_production:
     wind_speed_bin_id: 7
     wind_speed_m_s: 4.318079720752842
     frequency: 0.003844925155166119
-    aep_mwh: 0.0011583010460264444
+    aep_mwh: 7.897062628817612e-05
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 8
     wind_speed_m_s: 4.970525280775995
     frequency: 0.0048261226725082144
-    aep_mwh: 0.004436114899109184
+    aep_mwh: 0.0003024453556963838
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 9
     wind_speed_m_s: 5.622970840799148
     frequency: 0.005225447243519533
-    aep_mwh: 0.014691066451342459
+    aep_mwh: 0.006807582684155232
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 10
     wind_speed_m_s: 6.2754164008223
     frequency: 0.007301935012778387
-    aep_mwh: 0.03834878398348096
+    aep_mwh: 0.022233676501180525
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 11
     wind_speed_m_s: 6.927861960845453
     frequency: 0.00677710843373494
-    aep_mwh: 0.05665763560120052
+    aep_mwh: 0.036573842843122206
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 12
     wind_speed_m_s: 7.580307520868605
     frequency: 0.007587166849215042
-    aep_mwh: 0.09430989666419859
+    aep_mwh: 0.06548416739888366
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 13
     wind_speed_m_s: 8.232753080891758
     frequency: 0.007769715224534502
-    aep_mwh: 0.13195807963748907
+    aep_mwh: 0.09492978383958862
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 14
     wind_speed_m_s: 8.885198640914911
     frequency: 0.007792533771449434
-    aep_mwh: 0.17294135089250356
+    aep_mwh: 0.12657597665834602
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 15
     wind_speed_m_s: 9.537644200938061
     frequency: 0.0078039430449069
-    aep_mwh: 0.22158301339525718
+    aep_mwh: 0.16501797073651459
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 16
     wind_speed_m_s: 10.190089760961214
     frequency: 0.007085158817086528
-    aep_mwh: 0.24921439471034706
+    aep_mwh: 0.18725392888772052
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 17
     wind_speed_m_s: 10.842535320984368
     frequency: 0.007096568090543994
-    aep_mwh: 0.30409083844754903
+    aep_mwh: 0.2284012673351063
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 18
     wind_speed_m_s: 11.494980881007521
     frequency: 0.006138189120116832
-    aep_mwh: 0.3185993958558533
+    aep_mwh: 0.2392262324166345
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 19
     wind_speed_m_s: 12.147426441030671
     frequency: 0.006172416940489231
-    aep_mwh: 0.38152564140276113
+    aep_mwh: 0.286167934661959
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 20
     wind_speed_m_s: 12.799872001053824
     frequency: 0.005077126688572472
-    aep_mwh: 0.37133309383302665
+    aep_mwh: 0.2776273729011381
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 21
     wind_speed_m_s: 13.452317561076978
     frequency: 0.004723439211391019
-    aep_mwh: 0.3988050559314655
+    aep_mwh: 0.2944890247688743
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 22
     wind_speed_m_s: 14.104763121100131
     frequency: 0.004289886820007302
-    aep_mwh: 0.4091059034748521
+    aep_mwh: 0.29750387906652564
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 23
     wind_speed_m_s: 14.75720868112328
     frequency: 0.0034684191310697336
-    aep_mwh: 0.3624658162615167
+    aep_mwh: 0.2581060504645054
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 24
     wind_speed_m_s: 15.409654241146434
     frequency: 0.003148959474260679
-    aep_mwh: 0.3536214694603386
+    aep_mwh: 0.2470042848728911
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 25
     wind_speed_m_s: 16.062099801169587
     frequency: 0.0024529937933552392
-    aep_mwh: 0.2909356551951466
+    aep_mwh: 0.19946471883684205
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 26
     wind_speed_m_s: 16.71454536119274
     frequency: 0.0022704454180357794
-    aep_mwh: 0.2687320870548601
+    aep_mwh: 0.17967687553375664
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 27
     wind_speed_m_s: 17.366990921215894
     frequency: 0.0018254837531945967
-    aep_mwh: 0.21679055850250406
+    aep_mwh: 0.14122581131848944
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 28
     wind_speed_m_s: 18.019436481239044
     frequency: 0.0016429353778751369
-    aep_mwh: 0.19648862346759127
+    aep_mwh: 0.12465195030747475
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 29
     wind_speed_m_s: 18.671882041262197
     frequency: 0.001494614822928076
-    aep_mwh: 0.17724149565296915
+    aep_mwh: 0.10959759657960491
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 30
     wind_speed_m_s: 19.324327601285347
     frequency: 0.0012664293537787514
-    aep_mwh: 0.14821791089613695
+    aep_mwh: 0.09000890003443308
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 31
     wind_speed_m_s: 19.9767731613085
     frequency: 0.0012207922599488865
-    aep_mwh: 0.1403151009652971
+    aep_mwh: 0.0843674959702555
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 32
     wind_speed_m_s: 20.629218721331654
     frequency: 0.0007301935012778386
-    aep_mwh: 0.08217761739321747
+    aep_mwh: 0.04759615290803814
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 33
     wind_speed_m_s: 21.281664281354807
     frequency: 0.0006275100401606426
-    aep_mwh: 0.0690584802270608
+    aep_mwh: 0.03864393799447241
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 34
     wind_speed_m_s: 21.93410984137796
     frequency: 0.0005362358525009128
-    aep_mwh: 0.05761860163644934
+    aep_mwh: 0.03137376372931775
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 35
     wind_speed_m_s: 22.586555401401114
     frequency: 0.0004791894852135816
-    aep_mwh: 0.04930306189480783
+    aep_mwh: 0.025024973635683186
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 36
     wind_speed_m_s: 23.239000961424264
     frequency: 0.0002738225629791895
-    aep_mwh: 0.02704848754464296
+    aep_mwh: 0.01312241914781184
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 37
     wind_speed_m_s: 23.891446521447417
     frequency: 0.00021677619569185835
-    aep_mwh: 0.020775937809786107
+    aep_mwh: 0.01033525544214083
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 38
     wind_speed_m_s: 24.543892081470567
     frequency: 9.127418765972983e-05
-    aep_mwh: 0.008476874040345979
+    aep_mwh: 0.003850936684878508
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 39
     wind_speed_m_s: 25.19633764149372
     frequency: 0.00010268346111719605
-    aep_mwh: 0.009323049272364
+    aep_mwh: 0.003863408256135992
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 40
     wind_speed_m_s: 25.848783201516873
     frequency: 0.0001255020080321285
-    aep_mwh: 0.011394837999555998
+    aep_mwh: 0.004721943424166212
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 41
     wind_speed_m_s: 26.501228761540027
     frequency: 5.7046367287331146e-05
-    aep_mwh: 0.00517947181798
+    aep_mwh: 0.0021463379200755512
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 42
     wind_speed_m_s: 27.15367432156318
     frequency: 5.7046367287331146e-05
-    aep_mwh: 0.00517947181798
+    aep_mwh: 0.0021463379200755512
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 43
     wind_speed_m_s: 27.806119881586334
     frequency: 4.5637093829864916e-05
-    aep_mwh: 0.004143577454384
+    aep_mwh: 0.001717070336060441
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
     wind_speed_bin_id: 44
     wind_speed_m_s: 28.458565441609483
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001035894363596
+    aep_mwh: 0.00042926758401511025
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607
@@ -3861,7 +3861,7 @@ annual_energy_production:
     wind_speed_bin_id: 47
     wind_speed_m_s: 30.41590212167894
     frequency: 1.1409273457466229e-05
-    aep_mwh: 0.001035894363596
+    aep_mwh: 0.00042926758401511025
   - profile_id: 1
     direction_id: 10
     direction_center_rad: 5.969026041820607

@@ -48,8 +48,9 @@ from ...ecomo_economic import EcoMo
 FIXED_PERF_CAVEAT = ("performance held fixed; full trend requires "
                      "AWESPA in the loop")
 
-# Subsystems aggregated in the per-run cost breakdown
-SUBSYSTEMS = ('kite', 'tether', 'gStation', 'BoS', 'operations')
+# Subsystems aggregated in the per-run cost breakdown. The operator/
+# maintenance labour is folded into BoS.OM (no separate operations node).
+SUBSYSTEMS = ('kite', 'tether', 'gStation', 'BoS')
 
 
 @dataclass(frozen=True)
@@ -98,13 +99,13 @@ PARAMS: Dict[str, Param] = {
     'labour_price': Param(
         'labour_price', 'settings', 'operations.labour_price',
         'Labour price', 'EUR/h', 25.0, 75.0),
-    'operator_hours': Param(
-        'operator_hours', 'settings', 'operations.operator_hours_per_week',
-        'Operator hours', 'h/week', 5.0, 20.0),
+    'operating_hours': Param(
+        'operating_hours', 'settings', 'operations.operating_hours_per_day',
+        'Operating hours', 'h/day', 1.0, 4.0),
     'maintenance_hours': Param(
         'maintenance_hours', 'settings',
-        'operations.maintenance_hours_per_flight_hour',
-        'Maintenance', 'h/flight-h', 0.02, 0.2),
+        'operations.maintenance_hours_per_day',
+        'Maintenance', 'h/day', 0.5, 3.0),
     'availability': Param(
         'availability', 'settings', 'operations.availability',
         'Availability', '-', 0.3, 1.0),
@@ -119,22 +120,27 @@ PARAMS: Dict[str, Param] = {
     'crest_factor': Param(
         'crest_factor', 'perf', 'crest_factor',
         'Crest factor (peak/rated)', '-', 2.0, 3.5, fixed_perf=True),
+    # Winch drum-to-tether diameter ratio D/d: sizes the winch drum
+    # (CAPEX, in eco_gstation) and, when bending_life_a1_table is
+    # configured, the tether bending fatigue life (via
+    # _resolve_bending_life_a1) -- a smaller/cheaper drum bends the
+    # tether tighter and shortens its life. Cost-domain only: it does
+    # not require an AWESPA re-run (the tether diameter itself is a
+    # separate system-file input).
+    'drum_ratio': Param(
+        'drum_ratio', 'cost',
+        'costs.ground_station.winch.drum_to_tether_diameter_ratio',
+        'Drum/tether diameter ratio (D/d)', '-', 20.0, 100.0),
     'canopy_load_exponent': Param(
         'canopy_load_exponent', 'cost',
         'costs.kite.structure.soft.canopy_load_exponent',
         'Canopy load exponent (S-N m)', '-', 0.0, 4.0),
-    # Launch/recovery is an operating-pattern assumption, not a derived
-    # quantity, so it is exposed as an uncertain/swept input. Only valid on
-    # configs whose operations block already has a launch_recovery section
-    # (hence kept out of the default TORNADO_KEYS).
-    'launch_operations_per_year': Param(
-        'launch_operations_per_year', 'settings',
-        'operations.launch_recovery.operations_per_year',
-        'Launch/recovery frequency N_op', '1/yr', 50.0, 500.0),
-    'launch_automation': Param(
-        'launch_automation', 'settings',
-        'operations.launch_recovery.automation',
-        'Launch/recovery automation', '-', 0.0, 1.0),
+    # Operations automation scales the per-operating-day operating hours
+    # with (1 - automation); the operating hours themselves are an
+    # operating-pattern assumption swept via 'operating_hours'.
+    'automation': Param(
+        'automation', 'settings', 'operations.automation',
+        'Operations automation', '-', 0.0, 1.0),
     # Design variables for the 2D map (cost at fixed performance)
     'wing_area': Param(
         'wing_area', 'system',
@@ -147,10 +153,19 @@ PARAMS: Dict[str, Param] = {
 }
 
 # The uncertain assumptions shown in the tornado, in registry order.
+# Focused on the genuinely limiting operating/lifetime assumptions that
+# drive the soft-wing prototype LCoE. 'automation' is the operate-manually-
+# vs-fully-automated lever (removes the operation labour). 'drum_ratio'
+# (D/d) drives the tether bending life, which governs by default (the
+# operational-wear mode is off unless operational_life_enabled is set --
+# when it is on, add 'tether_oper_life' via analysis.tornado_keys, and
+# drum_ratio then goes inert as operational governs instead). The
+# negligible cost prices (generator_price ~17, ultracap_price with its
+# typo-anchored 6000-60000 band) are left out; crest_factor is kept as the
+# single design-side (fixed-performance) reference.
 TORNADO_KEYS = (
-    'canopy_life', 'tether_oper_life', 'labour_price', 'operator_hours',
-    'maintenance_hours', 'availability', 'ultracap_price',
-    'generator_price', 'crest_factor',
+    'availability', 'labour_price', 'maintenance_hours', 'canopy_life',
+    'operating_hours', 'automation', 'drum_ratio', 'crest_factor',
 )
 
 
@@ -259,13 +274,61 @@ def subsystem_breakdown(eco: Dict[str, Any]) -> Dict[str, Tuple[float, float]]:
             for name in SUBSYSTEMS}
 
 
+# Display categories for the cost plots (a display-level regroup of the raw
+# subsystem tree, NOT a change to the model). The operator/maintenance labour
+# is split out of BoS.OM into its own 'Ground crew cost' band (it is a driving
+# subsystem and lumping it under BoS misleads); the launch & land system is
+# split out of the ground station. The totals are preserved: the six category
+# OPEX/CAPEX sums still equal OMC/ICC.
+DISPLAY_CATEGORIES = ('kite', 'tether', 'gstation', 'crew', 'bos')
+
+
+def display_breakdown(eco: Dict[str, Any]) -> Dict[str, Tuple[float, float]]:
+    """Per-display-category (CAPEX, OPEX) totals [EUR, EUR/year].
+
+    Regroups the raw subsystem tree for presentation:
+      - kite     : the kite subtree (structure + KCU/avionics + sensor + ...)
+      - tether   : the tether subtree
+      - gstation : the ground station 
+      - crew     : the operator + maintenance labour (split out of BoS.OM)
+      - bos      : the remaining BoS (site prep, foundation, installation,
+                   decommissioning, and the per-kW O&M overhead -- no labour)
+    """
+    kite = _walk_capex_opex(eco.get('kite', {}))
+    tether = _walk_capex_opex(eco.get('tether', {}))
+
+    groundStation = eco.get('gStation', {})
+    # llsNode = groundStation.get('lls', {})
+    # llsCapex = llsNode.get('CAPEX', 0.0) or 0.0
+    # llsOpex = llsNode.get('OPEX', 0.0) or 0.0
+    gsCapex, gsOpex = _walk_capex_opex(groundStation)
+    # gsCapex -= llsCapex
+    # gsOpex -= llsOpex
+
+    bos = eco.get('BoS', {})
+    om = bos.get('OM', {})
+    crewOpex = ((om.get('operation_labour_opex', 0.0) or 0.0) +
+                (om.get('maintenance_labour_opex', 0.0) or 0.0))
+    bosCapex, bosOpex = _walk_capex_opex(bos)
+    bosOpex -= crewOpex  # remove labour from BoS.OM, leaving the overhead
+
+    return {
+        'kite': kite,
+        'tether': tether,
+        'gstation': (gsCapex, gsOpex),
+        # 'lls': (llsCapex, llsOpex),
+        'crew': (0.0, crewOpex),
+        'bos': (bosCapex, bosOpex),
+    }
+
+
 def make_row(eco: Dict[str, Any], **extra) -> Dict[str, float]:
     """Build one tidy result row from an ``eco`` results dict."""
     metrics = eco['metrics']
     row: Dict[str, float] = dict(extra)
     for key in ('LCoE', 'ICC', 'OMC', 'AEP', 'CF', 'CRF'):
         row[key] = float(metrics[key])
-    for name, (capex, opex) in subsystem_breakdown(eco).items():
+    for name, (capex, opex) in display_breakdown(eco).items():
         row[f'{name}_capex'] = capex
         row[f'{name}_opex'] = opex
     return row
@@ -369,15 +432,28 @@ class SweepRunner:
 # ----------------------------------------------------------------------- #
 
 def sweep_1d(runner: SweepRunner, param: Param,
-             values: Sequence[float]) -> List[Dict[str, float]]:
+             values: Sequence[float],
+             fixed: Sequence[Tuple[str, str, Any]] = ()
+             ) -> List[Dict[str, float]]:
     """Run a 1D sweep of one parameter over ``values``.
 
     Returns a list of tidy rows (one per value) with the swept ``value``,
     the headline metrics and the per-subsystem CAPEX/OPEX breakdown.
+
+    Args:
+        runner: Sweep runner.
+        param: Parameter to sweep.
+        values: Values to evaluate the parameter at.
+        fixed: Optional additional overrides applied on every run
+            alongside the swept parameter (e.g. to hold automation at 1.0
+            while sweeping the maintenance hours, or to enable the
+            operational tether-life mode). Same ``(domain, path, value)``
+            form as :meth:`SweepRunner.run`.
     """
+    fixed = list(fixed)
     rows = []
     for value in values:
-        _, eco = runner.run([(param.domain, param.path, value)])
+        _, eco = runner.run(fixed + [(param.domain, param.path, value)])
         rows.append(make_row(eco, value=float(value)))
     return rows
 

@@ -16,27 +16,9 @@ costs:
         reference_area: 60.0             # [m2]  S_ref
         material_scaling_exponent: 1.14  # [-]   b_mat; range 1.00-1.22
         labour_cost_coefficient: 13.0    # [EUR/m2] C_lab
-        # Reel-out-hour canopy replacement model: the canopy is consumed by
-        # accumulated reel-out (traction) hours, so f_repl = H_reelout /
-        # canopy_lifetime_flight_hours. This scales with how much the kite
-        # actually operates (calendar-independent) and matches the reference
-        # Excel; it replaces the old calendar lifetime_flying_years model.
-        # TODO: canopy_lifetime_flight_hours = 250 h is the midpoint of the
-        #       observed 100-500 h range; target is 5000-10000 h. Update as
-        #       V3 wear data accrue.
-        canopy_lifetime_flight_hours: 250.0   # [h] loaded (reel-out) hours
-        # Optional load-weighted (Miner's rule + power-law S-N) canopy life.
-        # canopy_load_exponent m weights each reel-out hour by (F/F_ref)^m, so
-        # partial-load hours consume less life (a lighter-loaded canopy lasts
-        # longer). m=0 / omitted = the load-independent hour model above.
-        # When set, canopy_lifetime_flight_hours is the life AT the reference
-        # load canopy_reference_force (default: the peak traction force in the
-        # power curves, ~8200 N for V3). For V3 the loaded hours span ~14-100%
-        # of peak, so m~2 stretches the effective life ~2x.
-        # TODO: m and F_ref need canopy fatigue data (RIGO/Kitepower); left off
-        #       (load-independent) until then.
-        # canopy_load_exponent: 2.0
-        # canopy_reference_force: 8200.0        # [N]
+        canopy_lifetime_flight_hours: 5000.0  # [h] loaded (reel-out) hours
+        canopy_load_exponent: 0.0
+        # canopy_reference_force: 8200.0  # [N] default: peak traction force
         # Optional per-cycle wear: canopy life fraction consumed per pumping
         # cycle. It multiplies the annual pumping-cycle count (hundreds of
         # thousands per year), so it is a tiny fatigue fraction (~1e-6), not
@@ -50,13 +32,14 @@ costs:
     avionics:
       cost: 30000.0  # fallback fixed cost [EUR] (kept for backward compat.)
       # Scaled KCU model: C_avionics = C_fixed + C_var_ref*(S/S_ref)^beta
-      cost_fixed: 2400.0      # [EUR] fixed electronics/sensors/computing
+      cost_fixed: 2400.0      # [EUR] fixed electronics/computing (no sensors)
       cost_var_ref: 5600.0    # [EUR] variable actuators at reference area
       reference_area: 60.0    # [m2]  S_ref for KCU scaling (same as kite cost)
       scaling_exponent: 1.0   # [-]   beta; range 0.5-1.5
-      # KCU/avionics service life: drives a replacement OPEX (1/life)*CAPEX,
-      # capped at the project life (matches section 5.3). 5 yr < 25 yr project.
       lifetime_years: 5.0     # [yr]
+    sensor:
+      cost: 9000.0            # [EUR] airborne electronics/sensor suite CAPEX (was 1000)
+      lifetime_years: 5.0     # [yr] service life (same as the KCU)
   tether:
     price_mass: 80
     conductive_manufacturing_factor: 2.5
@@ -67,24 +50,62 @@ costs:
     - 5.2
     coating_mass_fraction: 0.1
     fibre_area_fraction: 0.85
-    bending_life_a1: 6.5
+    # Bending fatigue coefficient a1 couples to the winch drum sizing: a
+    # tighter bend (smaller drum-to-tether diameter ratio D/d, set below
+    # under ground_station.winch.drum_to_tether_diameter_ratio) strains
+    # the fibres more per pass and shortens bend-fatigue life. Calibrated
+    # table (user-supplied, 2026-07-09); a1 is interpolated log-linearly
+    # in D/d at the winch's ratio. D/d = 100 (the V3 default) reproduces
+    # the original single-point anchor a1 = 6.5 exactly.
+    #   D/d :  10    20    30    100
+    #   a1  :  5.4   5.8   6.1   6.5
+    # TODO: only 4 calibration points; extrapolating below D/d=10 or
+    #       above D/d=100 is untested (a warning is raised if it happens).
+    bending_life_a1_table:
+      drum_to_tether_ratio: [10, 20, 30, 100]
+      a1: [5.4, 5.8, 6.1, 6.5]
     bending_life_a2: 2.6
     n_bends: 2
+    master_curve:
+      # Meuwissen/Bosman (2024) HMPE bearing-pressure master curve, calibrated
+      # to the 6 mm SK75 (Novak) data (Fig. 5). p_N = k_pw * sigma[MPa]/(D/d);
+      # N_f = coefficient * max(p_N, pw_limit_mpa)^(-exponent). Preferred over
+      # the a1/a2 semi-log model above when set. Cross-checked against the
+      # design-doc H-system anchor (NSP=5 -> ~73,500 discard cycles).
+      coefficient: 5000000.0
+      exponent: 2.0
+      bearing_pressure_coeff: 1.0     # k_pw (Eq. 3)
+      pw_limit_mpa: 8.0               # low-p_N clamp
+      design_safety_factor: 3.0       # retire at CTF/SF (tether must not fail)
     max_stress: 1500000000
-    # Empirical operational (non-fatigue) tether life in flight hours. The
-    # bending/creep fatigue models are stress-driven and predict a near-
-    # infinite life at the V3's low stress; the operational life captures
-    # UV, abrasion, particle ingress and handling wear. The governing
-    # replacement mode is the shortest of bending, creep and operational.
+    # Empirical operational (non-fatigue) tether life in flight hours,
+    # capturing UV, abrasion, particle ingress and handling wear (not
+    # stress-driven). OPT-IN via operational_life_enabled:
+    #   - disabled (default): the tether life is governed by bending/creep
+    #     fatigue alone. At the V3's low stress bending governs (~2 yr at
+    #     the D/d=100 default), so a large winch drum is worth its cost.
+    #   - enabled: the governing replacement mode is the shortest of
+    #     bending, creep and operational. At the V3's low stress the
+    #     operational life (250 h) dominates, so the tether life no longer
+    #     depends on bending -> the winch drum can be made smaller
+    #     (reduce ground_station.winch.drum_to_tether_diameter_ratio) to
+    #     save winch CAPEX WITHOUT shortening the tether life.
+    # The value below is kept either way so the mode can be toggled
+    # without re-entering it.
     # TODO: operational_life_flight_hours = 250 h is a placeholder pending
     #       RIGO/Kitepower field data; update when received.
+    operational_life_enabled: false        # standard: fatigue-governed
     operational_life_flight_hours: 250.0   # [h]
   ground_station:
+    # Component service lives: the initial unit is annualised through the
+    # CRF (part of the ICC); the replacement OPEX (1/life)*CAPEX charges
+    # only the re-buys within the project. Life > project = no replacement.
     winch:
       material: steel
-      drum_to_tether_diameter_ratio: 100.0
+      drum_to_tether_diameter_ratio: 30.0
       safety_factor_diameter: 1.1
       safety_factor_length: 1.1
+      lifetime_years: 20.0
       materials:
         aluminum:
           price_mass: 10.0
@@ -97,6 +118,7 @@ costs:
     drivetrain: electric
     gearbox:
       cost_model: power_based
+      lifetime_years: 20.0
       power_based:
         price_power: 70.0
       mass_based:
@@ -105,6 +127,7 @@ costs:
         mass_exponent: 0.71
     generator:
       cost_model: power_based
+      lifetime_years: 20.0
       power_based:
         price_power: 120.0
       mass_based:
@@ -113,13 +136,14 @@ costs:
         mass_offset: 3400.0
     electrical_storage: ultracapacitor
     ultracapacitor:
-      price_energy: 6000.0 #changed to 6000 instead of 60000
+      price_energy: 30000.0 # ultracapacitor market unit price (power device; was 6000)
       cycle_life: 1000000.0
     battery:
       price_energy: 200.0
       cycle_life: 10000.0
     power_converter:
       price_power: 100.0
+      lifetime_years: 20.0
     pump_motor:
       price_power: 100.0
       maintenance_price_power: 75.0
@@ -129,12 +153,8 @@ costs:
     hydraulic_motor:
       price_power: 200.0
       maintenance_price_power: 80.0
-    # Launch & land (take-off & landing) system: fixed CAPEX, annualised over the
-    # project lifetime via the capital recovery factor (like all other CAPEX). Its
-    # service life drives a replacement OPEX when shorter than the project (here
-    # 20 yr < 25 yr -> one re-buy).
     launch_land:
-      cost: 10000.0          # [EUR]
+      price_area: 165.0      # [EUR/m2]
       lifetime_years: 20.0   # service life (240 months); null = no replacement
   balance_of_system:
     site_preparation:

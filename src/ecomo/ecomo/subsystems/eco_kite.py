@@ -360,10 +360,10 @@ def eco_kite(
             'OPEX': 0,
         }
 
-    # Avionics / KCU. The control unit and its sensors wear out faster
-    # than the project, so they carry a replacement OPEX = f_repl * CAPEX
-    # with f_repl = 1 / avionicsLifetime, capped like the tether and
-    # launch/land: a life beyond the project means no replacement.
+    # Avionics / KCU. The control unit wears out faster than the project,
+    # so it carries a replacement OPEX = f_repl * CAPEX with f_repl =
+    # 1 / avionicsLifetime, capped like the tether and launch/land: a life
+    # beyond the project means no replacement.
     avionicsCapex = _avionics_capex(kite, costs)
     avionicsLife = costs.avionicsLifetime
     if (avionicsLife is not None and 0 < avionicsLife and
@@ -374,6 +374,23 @@ def eco_kite(
     eco['avionics'] = {
         'CAPEX': avionicsCapex,
         'OPEX': avionicsReplacement * avionicsCapex,
+    }
+
+    # Airborne sensor suite (e.g. GNSS + IMU). Its mass is folded into the
+    # KCU in the system file (the awesIO schema has no sensor field), but
+    # its cost is itemised separately here so the sensor hardware is
+    # traceable and updatable independent of the rest of the KCU
+    # electronics. Same replacement convention as the avionics.
+    sensorCapex = costs.sensorCost or 0.0
+    sensorLife = costs.sensorLifetime
+    if (sensorLife is not None and 0 < sensorLife and
+            sensorLife <= business.nYears):
+        sensorReplacement = 1.0 / sensorLife
+    else:
+        sensorReplacement = 0.0
+    eco['sensor'] = {
+        'CAPEX': sensorCapex,
+        'OPEX': sensorReplacement * sensorCapex,
     }
 
     return eco

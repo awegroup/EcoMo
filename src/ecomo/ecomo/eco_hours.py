@@ -22,10 +22,51 @@ from typing import Optional
 from .constants import HOURS_PER_YEAR, SECONDS_PER_HOUR
 from .eco_inputs import PerformanceData
 
+DAYS_PER_YEAR = 365.0
+
 
 def _operating_mask(performance: PerformanceData) -> np.ndarray:
     """Boolean mask of wind speeds where the system produces power."""
     return np.asarray(performance.averagePower, dtype=float) > 0
+
+
+def wind_operability_fraction(performance: PerformanceData) -> float:
+    """Fraction of the year the wind is in the operating band [-].
+
+    The share of the year the wind sits where the system produces power
+    (non-zero average power), weighted by the wind distribution. Unlike
+    :func:`annual_flight_hours` it carries no availability factor, so it
+    is a pure resource quantity.
+
+    Args:
+        performance (PerformanceData): System performance data.
+
+    Returns:
+        float: Wind-operability fraction ``f_wind`` in [0, 1].
+    """
+    return float(np.trapezoid(
+        performance.windPdf * _operating_mask(performance),
+        performance.windSpeeds))
+
+
+def annual_operating_days(performance: PerformanceData) -> float:
+    """Annual operating days [days/year].
+
+    The operating days are the windy days of the year: the days the wind
+    lets the system fly, taken as the wind-operability fraction times the
+    calendar year, ``N_op = f_wind * 365``. It is availability-independent
+    by design: the operator/maintenance crew is a standing cost tied to
+    the operating calendar, whereas availability (downtime) reduces the
+    flight hours and the delivered energy rather than the number of days
+    the plant is manned.
+
+    Args:
+        performance (PerformanceData): System performance data.
+
+    Returns:
+        float: Annual operating days [days/year].
+    """
+    return DAYS_PER_YEAR * wind_operability_fraction(performance)
 
 
 def annual_flight_hours(performance: PerformanceData,

@@ -4,15 +4,15 @@ metadata:
   note: Power curve data generated from QSM optimization. Wind speeds at 200m reference height.
   awesIO_version: 0.1.0
   schema: power_curves_schema.yml
-  time_created: '2026-06-19T11:07:18.213549'
+  time_created: '2026-07-21T17:24:51.286989'
   model_config:
     wing_area: 19.75
     wing_mass: 19.0
-    generator_efficiency: 1.0
-    motor_efficiency: 1.0
-    storage_efficiency: 1.0
+    generator_efficiency: 0.85
+    motor_efficiency: 0.85
+    storage_efficiency: 0.95
     nominal_mechanical_power: 13655.952495530975
-    nominal_electrical_power: 13655.952495530975
+    nominal_electrical_power: 9306.171800392875
     cut_in_wind_speed: 5.0
     cut_out_wind_speed: 25.0
   wind_resource:
@@ -313,11 +313,11 @@ power_curves:
             average_transition_rori_power: 0.0
             average_transition_riro_power: -173.27752425519182
           electrical_power:
-            average_cycle_power: 108.11687157243412
-            average_reel_out_power: 363.8435588229709
-            average_reel_in_power: -2701.4719304857063
+            average_cycle_power: 7.37118997663281
+            average_reel_out_power: 309.26702499952535
+            average_reel_in_power: -3345.4760749048996
             average_transition_rori_power: 0.0
-            average_transition_riro_power: -173.27752425519182
+            average_transition_riro_power: -214.58516935627475
           tether_force_ground:
             average_tether_force_cycle: 1157.2092495979518
             minimum_tether_force_cycle: 749.9999999999999
@@ -341,12 +341,12 @@ power_curves:
             transition_rori_energy: 0.0
             transition_riro_energy: -2504.1116086419906
           electrical_energy:
-            net_cycle_energy_exported: 60613.374727201095
-            cycle_energy: 60613.374727201095
-            reel_out_energy: 182626.9685300163
-            reel_in_energy: -119509.48219417322
+            net_cycle_energy_exported: 4132.497488513616
+            cycle_energy: 4132.497488513616
+            reel_out_energy: 155232.92325051388
+            reel_in_energy: -147999.35875439408
             transition_rori_energy: 0.0
-            transition_riro_energy: -2504.1116086419906
+            transition_riro_energy: -3101.067007606181
           timing:
             reel_out_time: 501.9381657347793
             transition_rori_time: 0.0
@@ -363,11 +363,11 @@ power_curves:
             average_transition_rori_power: 0.0
             average_transition_riro_power: -1140.2865815699363
           electrical_power:
-            average_cycle_power: 449.7452745858939
-            average_reel_out_power: 988.5961039336524
-            average_reel_in_power: -2656.214211912345
+            average_cycle_power: 234.26372218602262
+            average_reel_out_power: 840.3066883436046
+            average_reel_in_power: -3289.4293645973316
             average_transition_rori_power: 0.0
-            average_transition_riro_power: -1140.2865815699363
+            average_transition_riro_power: -1412.1196056593635
           tether_force_ground:
             average_tether_force_cycle: 1511.2625275592966
             minimum_tether_force_cycle: 749.9999999999999
@@ -391,12 +391,12 @@ power_curves:
             transition_rori_energy: 0.0
             transition_riro_energy: -17070.322661435108
           electrical_energy:
-            net_cycle_energy_exported: 238954.30889984994
-            cycle_energy: 238954.30889984994
-            reel_out_energy: 441442.55247644323
-            reel_in_energy: -185417.92091515817
+            net_cycle_energy_exported: 124466.73483520179
+            cycle_energy: 124466.73483520179
+            reel_out_energy: 375226.1696049768
+            reel_in_energy: -229619.71630360148
             transition_rori_energy: 0.0
-            transition_riro_energy: -17070.322661435108
+            transition_riro_energy: -21139.718466173505
           timing:
             reel_out_time: 446.534788797903
             transition_rori_time: 4.342891766306089e-09
@@ -413,11 +413,11 @@ power_curves:
             average_transition_rori_power: 0.0
             average_transition_riro_power: -1139.5870953197882
           electrical_power:
-            average_cycle_power: 993.5865394444542
-            average_reel_out_power: 1969.6665537426313
-            average_reel_in_power: -2541.6474757345295
+            average_cycle_power: 645.7418680986268
+            average_reel_out_power: 1674.2165706812364
+            average_reel_in_power: -3147.5510535412122
             average_transition_rori_power: 0.0
-            average_transition_riro_power: -1139.5870953197882
+            average_transition_riro_power: -1411.2533688170752
           tether_force_ground:
             average_tether_force_cycle: 1909.1846922460238
             minimum_tether_force_cycle: 749.9999999999999
@@ -441,12 +441,12 @@ power_curves:
             transition_rori_energy: 0.0
             transition_riro_energy: -15465.489217218319
           electrical_energy:
-            net_cycle_energy_exported: 394734.73458158714
-            cycle_energy: 394734.73458158714
-            reel_out_energy: 598093.3127238938
-            reel_in_energy: -187893.08892508835
+            net_cycle_energy_exported: 256542.06734186492
+            cycle_energy: 256542.06734186492
+            reel_out_energy: 508379.31581530964
+            reel_in_energy: -232684.93984531058
             transition_rori_energy: 0.0
-            transition_riro_energy: -15465.489217218319
+            transition_riro_energy: -19152.308628134142
           timing:
             reel_out_time: 303.65206313090715
             transition_rori_time: 6.133786365545864
@@ -463,11 +463,11 @@ power_curves:
             average_transition_rori_power: 0.0
             average_transition_riro_power: -1117.6627798700597
           electrical_power:
-            average_cycle_power: 1726.6194101641418
-            average_reel_out_power: 3271.1020039241525
-            average_reel_in_power: -2758.292035242304
+            average_cycle_power: 1230.8144657305568
+            average_reel_out_power: 2780.4367033355297
+            average_reel_in_power: -3415.841529711832
             average_transition_rori_power: 0.0
-            average_transition_riro_power: -1117.6627798700597
+            average_transition_riro_power: -1384.1025137709717
           tether_force_ground:
             average_tether_force_cycle: 2417.3253056161684
             minimum_tether_force_cycle: 749.9999999999999
@@ -491,12 +491,12 @@ power_curves:
             transition_rori_energy: 0.0
             transition_riro_energy: -13516.630282943739
           electrical_energy:
-            net_cycle_energy_exported: 592471.9768632638
-            cycle_energy: 592471.9768632638
-            reel_out_energy: 801693.7206648669
-            reel_in_energy: -195705.11351865932
+            net_cycle_energy_exported: 422341.5278263094
+            cycle_energy: 422341.5278263094
+            reel_out_energy: 681439.6625651368
+            reel_in_energy: -242359.2737073181
             transition_rori_energy: 0.0
-            transition_riro_energy: -13516.630282943739
+            transition_riro_energy: -16738.861031509274
           timing:
             reel_out_time: 245.08368118851723
             transition_rori_time: 15.010985005486665
@@ -513,11 +513,11 @@ power_curves:
             average_transition_rori_power: 0.0
             average_transition_riro_power: -925.856294128834
           electrical_power:
-            average_cycle_power: 2638.1122620683627
-            average_reel_out_power: 5045.424913495692
-            average_reel_in_power: -3266.345405720325
+            average_cycle_power: 1935.1042826011578
+            average_reel_out_power: 4288.611176471339
+            average_reel_in_power: -4045.009790365727
             average_transition_rori_power: 0.0
-            average_transition_riro_power: -925.856294128834
+            average_transition_riro_power: -1146.5712620790516
           tether_force_ground:
             average_tether_force_cycle: 2998.779487663486
             minimum_tether_force_cycle: 749.9999999999999
@@ -541,12 +541,12 @@ power_curves:
             transition_rori_energy: 0.0
             transition_riro_energy: -9694.135252484444
           electrical_energy:
-            net_cycle_energy_exported: 776476.5452637897
-            cycle_energy: 776476.5452637897
-            reel_out_energy: 1009348.3798753347
-            reel_in_energy: -223177.69935906044
+            net_cycle_energy_exported: 569559.9500004805
+            cycle_energy: 569559.9500004805
+            reel_out_energy: 857946.1228940345
+            reel_in_energy: -276381.0518378457
             transition_rori_energy: 0.0
-            transition_riro_energy: -9694.135252484444
+            transition_riro_energy: -12005.121055708292
           timing:
             reel_out_time: 200.0522051523335
             transition_rori_time: 15.481283009893877
@@ -563,11 +563,11 @@ power_curves:
             average_transition_rori_power: 0.0
             average_transition_riro_power: -792.6964478003124
           electrical_power:
-            average_cycle_power: 3760.007662017819
-            average_reel_out_power: 7050.406361463736
-            average_reel_in_power: -3858.1290038238953
+            average_cycle_power: 2825.583692572257
+            average_reel_out_power: 5992.845407244175
+            average_reel_in_power: -4777.8687353856285
             average_transition_rori_power: 0.0
-            average_transition_riro_power: -792.6964478003124
+            average_transition_riro_power: -994.7600399363228
           tether_force_ground:
             average_tether_force_cycle: 3676.192162840377
             minimum_tether_force_cycle: 749.9999999999999
@@ -591,12 +591,12 @@ power_curves:
             transition_rori_energy: 0.0
             transition_riro_energy: -6824.141442732085
           electrical_energy:
-            net_cycle_energy_exported: 1062554.2895050824
-            cycle_energy: 1062554.2895050824
-            reel_out_energy: 1331784.703570895
-            reel_in_energy: -262406.2726230802
+            net_cycle_energy_exported: 798492.0092654943
+            cycle_energy: 798492.0092654943
+            reel_out_energy: 1132016.9980352605
+            reel_in_energy: -324961.3283257959
             transition_rori_energy: 0.0
-            transition_riro_energy: -6824.141442732085
+            transition_riro_energy: -8563.660443970277
           timing:
             reel_out_time: 188.89474383351754
             transition_rori_time: 17.07626926319585
@@ -613,11 +613,11 @@ power_curves:
             average_transition_rori_power: 6.0849096881558165
             average_transition_riro_power: -130.35989841092564
           electrical_power:
-            average_cycle_power: 5103.086584023193
-            average_reel_out_power: 9589.663608407034
-            average_reel_in_power: -5321.0982911530555
-            average_transition_rori_power: 6.0849096881558165
-            average_transition_riro_power: -130.35989841092564
+            average_cycle_power: 3832.6328512064993
+            average_reel_out_power: 8151.21406714598
+            average_reel_in_power: -6589.595407000687
+            average_transition_rori_power: 5.172173234932443
+            average_transition_riro_power: -361.75237360904305
           tether_force_ground:
             average_tether_force_cycle: 4491.353976229643
             minimum_tether_force_cycle: 749.9999999999999
@@ -641,12 +641,12 @@ power_curves:
             transition_rori_energy: 100.6183563037595
             transition_riro_energy: -969.9450442002212
           electrical_energy:
-            net_cycle_energy_exported: 1315369.6665721573
-            cycle_energy: 1315369.6665721573
-            reel_out_energy: 1646574.5355651267
-            reel_in_energy: -330335.542305073
-            transition_rori_energy: 100.6183563037595
-            transition_riro_energy: -969.9450442002212
+            net_cycle_energy_exported: 987897.9932201122
+            cycle_energy: 987897.9932201122
+            reel_out_energy: 1399588.355230358
+            reel_in_energy: -409084.26291649905
+            transition_rori_energy: 85.52560285819557
+            transition_riro_energy: -2691.6246966049375
           timing:
             reel_out_time: 171.70305474757356
             transition_rori_time: 16.5357189276961
@@ -663,11 +663,11 @@ power_curves:
             average_transition_rori_power: 1065.1388966031227
             average_transition_riro_power: 1239.6321494950373
           electrical_power:
-            average_cycle_power: 6763.918733839739
-            average_reel_out_power: 12782.349924097769
-            average_reel_in_power: -7046.467809394961
-            average_transition_rori_power: 1065.1388966031227
-            average_transition_riro_power: 1239.6321494950373
+            average_cycle_power: 5077.908987366304
+            average_reel_out_power: 10864.997435483103
+            average_reel_in_power: -8726.275924947318
+            average_transition_rori_power: 905.368062112654
+            average_transition_riro_power: 865.4789671331246
           tether_force_ground:
             average_tether_force_cycle: 5287.9735378877685
             minimum_tether_force_cycle: 749.9999999999999
@@ -691,12 +691,12 @@ power_curves:
             transition_rori_energy: 18007.32225365456
             transition_riro_energy: 8503.463538815247
           electrical_energy:
-            net_cycle_energy_exported: 1570653.4911854626
-            cycle_energy: 1570653.4911854626
-            reel_out_energy: 1942248.2012846705
-            reel_in_energy: -398105.4958916777
-            transition_rori_energy: 18007.32225365456
-            transition_riro_energy: 8503.463538815247
+            net_cycle_energy_exported: 1179144.1903385078
+            cycle_energy: 1179144.1903385078
+            reel_out_energy: 1650910.9710919699
+            reel_in_energy: -493009.9020330373
+            transition_rori_energy: 15306.223915606372
+            transition_riro_energy: 5936.897363968752
           timing:
             reel_out_time: 151.94766320886512
             transition_rori_time: 16.906078926497226
@@ -713,11 +713,11 @@ power_curves:
             average_transition_rori_power: 3608.748784151031
             average_transition_riro_power: 3157.392190100348
           electrical_power:
-            average_cycle_power: 8745.757745851919
-            average_reel_out_power: 16610.667528106656
-            average_reel_in_power: -9201.060284247074
-            average_transition_rori_power: 3608.748784151031
-            average_transition_riro_power: 3157.392190100348
+            average_cycle_power: 6533.55052717464
+            average_reel_out_power: 14119.067398890658
+            average_reel_in_power: -11394.501899996378
+            average_transition_rori_power: 3067.4364665283756
+            average_transition_riro_power: 2520.9793735376893
           tether_force_ground:
             average_tether_force_cycle: 6125.330511516889
             minimum_tether_force_cycle: 749.9999999999999
@@ -741,12 +741,12 @@ power_curves:
             transition_rori_energy: 56219.1167831706
             transition_riro_energy: 21175.663173158406
           electrical_energy:
-            net_cycle_energy_exported: 1829597.0871803479
-            cycle_energy: 1829597.0871803479
-            reel_out_energy: 2234342.3262247713
-            reel_in_energy: -482140.01900075225
-            transition_rori_energy: 56219.1167831706
-            transition_riro_energy: 21175.663173158406
+            net_cycle_energy_exported: 1366807.240817295
+            cycle_energy: 1366807.240817295
+            reel_out_energy: 1899190.9772910557
+            reel_in_energy: -597077.4229111483
+            transition_rori_energy: 47786.249265695
+            transition_riro_energy: 16907.43717169243
           timing:
             reel_out_time: 134.51249460288545
             transition_rori_time: 15.578562029608364
@@ -763,11 +763,11 @@ power_curves:
             average_transition_rori_power: 6706.1902019546305
             average_transition_riro_power: 3980.6841978279213
           electrical_power:
-            average_cycle_power: 10718.913416703079
-            average_reel_out_power: 22518.032835020134
-            average_reel_in_power: -11556.209019871929
-            average_transition_rori_power: 6706.1902019546305
-            average_transition_riro_power: 3980.6841978279213
+            average_cycle_power: 7823.813537966459
+            average_reel_out_power: 19140.32790976711
+            average_reel_in_power: -14311.094761451302
+            average_transition_rori_power: 5700.261671661435
+            average_transition_riro_power: 3200.185047761082
           tether_force_ground:
             average_tether_force_cycle: 6197.748855826992
             minimum_tether_force_cycle: 749.9999999999999
@@ -791,12 +791,12 @@ power_curves:
             transition_rori_energy: 110078.51018464865
             transition_riro_energy: 23894.11601525533
           electrical_energy:
-            net_cycle_energy_exported: 1917143.4860212575
-            cycle_energy: 1917143.4860212575
-            reel_out_energy: 2373129.337551906
-            reel_in_energy: -589958.4777305523
-            transition_rori_energy: 110078.51018464865
-            transition_riro_energy: 23894.11601525533
+            net_cycle_energy_exported: 1399337.0948200857
+            cycle_energy: 1399337.0948200857
+            reel_out_energy: 2017159.9369191197
+            reel_in_energy: -730598.7340316436
+            transition_rori_energy: 93566.73365695134
+            transition_riro_energy: 19209.15827565837
           timing:
             reel_out_time: 105.38795084538671
             transition_rori_time: 16.414462887223873
@@ -813,11 +813,11 @@ power_curves:
             average_transition_rori_power: 10649.701282042493
             average_transition_riro_power: 4294.410237624157
           electrical_power:
-            average_cycle_power: 12317.99372785588
-            average_reel_out_power: 28555.291284475752
-            average_reel_in_power: -14228.773757775167
-            average_transition_rori_power: 10649.701282042493
-            average_transition_riro_power: 4294.410237624157
+            average_cycle_power: 8710.186505022506
+            average_reel_out_power: 24271.997591804382
+            average_reel_in_power: -17620.77245544912
+            average_transition_rori_power: 9052.246089736118
+            average_transition_riro_power: 3441.4298151124935
           tether_force_ground:
             average_tether_force_cycle: 6279.519684323198
             minimum_tether_force_cycle: 749.9999999999999
@@ -841,12 +841,12 @@ power_curves:
             transition_rori_energy: 178553.90147621586
             transition_riro_energy: 22426.523630364467
           electrical_energy:
-            net_cycle_energy_exported: 1974373.3165010815
-            cycle_energy: 1974373.3165010815
-            reel_out_energy: 2496959.4950158256
-            reel_in_energy: -723566.6036213245
-            transition_rori_energy: 178553.90147621586
-            transition_riro_energy: 22426.523630364467
+            net_cycle_energy_exported: 1396100.7122754606
+            cycle_energy: 1396100.7122754606
+            reel_out_energy: 2122415.570763451
+            reel_in_energy: -896057.7134629405
+            transition_rori_energy: 151770.81625478345
+            transition_riro_energy: 17972.03872016659
           timing:
             reel_out_time: 87.4429705563295
             transition_rori_time: 16.766094817823024
@@ -863,11 +863,11 @@ power_curves:
             average_transition_rori_power: 14824.170844938535
             average_transition_riro_power: 4910.325633798649
           electrical_power:
-            average_cycle_power: 13541.94988778811
-            average_reel_out_power: 34544.02061105749
-            average_reel_in_power: -16203.81589705036
-            average_transition_rori_power: 14824.170844938535
-            average_transition_riro_power: 4910.325633798649
+            average_cycle_power: 9306.171800392875
+            average_reel_out_power: 29362.41751939886
+            average_reel_in_power: -20066.64507374657
+            average_transition_rori_power: 12600.545218197756
+            average_transition_riro_power: 3968.6371744655644
           tether_force_ground:
             average_tether_force_cycle: 6358.613897965783
             minimum_tether_force_cycle: 749.9999999999999
@@ -891,12 +891,12 @@ power_curves:
             transition_rori_energy: 257866.10725688125
             transition_riro_energy: 22440.25782032307
           electrical_energy:
-            net_cycle_energy_exported: 1976782.8006959332
-            cycle_energy: 1976782.8006959332
-            reel_out_energy: 2522609.1260339934
-            reel_in_energy: -826132.6904152646
-            transition_rori_energy: 257866.10725688125
-            transition_riro_energy: 22440.25782032307
+            net_cycle_energy_exported: 1358466.1372826067
+            cycle_energy: 1358466.1372826067
+            reel_out_energy: 2144217.7571288943
+            reel_in_energy: -1023074.5392139498
+            transition_rori_energy: 219186.1911683491
+            transition_riro_energy: 18136.728199313064
           timing:
             reel_out_time: 73.02592695959979
             transition_rori_time: 17.39497675479943
@@ -913,11 +913,11 @@ power_curves:
             average_transition_rori_power: 15736.255483692858
             average_transition_riro_power: 13765.68798203909
           electrical_power:
-            average_cycle_power: 13499.36982041426
-            average_reel_out_power: 39896.18927055123
-            average_reel_in_power: -16748.917995322947
-            average_transition_rori_power: 15736.255483692858
-            average_transition_riro_power: 13765.68798203909
+            average_cycle_power: 8925.180328319553
+            average_reel_out_power: 33911.76087996855
+            average_reel_in_power: -20741.69411185504
+            average_transition_rori_power: 13375.817161138928
+            average_transition_riro_power: 11623.341623073618
           tether_force_ground:
             average_tether_force_cycle: 6400.785589342504
             minimum_tether_force_cycle: 749.9999999999999
@@ -941,12 +941,12 @@ power_curves:
             transition_rori_energy: 233893.86923785927
             transition_riro_energy: 77963.39685945178
           electrical_energy:
-            net_cycle_energy_exported: 1618264.3057329687
-            cycle_energy: 1618264.3057329687
-            reel_out_energy: 2092116.3083971832
-            reel_in_energy: -785709.2687615254
-            transition_rori_energy: 233893.86923785927
-            transition_riro_energy: 77963.39685945178
+            net_cycle_energy_exported: 1069924.0734710358
+            cycle_energy: 1069924.0734710358
+            reel_out_energy: 1778298.862137606
+            reel_in_energy: -973014.5743176783
+            transition_rori_energy: 198809.78885218035
+            transition_riro_energy: 65829.99679892785
           timing:
             reel_out_time: 52.43900098352118
             transition_rori_time: 14.86337518352053
@@ -963,11 +963,11 @@ power_curves:
             average_transition_rori_power: 15725.722410859024
             average_transition_riro_power: 12752.29199960003
           electrical_power:
-            average_cycle_power: 13655.952495530975
-            average_reel_out_power: 39999.122635958374
-            average_reel_in_power: -20071.6536677746
-            average_transition_rori_power: 15725.722410859024
-            average_transition_riro_power: 12752.29199960003
+            average_cycle_power: 8669.777224025305
+            average_reel_out_power: 33999.25424056463
+            average_reel_in_power: -24856.537049875667
+            average_transition_rori_power: 13366.864049230171
+            average_transition_riro_power: 10720.718309288879
           tether_force_ground:
             average_tether_force_cycle: 6499.224912060496
             minimum_tether_force_cycle: 749.9999999999999
@@ -991,12 +991,12 @@ power_curves:
             transition_rori_energy: 222123.33595933233
             transition_riro_energy: 59946.46753618289
           electrical_energy:
-            net_cycle_energy_exported: 1719714.2205224542
-            cycle_energy: 1719714.2205224542
-            reel_out_energy: 2388752.962181505
-            reel_in_energy: -951108.5451545657
-            transition_rori_energy: 222123.33595933233
-            transition_riro_energy: 59946.46753618289
+            net_cycle_energy_exported: 1091797.8211916946
+            cycle_energy: 1091797.8211916946
+            reel_out_energy: 2030440.0178542796
+            reel_in_energy: -1177843.3995722176
+            transition_rori_energy: 188804.8355654325
+            transition_riro_energy: 50396.367344200116
           timing:
             reel_out_time: 59.7201339619901
             transition_rori_time: 14.12484146394129
@@ -1013,11 +1013,11 @@ power_curves:
             average_transition_rori_power: 16645.304503788724
             average_transition_riro_power: 11489.645669992085
           electrical_power:
-            average_cycle_power: 13479.353497211585
-            average_reel_out_power: 39998.909215524574
-            average_reel_in_power: -22216.39672295843
-            average_transition_rori_power: 16645.304503788724
-            average_transition_riro_power: 11489.645669992085
+            average_cycle_power: 8224.811851830898
+            average_reel_out_power: 33999.07283319588
+            average_reel_in_power: -27512.565601186914
+            average_transition_rori_power: 14148.508828220418
+            average_transition_riro_power: 9633.120578257272
           tether_force_ground:
             average_tether_force_cycle: 6588.896403858949
             minimum_tether_force_cycle: 749.9999999999999
@@ -1041,12 +1041,12 @@ power_curves:
             transition_rori_energy: 219555.443873186
             transition_riro_energy: 44481.63901669199
           electrical_energy:
-            net_cycle_energy_exported: 1740763.6730883613
-            cycle_energy: 1740763.6730883613
-            reel_out_energy: 2550279.537740809
-            reel_in_energy: -1073552.9475423256
-            transition_rori_energy: 219555.443873186
-            transition_riro_energy: 44481.63901669199
+            net_cycle_energy_exported: 1062176.5867788563
+            cycle_energy: 1062176.5867788563
+            reel_out_energy: 2167737.6070796875
+            reel_in_energy: -1329477.3344177408
+            transition_rori_energy: 186622.12729220814
+            transition_riro_energy: 37294.18682470147
           timing:
             reel_out_time: 63.75872711926309
             transition_rori_time: 13.190232946667443
@@ -1063,11 +1063,11 @@ power_curves:
             average_transition_rori_power: 15703.21201902042
             average_transition_riro_power: 11186.982472705233
           electrical_power:
-            average_cycle_power: 13112.218976372502
-            average_reel_out_power: 39998.72273285822
-            average_reel_in_power: -22212.5769416663
-            average_transition_rori_power: 15703.21201902042
-            average_transition_riro_power: 11186.982472705233
+            average_cycle_power: 7881.150997593743
+            average_reel_out_power: 33998.91432292949
+            average_reel_in_power: -27507.835221877765
+            average_transition_rori_power: 13347.73021616736
+            average_transition_riro_power: 9400.00011936639
           tether_force_ground:
             average_tether_force_cycle: 6614.8164745215745
             minimum_tether_force_cycle: 750.0
@@ -1091,12 +1091,12 @@ power_curves:
             transition_rori_energy: 208262.46649327662
             transition_riro_energy: 35743.87926794142
           electrical_energy:
-            net_cycle_energy_exported: 1612772.5410463025
-            cycle_energy: 1612772.5410463025
-            reel_out_energy: 2401607.405231798
-            reel_in_energy: -1032841.2099467136
-            transition_rori_energy: 208262.46649327662
-            transition_riro_energy: 35743.87926794142
+            net_cycle_energy_exported: 969363.3048427954
+            cycle_energy: 969363.3048427954
+            reel_out_energy: 2041366.2944470283
+            reel_in_energy: -1279060.3219154347
+            transition_rori_energy: 177023.09651928514
+            transition_riro_energy: 30034.235791916602
           timing:
             reel_out_time: 60.04210237590715
             transition_rori_time: 13.262411934642413
@@ -1113,11 +1113,11 @@ power_curves:
             average_transition_rori_power: 16121.619600866194
             average_transition_riro_power: 10500.807098811301
           electrical_power:
-            average_cycle_power: 12691.172216657882
-            average_reel_out_power: 39998.55748243762
-            average_reel_in_power: -25115.23313648906
-            average_transition_rori_power: 16121.619600866194
-            average_transition_riro_power: 10500.807098811301
+            average_cycle_power: 7181.589656364466
+            average_reel_out_power: 33998.77386007198
+            average_reel_in_power: -31102.455896580883
+            average_transition_rori_power: 13703.376660736267
+            average_transition_riro_power: 8804.076521872756
           tether_force_ground:
             average_tether_force_cycle: 6738.567482291401
             minimum_tether_force_cycle: 749.9999999999999
@@ -1141,12 +1141,12 @@ power_curves:
             transition_rori_energy: 216216.80196780004
             transition_riro_energy: 29627.42792224963
           electrical_energy:
-            net_cycle_energy_exported: 1572801.7196397549
-            cycle_energy: 1572801.7196397549
-            reel_out_energy: 2476658.7329697986
-            reel_in_energy: -1149701.2432200934
-            transition_rori_energy: 216216.80196780004
-            transition_riro_energy: 29627.42792224963
+            net_cycle_energy_exported: 890005.7747582605
+            cycle_energy: 890005.7747582605
+            reel_out_energy: 2105159.923024329
+            reel_in_energy: -1423778.6293747288
+            transition_rori_energy: 183784.28167263005
+            transition_riro_energy: 24840.19943603028
           timing:
             reel_out_time: 61.91870129459639
             transition_rori_time: 13.411605491310748
@@ -1163,11 +1163,11 @@ power_curves:
             average_transition_rori_power: 18489.944888489856
             average_transition_riro_power: 10646.128525632488
           electrical_power:
-            average_cycle_power: 12236.003197047494
-            average_reel_out_power: 39998.3800826105
-            average_reel_in_power: -25282.828537873753
-            average_transition_rori_power: 18489.944888489856
-            average_transition_riro_power: 10646.128525632488
+            average_cycle_power: 6643.469754461485
+            average_reel_out_power: 33998.623070218935
+            average_reel_in_power: -31310.004381267798
+            average_transition_rori_power: 15716.45130263995
+            average_transition_riro_power: 8959.67770645942
           tether_force_ground:
             average_tether_force_cycle: 6777.355642595401
             minimum_tether_force_cycle: 749.9999999999999
@@ -1191,12 +1191,12 @@ power_curves:
             transition_rori_energy: 202454.62670187664
             transition_riro_energy: 25539.29151318814
           electrical_energy:
-            net_cycle_energy_exported: 1337908.1481069585
-            cycle_energy: 1337908.1481069585
-            reel_out_energy: 2167091.947654237
-            reel_in_energy: -1057177.7177623434
-            transition_rori_energy: 202454.62670187664
-            transition_riro_energy: 25539.29151318814
+            net_cycle_energy_exported: 726409.7739318084
+            cycle_energy: 726409.7739318084
+            reel_out_energy: 1842028.155506102
+            reel_in_energy: -1309198.412089589
+            transition_rori_energy: 172086.41241191223
+            transition_riro_energy: 21493.61810338332
           timing:
             reel_out_time: 54.179492848921434
             transition_rori_time: 10.949444572325703
@@ -1213,11 +1213,11 @@ power_curves:
             average_transition_rori_power: 26442.139441983672
             average_transition_riro_power: 11003.948362443154
           electrical_power:
-            average_cycle_power: 11399.344455630895
-            average_reel_out_power: 39998.20117801847
-            average_reel_in_power: -26367.40634570071
-            average_transition_rori_power: 26442.139441983672
-            average_transition_riro_power: 11003.948362443154
+            average_cycle_power: 5480.957466663007
+            average_reel_out_power: 33998.4710013157
+            average_reel_in_power: -32653.134793437413
+            average_transition_rori_power: 22475.818525686125
+            average_transition_riro_power: 9297.273585512374
           tether_force_ground:
             average_tether_force_cycle: 6739.050171160018
             minimum_tether_force_cycle: 749.9999999999999
@@ -1241,12 +1241,12 @@ power_curves:
             transition_rori_energy: 239952.6761175756
             transition_riro_energy: 22489.12708578471
           electrical_energy:
-            net_cycle_energy_exported: 1560775.2183813849
-            cycle_energy: 1560775.2183813849
-            reel_out_energy: 2781642.857555611
-            reel_in_energy: -1483309.4423775864
-            transition_rori_energy: 239952.6761175756
-            transition_riro_energy: 22489.12708578471
+            net_cycle_energy_exported: 750441.6258554569
+            cycle_energy: 750441.6258554569
+            reel_out_energy: 2364396.4289222695
+            reel_in_energy: -1836915.7181146583
+            transition_rori_energy: 203959.77469993933
+            transition_riro_energy: 19001.14034790639
           timing:
             reel_out_time: 69.5441988797311
             transition_rori_time: 9.074631674341346
@@ -1263,11 +1263,11 @@ power_curves:
             average_transition_rori_power: 15660.662436901526
             average_transition_riro_power: 11459.625515146407
           electrical_power:
-            average_cycle_power: 10884.84502634172
-            average_reel_out_power: 39998.07346007075
-            average_reel_in_power: -24927.758631899625
-            average_transition_rori_power: 15660.662436901526
-            average_transition_riro_power: 11459.625515146407
+            average_cycle_power: 5437.916486520927
+            average_reel_out_power: 33998.36244106013
+            average_reel_in_power: -30870.289327429877
+            average_transition_rori_power: 13311.563071366296
+            average_transition_riro_power: 9712.136101718228
           tether_force_ground:
             average_tether_force_cycle: 6910.160857047018
             minimum_tether_force_cycle: 749.9999999999999
@@ -1291,12 +1291,12 @@ power_curves:
             transition_rori_energy: 241363.00071541686
             transition_riro_energy: 20341.479060254795
           electrical_energy:
-            net_cycle_energy_exported: 1309884.111471665
-            cycle_energy: 1309884.111471665
-            reel_out_energy: 2229855.0488291923
-            reel_in_energy: -1181675.4171331988
-            transition_rori_energy: 241363.00071541686
-            transition_riro_energy: 20341.479060254795
+            net_cycle_energy_exported: 654399.799718376
+            cycle_energy: 654399.799718376
+            reel_out_energy: 1895376.7915048134
+            reel_in_energy: -1463375.1295767168
+            transition_rori_energy: 205158.5506081043
+            transition_riro_energy: 17239.587182175208
           timing:
             reel_out_time: 55.74906129054467
             transition_rori_time: 15.412055632250171
@@ -1313,11 +1313,11 @@ power_curves:
             average_transition_rori_power: 22667.320087849683
             average_transition_riro_power: 10897.61123455305
           electrical_power:
-            average_cycle_power: 10364.619769459156
-            average_reel_out_power: 39997.953291061494
-            average_reel_in_power: -29350.071870882042
-            average_transition_rori_power: 22667.320087849683
-            average_transition_riro_power: 10897.61123455305
+            average_cycle_power: 4295.027991296391
+            average_reel_out_power: 33998.26029740227
+            average_reel_in_power: -36346.83823019447
+            average_transition_rori_power: 19267.222074672234
+            average_transition_riro_power: 9221.58485815622
           tether_force_ground:
             average_tether_force_cycle: 7018.0885024525305
             minimum_tether_force_cycle: 749.9999999999999
@@ -1341,12 +1341,12 @@ power_curves:
             transition_rori_energy: 266004.8694646213
             transition_riro_energy: 17908.85581334941
           electrical_energy:
-            net_cycle_energy_exported: 1199641.8130538922
-            cycle_energy: 1199641.8130538922
-            reel_out_energy: 2261035.617343205
-            reel_in_energy: -1345307.5295672836
-            transition_rori_energy: 266004.8694646213
-            transition_riro_energy: 17908.85581334941
+            net_cycle_energy_exported: 497123.4141920563
+            cycle_energy: 497123.4141920563
+            reel_out_energy: 1921880.2747417241
+            reel_in_energy: -1666015.516491992
+            transition_rori_energy: 226104.13904492813
+            transition_riro_energy: 15154.516897395933
           timing:
             reel_out_time: 56.52878288271035
             transition_rori_time: 11.735170652449883

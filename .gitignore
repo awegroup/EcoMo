@@ -3,6 +3,10 @@ processed_data/
 results/
 results_example/
 tests/
+unused/
+reports/
+figures/
+ecomo/analysis/
 
 # Pickle files
 *.pkl

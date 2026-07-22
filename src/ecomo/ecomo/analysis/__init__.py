@@ -37,6 +37,8 @@ from .plots import (
     plot_2d_contour,
     plot_lcoe_stacked_bar,
     plot_power_curve_wind,
+    plot_requested_sweeps,
+    plot_sweep_overview,
     plot_tether_life_diagnostic,
     plot_tornado,
 )
@@ -125,11 +127,15 @@ def run_analysis(settings_path, outdir, *,
             produced['tornado'] = plot_tornado(
                 runner, outdir, keys=tornado_keys, bands=tornado_bands)
         if 'sweeps' in plots:
-            keys = sweep_keys or ('crest_factor', 'canopy_life',
-                                  'tether_oper_life', 'availability',
-                                  'labour_price')
-            produced['sweeps'] = plot_1d_sweeps(
-                runner, outdir, keys=keys, n_points=n_points)
+            # Explicit sweep_keys select the generic keyed sweeps (one figure
+            # each); the default run renders the curated six-sweep overview in
+            # a single figure (2x3 subplots).
+            if sweep_keys:
+                produced['sweeps'] = plot_1d_sweeps(
+                    runner, outdir, keys=sweep_keys, n_points=n_points)
+            else:
+                produced['sweeps'] = plot_sweep_overview(
+                    runner, outdir, n_points=n_points)
         if 'contour' in plots:
             produced['contour'] = plot_2d_contour(
                 runner, outdir, n_x=grid[0], n_y=grid[1])

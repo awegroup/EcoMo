@@ -15,7 +15,6 @@ from .subsystems import (
     eco_gstation,
     eco_bos,
     eco_bop,
-    eco_operations,
 )
 from .eco_metrics import eco_compute_metrics
 
@@ -40,6 +39,9 @@ def eco_main(inputs: EcoInputs, costs: EcoCosts) -> Dict[str, Any]:
     availability = (inputs.operations.availability
                     if inputs.operations is not None else 1.0)
 
+    # The operator/maintenance labour is folded into BoS.OM (it is an
+    # operating expense of the same nature as the per-kW O&M overhead),
+    # so there is no separate operations subsystem.
     eco: Dict[str, Any] = {
         'kite': eco_kite(inputs.kite, inputs.performance,
                          costs.kite, inputs.topology, inputs.business,
@@ -50,15 +52,12 @@ def eco_main(inputs: EcoInputs, costs: EcoCosts) -> Dict[str, Any]:
         'gStation': eco_gstation(inputs.tether, inputs.groundStation,
                                  inputs.performance, costs.groundStation,
                                  costs.tether.maxStress, inputs.business,
-                                 inputs.topology),
-        'BoS': eco_bos(inputs.performance, costs.balanceOfSystem),
+                                 inputs.topology,
+                                 kite_flat_area=inputs.kite.flatArea),
+        'BoS': eco_bos(inputs.performance, costs.balanceOfSystem,
+                       inputs.operations),
         'BoP': eco_bop(),
     }
-
-    # Explicit operator and maintenance labour, when configured
-    if inputs.operations is not None:
-        eco['operations'] = eco_operations(inputs.operations,
-                                           inputs.performance)
 
     eco['metrics'] = eco_compute_metrics(eco, inputs.business,
                                          inputs.performance, costs.market,

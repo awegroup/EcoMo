@@ -9,7 +9,6 @@ import numpy as np
 from typing import Dict, Any
 
 from ..constants import (
-    BEND_LIFE_CORRECTION,
     HOURS_PER_YEAR,
     PA_PER_GPA,
     SECONDS_PER_HOUR,
@@ -45,7 +44,7 @@ def _bending_replacement_frequency(
                                  posinf=0.0, neginf=0.0)
     lifeBend = 1 / (costs.nBends *
                     np.trapezoid(integralTerm, performance.windSpeeds))
-    return 1 / lifeBend / BEND_LIFE_CORRECTION
+    return 1 / lifeBend
 
 
 def _creep_replacement_frequency(
@@ -143,32 +142,56 @@ def eco_tether(
     # Bending and creep are stress-driven, so at the low stress of a
     # soft-wing system they predict a near-infinite life; the empirical
     # operational life then governs instead.
+    modeFrequencies: Dict[str, float] = {}
     replacementBend = None
     if topology.power == 'GG':
         replacementBend = _bending_replacement_frequency(
             tetherStress, performance, costs)
         eco['f_repl_bend'] = replacementBend
+        modeFrequencies['bending'] = replacementBend
     replacementCreep = _creep_replacement_frequency(
         tetherStress, performance, costs)
     eco['f_repl_creep'] = replacementCreep
-    replacementOper = None
+    modeFrequencies['creep'] = replacementCreep
+    # Operational wear is opt-in (costs.operationalLife is None when the
+    # 'operational_life_enabled' toggle is off); then the tether life is
+    # governed by bending/creep fatigue alone.
     if costs.operationalLife is not None:
         replacementOper = _operational_replacement_frequency(
             performance, costs, availability)
         eco['f_repl_oper'] = replacementOper
+        modeFrequencies['operational'] = replacementOper
 
     if tether.replacementFrequency is None:
-        frequencies = [replacementCreep]
-        if replacementBend is not None:
-            frequencies.append(replacementBend)
-        if replacementOper is not None:
-            frequencies.append(replacementOper)
-        replacementFrequency = max(frequencies)
+        # The governing (physical) mode is the shortest life = highest
+        # replacement frequency
+        governingMode = max(modeFrequencies, key=modeFrequencies.get)
+        governingFrequency = modeFrequencies[governingMode]
     else:
-        replacementFrequency = tether.replacementFrequency
+        governingMode = 'override'
+        governingFrequency = tether.replacementFrequency
+
+    # Physical tether life from the governing mode, reported before the
+    # project-life cap below (so a life longer than the project is still
+    # visible even though no replacement is then charged).
+    flightHours = annual_flight_hours(performance, availability)
+    eco['life'] = {
+        'governing_mode': governingMode,
+        'life_flight_hours': (flightHours / governingFrequency
+                              if governingFrequency > 0 else None),
+        'life_years': (1.0 / governingFrequency
+                       if governingFrequency > 0 else None),
+        'annual_flight_hours': flightHours,
+    }
+    # Per-mode life in flight hours (diagnostic; operational only present
+    # when the toggle is on)
+    for name, freq in modeFrequencies.items():
+        eco['life'][f'{name}_flight_hours'] = (
+            flightHours / freq if freq > 0 else None)
 
     # A tether life beyond the project lifetime means no replacement
     # (a replacement frequency of zero already means an infinite life)
+    replacementFrequency = governingFrequency
     if (replacementFrequency == 0 or
             1 / replacementFrequency > business.nYears):
         replacementFrequency = 0

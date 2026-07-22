@@ -766,17 +766,39 @@ class EcoMo(EconomicModel):
         operations = self.settings.get('operations')
         if not operations:
             return None
-        launchRecovery = operations.get('launch_recovery') or {}
+        if 'launch_recovery' in operations:
+            raise ValueError(
+                "The 'operations.launch_recovery' block was removed: the "
+                "launch/recovery labour is part of the per-operating-day "
+                "operating term C_op = (1 - automation) * labour_price * "
+                "N_op * operating_hours_per_day. Set 'operations.automation' "
+                "(and adjust operating_hours_per_day) instead."
+            )
+        for legacy in ('operator_hours_per_week',
+                       'maintenance_hours_per_flight_hour'):
+            if legacy in operations:
+                raise ValueError(
+                    f"'operations.{legacy}' was replaced by the operating-day "
+                    "labour model. Use 'operating_hours_per_day' and "
+                    "'maintenance_hours_per_day' instead (labour is now "
+                    "C_lab = labour_price * N_op * "
+                    "[(1 - automation) * operating_hours_per_day + "
+                    "maintenance_hours_per_day], with N_op the annual "
+                    "operating days from the wind resource)."
+                )
+        automation = float(operations.get('automation', 0.0))
+        if not 0.0 <= automation <= 1.0:
+            raise ValueError(
+                f"'operations.automation' must be in [0, 1], "
+                f"got {automation}."
+            )
         return OperationsInputs(
             labourPrice=float(operations['labour_price']),
-            operatorHoursPerWeek=float(operations['operator_hours_per_week']),
-            maintenanceHoursPerFlightHour=float(
-                operations['maintenance_hours_per_flight_hour']),
+            operatingHoursPerDay=float(operations['operating_hours_per_day']),
+            maintenanceHoursPerDay=float(
+                operations['maintenance_hours_per_day']),
             availability=float(operations.get('availability', 1.0)),
-            operationsPerYear=launchRecovery.get('operations_per_year'),
-            launchRecoveryHoursPerOperation=launchRecovery.get(
-                'hours_per_operation'),
-            launchAutomation=float(launchRecovery.get('automation', 0.0)),
+            automation=automation,
         )
 
     def _build_kite(self, force_available: bool) -> KiteInputs:
@@ -949,6 +971,25 @@ class EcoMo(EconomicModel):
             },
             'cashflow_eur': metrics['cashflow'],
         }
+
+        # Tether lifetime: the governing (physical) life in flight hours
+        # and years, which mode sets it, and the per-mode lives. The
+        # operational-wear mode is only present when its toggle is on.
+        tetherLife = eco.get('tether', {}).get('life')
+        if tetherLife is not None:
+            results['tether_lifetime'] = {
+                'governing_mode': tetherLife['governing_mode'],
+                'life_flight_hours': tetherLife['life_flight_hours'],
+                'life_years': tetherLife['life_years'],
+                'annual_flight_hours': tetherLife['annual_flight_hours'],
+                'replacement_frequency_per_year': eco['tether']['f_repl'],
+                'per_mode_flight_hours': {
+                    key[:-len('_flight_hours')]: value
+                    for key, value in tetherLife.items()
+                    if key.endswith('_flight_hours') and
+                    key not in ('life_flight_hours', 'annual_flight_hours')
+                },
+            }
 
         outputPath.parent.mkdir(parents=True, exist_ok=True)
         with open(outputPath, 'w', encoding='utf-8') as f:

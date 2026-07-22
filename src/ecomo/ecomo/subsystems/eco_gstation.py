@@ -92,6 +92,30 @@ def _fg_storage_replacement_frequency(
             costs.cycleLife)
 
 
+def _life_replacement_frequency(lifetime, n_years: int) -> float:
+    """Replacement frequency [1/year] from a component service life.
+
+    Convention for all lifetime-driven ground-station components (winch,
+    gearbox, generator, power converter, launch & land, avionics/KCU,
+    tether): the initial unit is annualised through the CRF as part of
+    the ICC, and the replacement OPEX ``(1/life) * CAPEX`` charges only
+    the re-buys during the project. A life of None, zero, or beyond the
+    project means no replacement (the CRF annuity alone covers the
+    capital), so no item is both fully annualised and re-charged
+    annually without an actual replacement need.
+
+    Args:
+        lifetime: Component service life [years], or None.
+        n_years (int): Project lifetime [years].
+
+    Returns:
+        float: Replacement frequency [1/year].
+    """
+    if lifetime is not None and 0 < lifetime <= n_years:
+        return 1.0 / lifetime
+    return 0.0
+
+
 def _winch_cost(tether: TetherInputs, costs: WinchCosts,
                 wallThickness: float) -> Tuple[float, float]:
     """Compute winch drum mass and CAPEX for a given wall thickness.
@@ -195,6 +219,7 @@ def eco_gstation(
     tether_max_stress: float,
     business: BusinessInputs,
     topology: Topology,
+    kite_flat_area: float = 0.0,
 ) -> Dict[str, Any]:
     """Calculate costs related to the ground station subsystem.
 
@@ -208,12 +233,17 @@ def eco_gstation(
         business (BusinessInputs): Financial parameters (for the
             project lifetime used in the launch & land replacement).
         topology (Topology): System topology.
+        kite_flat_area (float): Flat wing area [m2], used to size the
+            launch & land system when it is priced per area. Defaults to
+            0.0 (no area-scaled contribution).
 
     Returns:
         dict: The ``eco['gStation']`` results subtree.
     """
     eco: Dict[str, Any] = {}
     drumDiameter = costs.winch.drumToTetherDiameterRatio * tether.diameter
+    winchReplacement = _life_replacement_frequency(
+        costs.winch.lifetime, business.nYears)
 
     if topology.power == 'GG':
         # Winch; the drum wall thickness is sized by the tether load
@@ -222,41 +252,53 @@ def eco_gstation(
         winchMass, winchCapex = _winch_cost(tether, costs.winch,
                                             wallThickness)
         eco['winch'] = {'D': drumDiameter, 't': wallThickness,
-                        'm': winchMass, 'CAPEX': winchCapex, 'OPEX': 0}
+                        'm': winchMass, 'CAPEX': winchCapex,
+                        'OPEX': winchReplacement * winchCapex}
 
         if costs.drivetrain == DrivetrainType.ELECTRIC:
             # Gearbox, sized by the peak mechanical power or torque
+            gearboxReplacement = _life_replacement_frequency(
+                costs.gearbox.lifetime, business.nYears)
             if costs.gearbox.costModel == ComponentCostModel.POWER_BASED:
+                gearboxCapex = (costs.gearbox.pricePower *
+                                performance.peakMechanicalPower / W_PER_KW)
                 eco['gearbox'] = {
-                    'CAPEX': (costs.gearbox.pricePower *
-                              performance.peakMechanicalPower / W_PER_KW),
-                    'OPEX': 0,
+                    'CAPEX': gearboxCapex,
+                    'OPEX': gearboxReplacement * gearboxCapex,
                 }
             else:
                 mass = (costs.gearbox.massCoefficient *
                         (np.max(performance.tetherForce) *
                          drumDiameter / 2 / W_PER_KW) **
                         costs.gearbox.massExponent)
+                gearboxCapex = costs.gearbox.priceMass * mass
                 eco['gearbox'] = {
                     'm': mass,
-                    'CAPEX': costs.gearbox.priceMass * mass,
-                    'OPEX': 0,
+                    'CAPEX': gearboxCapex,
+                    'OPEX': gearboxReplacement * gearboxCapex,
                 }
 
             # Electric generator, sized by the peak mechanical power
             eco['gen'] = _generator_costs(
                 costs.generator, performance.peakMechanicalPower)
+            eco['gen']['OPEX'] = (
+                _life_replacement_frequency(costs.generator.lifetime,
+                                            business.nYears) *
+                eco['gen']['CAPEX'])
 
             # Electrical storage
             eco.update(_electrical_storage_costs(
                 groundStation, costs, performance, topology))
 
             # Power converters
+            powerConvCapex = (costs.powerConverterPricePower *
+                              (performance.ratedPower +
+                               performance.peakMechanicalPower) / W_PER_KW)
             eco['powerConv'] = {
-                'CAPEX': (costs.powerConverterPricePower *
-                          (performance.ratedPower +
-                           performance.peakMechanicalPower) / W_PER_KW),
-                'OPEX': 0,
+                'CAPEX': powerConvCapex,
+                'OPEX': (_life_replacement_frequency(
+                    costs.powerConverterLifetime, business.nYears) *
+                    powerConvCapex),
             }
 
         elif costs.drivetrain == DrivetrainType.HYDRAULIC:
@@ -291,37 +333,44 @@ def eco_gstation(
             # Electric generator, sized by the rated electrical power
             eco['gen'] = _generator_costs(
                 costs.generator, performance.ratedPower)
+            eco['gen']['OPEX'] = (
+                _life_replacement_frequency(costs.generator.lifetime,
+                                            business.nYears) *
+                eco['gen']['CAPEX'])
 
     elif topology.power == 'FG':
         # Winch; the drum wall thickness equals the tether diameter
         winchMass, winchCapex = _winch_cost(tether, costs.winch,
                                             tether.diameter)
         eco['winch'] = {'D': drumDiameter, 't': tether.diameter,
-                        'm': winchMass, 'CAPEX': winchCapex, 'OPEX': 0}
+                        'm': winchMass, 'CAPEX': winchCapex,
+                        'OPEX': winchReplacement * winchCapex}
 
         # Electrical storage
         eco.update(_electrical_storage_costs(
             groundStation, costs, performance, topology))
 
         # Power converters
+        powerConvCapex = (2 * costs.powerConverterPricePower *
+                          performance.ratedPower / W_PER_KW)
         eco['powerConv'] = {
-            'CAPEX': (2 * costs.powerConverterPricePower *
-                      performance.ratedPower / W_PER_KW),
-            'OPEX': 0,
+            'CAPEX': powerConvCapex,
+            'OPEX': (_life_replacement_frequency(
+                costs.powerConverterLifetime, business.nYears) *
+                powerConvCapex),
         }
 
     # Common components for both FG and GG. The launch & land
-    # (take-off & landing) system is a fixed CAPEX when provided. Its
-    # service life drives a replacement OPEX when it is shorter than the
-    # project lifetime; a life beyond the project means no replacement
-    # (the same convention as the tether).
-    launchLandCapex = costs.launchLandCost or 0.0
-    launchLandLife = costs.launchLandLifetime
-    if (launchLandLife is not None and 0 < launchLandLife and
-            launchLandLife <= business.nYears):
-        launchLandReplacement = 1.0 / launchLandLife
+    # (take-off & landing) system CAPEX is area-scaled when a per-area
+    # price is set (C = price_area * flat_wing_area), otherwise a fixed
+    # cost. Its service life drives a replacement OPEX when it is shorter
+    # than the project lifetime (see _life_replacement_frequency).
+    if costs.launchLandPriceArea is not None:
+        launchLandCapex = costs.launchLandPriceArea * kite_flat_area
     else:
-        launchLandReplacement = 0.0
+        launchLandCapex = costs.launchLandCost or 0.0
+    launchLandReplacement = _life_replacement_frequency(
+        costs.launchLandLifetime, business.nYears)
     eco['lls'] = {
         'CAPEX': launchLandCapex,
         'OPEX': launchLandReplacement * launchLandCapex,
