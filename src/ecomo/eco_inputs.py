@@ -211,6 +211,10 @@ class PerformanceData:
         windPdf: Wind speed probability density at each wind speed.
         averagePower: Average electrical cycle power [W] per wind
             speed.
+        mechanicalPower: Average mechanical cycle power [W] per wind
+            speed, i.e. the shaft output before the drivetrain/storage
+            efficiency chain. Available in AWESPA-connected mode; None
+            in standalone mode (only the electrical curve is provided).
         ratedPower: Rated electrical power [W].
         tetherForce: Tether force [N] per wind speed.
         peakMechanicalPower: Peak mechanical reel-out power [W]
@@ -240,6 +244,7 @@ class PerformanceData:
     averagePower: np.ndarray
     ratedPower: float
     tetherForce: np.ndarray
+    mechanicalPower: Optional[np.ndarray] = None
     peakMechanicalPower: Optional[float] = None
     cycleTime: Optional[Union[float, np.ndarray]] = None
     tipSpeedRatio: Optional[float] = None

@@ -1,33 +1,17 @@
 """Reusable sweep harness for the EcoMo analysis layer.
 
-This is the enabling infrastructure for the analysis plots: it runs
-:class:`~ecomo.ecomo_economic.EcoMo` repeatedly while varying one or two
-input parameters, and collects a tidy table of the resulting metrics and
-per-subsystem cost breakdown. It is a THIN layer over the model -- every
-evaluation just deep-copies the base configuration, applies the override,
-and calls ``compute_economics()``. No cost subsystem or core compute path
-is touched.
+Runs :class:`~ecomo.ecomo_economic.EcoMo` repeatedly while varying one or
+two input parameters, collecting a tidy table of the resulting metrics and
+per-subsystem cost breakdown. Each evaluation deep-copies the base
+configuration into a private temporary directory, so the base config on
+disk is never mutated and sweeps cannot leak state into one another.
 
-Each evaluation writes the (modified) settings/cost/system YAML into a
-private temporary directory, with all references to the unchanged data
-files rewritten to absolute paths, so the base configuration on disk is
-never mutated and sweeps cannot leak state into one another.
-
-IMPORTANT CORRECTNESS CAVEAT
-----------------------------
-EcoMo consumes the performance (AEP, tether force, power curve) as a FIXED
-input. Sweeping a parameter inside EcoMo alone therefore changes only the
-COST-side response; the AEP and the aerodynamic forces do NOT update (that
-would require re-running AWESPA inside the loop, which is out of scope
-here). Consequently:
-
-- Sweeps over pure cost/assumption parameters (canopy life, tether
-  operational life, labour rate/hours, availability, ultracapacitor and
-  generator price, ...) are fully valid.
-- Sweeps over design variables that also change the performance (wing
-  area, generator nameplate / crest factor, tether diameter) are valid
-  ONLY as "cost at fixed performance". Plots built on those sweeps carry
-  the :data:`FIXED_PERF_CAVEAT` subtitle.
+Caveat: EcoMo consumes the performance (AEP, tether force, power curve) as
+a fixed input, so a sweep changes only the cost-side response. Sweeps over
+pure cost/assumption parameters are fully valid; sweeps over design
+variables that also change the performance (wing area, generator sizing,
+tether diameter) are valid only as "cost at fixed performance" and carry
+the :data:`FIXED_PERF_CAVEAT` subtitle.
 """
 
 import contextlib
@@ -43,14 +27,14 @@ import numpy as np
 import yaml
 
 from ..eco_hours import annual_cycle_count, annual_flight_hours
-from ...ecomo_economic import EcoMo
+from ..ecomo_economic import EcoMo
 
 FIXED_PERF_CAVEAT = ("performance held fixed; full trend requires "
                      "AWESPA in the loop")
 
 # Subsystems aggregated in the per-run cost breakdown. The operator/
-# maintenance crew labour and the recurring consumables are separate
-# leaves under the BoS subtree (BoS.labour, BoS.consumables).
+# maintenance crew labour is a separate leaf under the BoS subtree
+# (BoS.labour).
 SUBSYSTEMS = ('kite', 'tether', 'gStation', 'BoS')
 
 
@@ -121,13 +105,8 @@ PARAMS: Dict[str, Param] = {
     'crest_factor': Param(
         'crest_factor', 'perf', 'crest_factor',
         'Crest factor (peak/rated)', '-', 2.0, 3.5, fixed_perf=True),
-    # Winch drum-to-tether diameter ratio D/d: sizes the winch drum
-    # (CAPEX, in eco_gstation) and, when bending_life_a1_table is
-    # configured, the tether bending fatigue life (via
-    # _resolve_bending_life_a1) -- a smaller/cheaper drum bends the
-    # tether tighter and shortens its life. Cost-domain only: it does
-    # not require an AWESPA re-run (the tether diameter itself is a
-    # separate system-file input).
+    # Winch D/d ratio: sizes the winch drum CAPEX and the tether bending
+    # fatigue life. Cost-domain only (no AWESPA re-run).
     'drum_ratio': Param(
         'drum_ratio', 'cost',
         'costs.ground_station.winch.drum_to_tether_diameter_ratio',
@@ -153,17 +132,8 @@ PARAMS: Dict[str, Param] = {
         fixed_perf=True),
 }
 
-# The uncertain assumptions shown in the tornado, in registry order.
-# Focused on the genuinely limiting operating/lifetime assumptions that
-# drive the soft-wing prototype LCoE. 'automation' is the operate-manually-
-# vs-fully-automated lever (removes the operation labour). 'drum_ratio'
-# (D/d) drives the tether bending life, which governs by default (the
-# operational-wear mode is off unless operational_life_enabled is set --
-# when it is on, add 'tether_oper_life' via analysis.tornado_keys, and
-# drum_ratio then goes inert as operational governs instead). The
-# negligible cost prices (generator_price ~17, ultracap_price with its
-# typo-anchored 6000-60000 band) are left out; crest_factor is kept as the
-# single design-side (fixed-performance) reference.
+# The uncertain assumptions shown in the tornado, in registry order: the
+# operating/lifetime assumptions that drive the soft-wing prototype LCoE.
 TORNADO_KEYS = (
     'availability', 'labour_price', 'maintenance_hours', 'canopy_life',
     'operating_hours', 'automation', 'drum_ratio', 'crest_factor',
@@ -275,12 +245,9 @@ def subsystem_breakdown(eco: Dict[str, Any]) -> Dict[str, Tuple[float, float]]:
             for name in SUBSYSTEMS}
 
 
-# Display categories for the cost plots (a display-level regroup of the raw
-# subsystem tree, NOT a change to the model). The operator/maintenance labour
-# is split out of BoS.OM into its own 'Ground crew cost' band (it is a driving
-# subsystem and lumping it under BoS misleads); the launch & land system is
-# split out of the ground station. The totals are preserved: the six category
-# OPEX/CAPEX sums still equal OMC/ICC.
+# Display-level regroup of the subsystem tree for the cost plots (not a
+# model change): the crew labour is split out of BoS into its own band.
+# The category CAPEX/OPEX sums still equal ICC/OMC.
 DISPLAY_CATEGORIES = ('kite', 'tether', 'gstation', 'crew', 'bos')
 
 
@@ -308,11 +275,11 @@ def display_breakdown(eco: Dict[str, Any]) -> Dict[str, Tuple[float, float]]:
 
     bos = eco.get('BoS', {})
     # The crew labour is now its own BoS.labour leaf group; pull it out
-    # for the 'Ground crew' display band, leaving the overhead + recurring
-    # consumables + BoS CAPEX under 'bos'.
+    # for the 'Ground crew' display band, leaving the per-kW overhead and
+    # the BoS CAPEX under 'bos'.
     crewOpex = bos.get('labour', {}).get('OPEX', 0.0) or 0.0
     bosCapex, bosOpex = _walk_capex_opex(bos)
-    bosOpex -= crewOpex  # remove labour, leaving overhead + consumables
+    bosOpex -= crewOpex  # remove labour, leaving the overhead
 
     return {
         'kite': kite,

@@ -360,11 +360,9 @@ def eco_gstation(
                 powerConvCapex),
         }
 
-    # Common components for both FG and GG. The launch & land
-    # (take-off & landing) system CAPEX is area-scaled when a per-area
-    # price is set (C = price_area * flat_wing_area), otherwise a fixed
-    # cost. Its service life drives a replacement OPEX when it is shorter
-    # than the project lifetime (see _life_replacement_frequency).
+    # Launch & land system (both FG and GG): area-scaled CAPEX when a
+    # per-area price is set, otherwise a fixed cost, with a replacement
+    # OPEX when its life is shorter than the project.
     if costs.launchLandPriceArea is not None:
         launchLandCapex = costs.launchLandPriceArea * kite_flat_area
     else:

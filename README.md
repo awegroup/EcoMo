@@ -73,7 +73,7 @@ from ecomo import EcoMo
 
 model = EcoMo()
 model.load_configuration(
-    economic_settings_path="config/example/economic_settings_GG_fixed.yml",
+    economic_settings_path="config/test/gg_fixed/economic_settings_GG_fixed.yml",
 )
 results = model.compute_economics(
     output_path="results/example/ecomo_results.yml",
@@ -81,15 +81,24 @@ results = model.compute_economics(
 )
 ```
 
-To switch between system configurations (GG/FG, fixed/soft wing), point
-`load_configuration()` to one of the settings files in `config/example/`:
+The `config/example/` folder holds the production V3.25 example
+(AWESPA-connected). The `config/test/` folder holds one settings file per
+topology (GG/FG, fixed/soft wing) for the standalone workflow:
 
-- `economic_settings_GG_fixed.yml` — ground-gen, fixed wing
-- `economic_settings_GG_soft.yml` — ground-gen, soft wing
-- `economic_settings_FG.yml` — fly-gen
+- `config/test/gg_fixed/economic_settings_GG_fixed.yml` — ground-gen, fixed wing
+- `config/test/gg_soft/economic_settings_GG_soft.yml` — ground-gen, soft wing
+- `config/test/fg/economic_settings_FG.yml` — fly-gen
 
 To analyse a different system, swap the file references in the settings
 `input_files` section (paths are resolved relative to the settings file).
+
+### Development stage
+
+The soft-wing settings accept a `development_stage` key (`early`, `mid` or
+`mature`) that sets the maturity-linked inputs — canopy life, operating
+hours, per-flight-hour maintenance and tether operational life — from a
+preset. Any value set explicitly in the config overrides the preset. See
+`reports/COST_MODEL_REFERENCE.md`.
 
 ### AWESPA-connected mode
 
@@ -140,42 +149,34 @@ power model. AEP in AWESPA-connected mode is taken directly from
 ```
 ecomo/
 ├── config/
-│   └── example/          # YAML inputs, per topology case:
-│       ├── economic_settings_*.yml      # settings (references the files below)
-│       ├── economic_cost_inputs_*.yml   # cost model parameters + market data
-│       ├── system_*.yml                 # physical system (awesIO system_schema)
-│       └── system_performance_*.yml     # performance-model outputs
-├── data/                 # Legacy Excel inputs (converter source only)
-│                         # + example AWESPA output files
-├── docs/                 # Sphinx documentation
-├── notebooks/            # Jupyter notebooks
-├── results/              # Output files (generated at runtime)
+│   ├── example/          # production V3.25 example (AWESPA-connected)
+│   └── test/             # per-topology fixtures (GG fixed/soft, FG)
+├── data/                 # example AWESPA output files
+├── reports/              # working notes (gitignored) + COST_MODEL_REFERENCE.md
 ├── scripts/
-│   ├── run_ecomo.py             # Entry point (standalone mode)
-│   ├── run_ecomo_from_awespa.py # Entry point (AWESPA-connected mode)
-│   └── convert_excel_to_yaml.py # One-off Excel-to-YAML migration
+│   ├── run_ecomo.py              # run the V3.25 example
+│   ├── run_ecomo_from_awespa.py  # run on AWESPA outputs
+│   ├── thesis_figures/           # V3.25 thesis figures
+│   └── tools/                    # one-off Excel-to-YAML converter
 ├── src/
-│   └── ecomo/            # Python package
-│       ├── base.py              # EconomicModel abstract base class
-│       ├── ecomo_economic.py    # EcoMo concrete class
-│       └── ecomo/               # Subsystem cost modules
-│           ├── eco_main.py             # Orchestrator
-│           ├── eco_inputs.py           # Typed input dataclasses
-│           ├── eco_costs.py            # Typed cost-parameter dataclasses
-│           ├── eco_kite.py
-│           ├── eco_tether.py
-│           ├── eco_gstation.py
-│           ├── eco_bos.py
-│           ├── eco_bop.py
-│           ├── eco_metrics.py
-│           ├── eco_load_cost_inputs.py
-│           ├── eco_load_system.py
-│           ├── eco_load_performance.py
-│           ├── eco_load_wind_resource.py
-│           ├── eco_wind.py
-│           ├── constants.py
-│           └── eco_display_results.py
-├── tests/
+│   └── ecomo/                    # the Python package
+│       ├── base.py               # EconomicModel abstract base class
+│       ├── ecomo_economic.py     # EcoMo concrete class
+│       ├── eco_main.py           # orchestrator
+│       ├── eco_inputs.py         # typed input dataclasses
+│       ├── eco_costs.py          # typed cost-parameter dataclasses
+│       ├── eco_metrics.py        # LCoE / NPV / IRR metrics
+│       ├── eco_hours.py          # annual hour and cycle counts
+│       ├── maturity.py           # development-stage presets
+│       ├── constants.py
+│       ├── eco_display_results.py
+│       ├── subsystems/           # per-subsystem cost modules
+│       │   ├── eco_kite.py   eco_tether.py   eco_gstation.py
+│       │   └── eco_bos.py    eco_bop.py
+│       ├── loaders/              # YAML input loaders
+│       └── analysis/             # optional sweep / plot layer
+├── tests/                # pytest suite (gitignored)
+├── COST_MODEL_REFERENCE.md       # -> reports/ (cost model equations + rationale)
 ├── pyproject.toml
 └── README.md
 ```

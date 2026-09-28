@@ -2,11 +2,10 @@
 processed_data/
 results/
 results_example/
-tests/
 unused/
-reports/
+reports/*
+!reports/COST_MODEL_REFERENCE.md
 figures/
-ecomo/analysis/
 
 # Pickle files
 *.pkl

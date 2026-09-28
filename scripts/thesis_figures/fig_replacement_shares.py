@@ -24,7 +24,7 @@ import matplotlib.patches as mpatches
 
 plt.rcParams.update({"pdf.fonttype": 42, "ps.fonttype": 42})
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RESULTS = PROJECT_ROOT / "results_example" / "ecomo_results.yml"
 OUT_DIR = PROJECT_ROOT / "figures" / "EconomicModel"
 OUT_FILE = "replacement_shares_V3.pdf"
@@ -52,8 +52,8 @@ COMPONENTS = [
 
 GROUP_LABELS = [
     (C_CONSUMABLE,  "Usage-based consumables (kite, tether)"),
-    (C_AVIONICS,    "Airborne electronics (KCU), calendar life"),
-    (C_GS_HARDWARE, "Ground-station hardware, calendar life"),
+    (C_AVIONICS,    "Calendar life electronics (KCU, sensor)"),
+    (C_GS_HARDWARE, "Calendar life ground-station hardware"),
     (C_STORAGE,     "Cycle-driven storage"),
 ]
 

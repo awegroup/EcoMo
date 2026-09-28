@@ -52,7 +52,7 @@ components:
         length: 500
         diameter: 0.006 # m, as-built (fixed input in standalone runs;
                         # TEF derives it from allowable_stress instead)
-        density: 724.0
+        density: 960.0
         max_tether_force: 8200.0 # N
         conductive: false
         material:

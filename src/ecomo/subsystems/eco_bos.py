@@ -1,38 +1,9 @@
 """Balance of System (BoS) subsystem economic calculations.
 
-This module computes the capital and operational expenditures for the
-BoS subsystem, including site preparation, foundation, installation,
-O&M, decommissioning, the operator/maintenance crew labour and the
-recurring consumables bundle.
-
-Three clearly separated annual operating terms are produced, so each is
-traceable on its own (rather than everything summed inside ``BoS.OM``):
-
-- ``BoS.OM`` -- the per-kW O&M overhead
-  (``operations_maintenance.price_power * ratedPowerKw``). This is the
-  size-dependent term whose cost scales with the rated power (the
-  general non-labour upkeep carried over from the earlier MATLAB
-  AWE-Eco implementation); it is *not* land/insurance or labour.
-
-- ``BoS.labour`` -- the explicit operator and maintenance crew, the
-  dominant operating cost for small, manually-supervised AWE prototypes:
-    * operation (base-crew) labour, per operating day and
-      size-independent, ``C_op = (1 - automation) * w * N_op * h_op``
-      (rig-up, launch, monitor, land, pack-down; automatable). The plant
-      is manned on ``N_op = f_wind * 365`` operating days per year (the
-      windy fraction of the year);
-    * maintenance labour, per flight hour,
-      ``C_maint = w * h_maint_per_flight_h * annual_flight_hours``
-      (routine inspection/upkeep of the wearing airborne parts, which
-      accrues with time actually flown rather than with the calendar).
-
-- ``BoS.consumables`` -- the recurring consumable bundle (AWT, kite bag,
-  weak link, sensors) replaced yearly, a fixed annual EUR amount scaled
-  by a maturity factor (``matures down`` as the system matures).
-
-The three do not double-count: the per-kW O&M overhead covers only the
-size-dependent standing upkeep, the labour group covers the crew, and
-the consumables cover the yearly replaced parts.
+Computes the BoS CAPEX (site preparation, foundation, installation,
+decommissioning) and the two separate annual operating leaves: ``BoS.OM``
+(the per-kW O&M overhead) and ``BoS.labour`` (the operator and maintenance
+crew). See reports/COST_MODEL_REFERENCE.md for the labour model.
 """
 
 from typing import Dict, Any, Optional
@@ -101,15 +72,14 @@ def eco_bos(
         costs (BalanceOfSystemCosts): BoS cost parameters.
         operations (OperationsInputs): Operations/labour parameters, or
             None to charge no explicit crew labour (only the per-kW O&M
-            overhead and the recurring consumables are then charged).
+            overhead is then charged).
         availability (float): Fraction of the operating-wind time flown
             [-], used by the per-flight-hour maintenance labour.
             Defaults to 1.0.
 
     Returns:
-        dict: The ``eco['BoS']`` results subtree, with the three separate
-        operating leaves ``OM`` (per-kW overhead), ``labour`` (crew) and
-        ``consumables`` (recurring bundle).
+        dict: The ``eco['BoS']`` results subtree, with the two separate
+        operating leaves ``OM`` (per-kW overhead) and ``labour`` (crew).
     """
     ratedPowerKw = performance.ratedPower / W_PER_KW
 
@@ -125,7 +95,7 @@ def eco_bos(
 
     installCapex = costs.installationPricePower * ratedPowerKw
 
-    # O&M overhead (per-kW, size-dependent upkeep; no labour, no consumables)
+    # O&M overhead (per-kW, size-dependent upkeep; no labour)
     overheadOpex = costs.operationsMaintenancePricePower * ratedPowerKw
 
     result: Dict[str, Any] = {
@@ -150,16 +120,5 @@ def eco_bos(
             'flight_hours': labour['flight_hours'],
             'OPEX': labour['operation'] + labour['maintenance'],
         }
-
-    # Recurring consumables (AWT, kite bag, weak link, sensors) replaced
-    # yearly. A maturity factor scales the base annual cost down as the
-    # system matures (fewer replacements). Its own leaf, distinct from
-    # BoS.OM and the labour group.
-    consumablesOpex = costs.consumablesEurPerYear * costs.consumablesMaturity
-    result['consumables'] = {
-        'annual_eur': costs.consumablesEurPerYear,
-        'maturity': costs.consumablesMaturity,
-        'OPEX': consumablesOpex,
-    }
 
     return result

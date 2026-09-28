@@ -23,13 +23,9 @@ def _cycles_to_failure(tetherStress: np.ndarray,
                        costs: TetherCosts) -> np.ndarray:
     """Bending cycles to failure per wind speed [-].
 
-    Uses the Meuwissen/Bosman bearing-pressure master curve when it is
-    configured (``masterCurveCoeff`` set), otherwise the legacy a1/a2
-    semi-log S-N model.
-
-    Master curve (their Eq. 3 + fitted line, p_N in MPa):
-        p_N = k_pw * sigma_MPa / (D/d),  clamped up to pw_limit
-        N_f = C * p_N ** (-B)
+    Uses the HMPE bearing-pressure master curve when configured
+    (``masterCurveCoeff`` set), otherwise the legacy a1/a2 semi-log S-N
+    model. See reports/COST_MODEL_REFERENCE.md for the equations.
 
     Args:
         tetherStress (np.ndarray): Fibre stress per wind speed [Pa].
@@ -46,7 +42,6 @@ def _cycles_to_failure(tetherStress: np.ndarray,
             bearingPressure = np.maximum(bearingPressure, costs.pwLimitMpa)
         return costs.masterCurveCoeff * bearingPressure ** (
             -costs.masterCurveExponent)
-    # Legacy semi-log S-N fallback (dormant when the master curve is set)
     bendExponent = (costs.bendingLifeA1 -
                     costs.bendingLifeA2 * tetherStress / PA_PER_GPA)
     return 10 ** bendExponent
@@ -59,10 +54,8 @@ def _bending_replacement_frequency(
 ) -> float:
     """Estimate the GG tether replacement frequency due to bending.
 
-    The wind-distribution damage integral is unchanged; only the
-    cycles-to-failure model (:func:`_cycles_to_failure`) is selectable.
     A design retirement safety factor, when configured, scales the
-    resulting frequency up (retire at CTF/SF, before failure).
+    resulting frequency up (retire before failure).
 
     Args:
         tetherStress (np.ndarray): Fibre stress per wind speed [Pa].
@@ -82,9 +75,8 @@ def _bending_replacement_frequency(
     lifeBend = 1 / (costs.nBends *
                     np.trapezoid(integralTerm, performance.windSpeeds))
     frequency = 1 / lifeBend
-    # The design retirement margin is part of the master-curve calibration,
-    # so it only derates the master-curve life -- not the dormant a1/a2
-    # fallback (e.g. the maturity roadmap, which turns the master curve off).
+    # The safety factor derates only the master-curve life, not the a1/a2
+    # fallback (see reports/COST_MODEL_REFERENCE.md).
     if (costs.masterCurveCoeff is not None and
             costs.designSafetyFactor is not None):
         frequency = costs.designSafetyFactor * frequency
@@ -180,12 +172,8 @@ def eco_tether(
         costs.maxStress)
     eco['sigma'] = tetherStress
 
-    # OPEX: replacement frequency from the bending (GG), creep (GG and
-    # FG) and operational-wear (optional) life models. The governing mode
-    # is the shortest life, i.e. the highest replacement frequency.
-    # Bending and creep are stress-driven, so at the low stress of a
-    # soft-wing system they predict a near-infinite life; the empirical
-    # operational life then governs instead.
+    # OPEX: the governing mode is the shortest life (highest replacement
+    # frequency) of bending, creep and the optional operational wear.
     modeFrequencies: Dict[str, float] = {}
     replacementBend = None
     if topology.power == 'GG':
@@ -197,9 +185,7 @@ def eco_tether(
         tetherStress, performance, costs)
     eco['f_repl_creep'] = replacementCreep
     modeFrequencies['creep'] = replacementCreep
-    # Operational wear is opt-in (costs.operationalLife is None when the
-    # 'operational_life_enabled' toggle is off); then the tether life is
-    # governed by bending/creep fatigue alone.
+    # Operational wear is opt-in (operationalLife is None when disabled).
     if costs.operationalLife is not None:
         replacementOper = _operational_replacement_frequency(
             performance, costs, availability)
@@ -207,17 +193,14 @@ def eco_tether(
         modeFrequencies['operational'] = replacementOper
 
     if tether.replacementFrequency is None:
-        # The governing (physical) mode is the shortest life = highest
-        # replacement frequency
         governingMode = max(modeFrequencies, key=modeFrequencies.get)
         governingFrequency = modeFrequencies[governingMode]
     else:
         governingMode = 'override'
         governingFrequency = tether.replacementFrequency
 
-    # Physical tether life from the governing mode, reported before the
-    # project-life cap below (so a life longer than the project is still
-    # visible even though no replacement is then charged).
+    # Physical life from the governing mode, reported before the project-life
+    # cap below so a life longer than the project stays visible.
     flightHours = annual_flight_hours(performance, availability)
     eco['life'] = {
         'governing_mode': governingMode,
@@ -227,14 +210,12 @@ def eco_tether(
                        if governingFrequency > 0 else None),
         'annual_flight_hours': flightHours,
     }
-    # Per-mode life in flight hours (diagnostic; operational only present
-    # when the toggle is on)
+    # Per-mode life in flight hours (diagnostic)
     for name, freq in modeFrequencies.items():
         eco['life'][f'{name}_flight_hours'] = (
             flightHours / freq if freq > 0 else None)
 
-    # A tether life beyond the project lifetime means no replacement
-    # (a replacement frequency of zero already means an infinite life)
+    # A life beyond the project lifetime charges no replacement.
     replacementFrequency = governingFrequency
     if (replacementFrequency == 0 or
             1 / replacementFrequency > business.nYears):

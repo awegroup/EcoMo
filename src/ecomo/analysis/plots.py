@@ -1,6 +1,6 @@
 """Analysis plots for EcoMo (optional, off by default).
 
-A thin presentation layer over :mod:`ecomo.ecomo.analysis.sweep`. Every
+A thin presentation layer over :mod:`ecomo.analysis.sweep`. Every
 function only reads results from ``compute_economics()`` (directly or via
 the sweep harness) and renders a matplotlib figure saved as a PNG. None of
 the cost subsystems, the metrics, or the existing pie display
@@ -8,7 +8,7 @@ the cost subsystems, the metrics, or the existing pie display
 
 The cost-side caveat from the sweep harness applies: plots built on
 parameters that would also change the real performance carry the
-:data:`~ecomo.ecomo.analysis.sweep.FIXED_PERF_CAVEAT` subtitle.
+:data:`~ecomo.analysis.sweep.FIXED_PERF_CAVEAT` subtitle.
 """
 
 from pathlib import Path
@@ -30,9 +30,7 @@ from ..eco_costs import TetherCosts
 from ..loaders.eco_load_cost_inputs import _resolve_bending_life_a1
 
 # Drum-to-tether diameter ratios (D/d) drawn on the tether life-vs-stress
-# diagnostic (figure 5) to show how the winch drum choice shifts the
-# bending-fatigue curve. Each gets its own line style; a1 is resolved from
-# the cost file's bending_life_a1_table at each ratio.
+# diagnostic, each with its own line style.
 _DRUM_RATIOS_DIAGNOSTIC = (10, 20, 30, 100)
 _DRUM_RATIO_LINESTYLES = ('-', '--', '-.', ':')
 from .sweep import (
@@ -49,9 +47,8 @@ from .sweep import (
     tornado,
 )
 
-# Display categories used by all cost plots (Ground crew split out of BoS,
-# Launch & land split out of the ground station). Stable colour and label
-# per category; Ground crew is red to flag it as a driving subsystem.
+# Display categories used by all cost plots, with a stable colour and
+# label per category (Ground crew is red to flag it as a driver).
 _CATEGORIES = DISPLAY_CATEGORIES
 _SUBSYSTEM_COLORS = {
     'kite': '#1f77b4',       # blue
@@ -576,22 +573,44 @@ def plot_power_curve_wind(model, eco: Dict[str, Any], outdir: Path) -> Path:
     metrics = eco['metrics']
     wind = np.asarray(perf.windSpeeds)
     avgKw = np.asarray(perf.averagePower) / 1e3
+    mechKw = (np.asarray(perf.mechanicalPower) / 1e3
+              if perf.mechanicalPower is not None else None)
     pdf = np.asarray(perf.windPdf, dtype=float)
     energy = avgKw * pdf                                   # energy-yield density
 
     fig, (axP, axE) = plt.subplots(2, 1, figsize=(9, 8.5), sharex=True)
 
     # -- (a) power curve ---------------------------------------------------
+    # Overlay the mechanical (shaft) and electrical (exported) cycle power
+    # so the drivetrain/storage conversion loss is explicit: the shaded
+    # band between the two curves is the energy lost in the generator,
+    # motor and storage round-trip.
+    if mechKw is not None:
+        axP.fill_between(wind, avgKw, mechKw, color='#C44E52', alpha=0.12,
+                         label='Conversion loss (mechanical → electrical)')
+        axP.plot(wind, mechKw, 's--', color='#C44E52', lw=1.8,
+                 markersize=4, label='Average mechanical (cycle) power')
     axP.plot(wind, avgKw, 'o-', color='#4C72B0', lw=2,
              label='Average electrical (cycle) power')
-    axP.axhline(perf.ratedPower / 1e3, color='#C44E52', ls='--',
-                label=f'Rated power ({perf.ratedPower / 1e3:.1f} kW)')
+    axP.axhline(perf.ratedPower / 1e3, color='dimgray', ls=':',
+                lw=1.2, label=f'Rated electrical ({perf.ratedPower / 1e3:.1f} kW)')
     axP.set_ylabel('Power [kW]')
     axP.set_ylim(bottom=0)
     axP.grid(True, alpha=0.3)
     axP.legend(fontsize=9, loc='lower right')
     axP.set_title('(a)  Power curve', fontsize=11, loc='left')
-    if perf.peakMechanicalPower:
+    if mechKw is not None and np.any(mechKw > 0):
+        # Cycle-averaged conversion efficiency at the peak of the curve.
+        iPk = int(np.argmax(mechKw))
+        etaPk = avgKw[iPk] / mechKw[iPk] if mechKw[iPk] > 0 else float('nan')
+        axP.text(0.02, 0.95,
+                 f'Mechanical shaft power converts to electrical at the '
+                 f'generator/motor/storage\nefficiency chain '
+                 f'(~{etaPk:.0%} at peak); only the electrical output is '
+                 f'sold.',
+                 transform=axP.transAxes, fontsize=8, va='top',
+                 color='dimgray', style='italic')
+    elif perf.peakMechanicalPower:
         axP.text(0.02, 0.95,
                  f'Peak mechanical reel-out power: '
                  f'{perf.peakMechanicalPower / 1e3:.0f} kW '
@@ -623,7 +642,7 @@ def plot_power_curve_wind(model, eco: Dict[str, Any], outdir: Path) -> Path:
                      textcoords='offset points', fontsize=8, va='center',
                      ha='right', color='dimgray')
 
-    axE.set_xlabel('Wind speed [m/s]')
+    axE.set_xlabel('Wind speed  [m s$^{-1}$]')
     axE.set_ylabel('Normalized density [-]')
     axE.set_ylim(0, 1.12)
     axE.grid(True, alpha=0.3)

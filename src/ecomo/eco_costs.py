@@ -381,14 +381,9 @@ class BalanceOfSystemCosts:
         foundationPricePower: Foundation price [EUR/kW].
         installationPricePower: Installation price [EUR/kW].
         operationsMaintenancePricePower: Per-kW O&M overhead price
-            [EUR/kW/year] (size-dependent upkeep; no labour, no
-            consumables).
+            [EUR/kW/year] (size-dependent upkeep; no labour).
         decommissioningInstallationFraction: Decommissioning cost as a
             fraction of the installation cost [-].
-        consumablesEurPerYear: Recurring consumables bundle (AWT, kite
-            bag, weak link, sensors) replaced yearly [EUR/year].
-        consumablesMaturity: Maturity factor multiplying the consumables
-            cost [-]; matures down (<1) as the system matures. Default 1.
     """
 
     sitePreparationPricePower: float
@@ -396,8 +391,6 @@ class BalanceOfSystemCosts:
     installationPricePower: float
     operationsMaintenancePricePower: float
     decommissioningInstallationFraction: float
-    consumablesEurPerYear: float = 0.0
-    consumablesMaturity: float = 1.0
 
 
 @dataclass(frozen=True)

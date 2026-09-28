@@ -39,10 +39,10 @@ def eco_main(inputs: EcoInputs, costs: EcoCosts) -> Dict[str, Any]:
     availability = (inputs.operations.availability
                     if inputs.operations is not None else 1.0)
 
-    # The BoS subtree carries three separate operating leaves: the per-kW
-    # O&M overhead (BoS.OM), the operator/maintenance crew labour
+    # The BoS subtree carries two separate operating leaves: the per-kW
+    # O&M overhead (BoS.OM) and the operator/maintenance crew labour
     # (BoS.labour, whose maintenance term is per flight hour and so needs
-    # the availability) and the recurring consumables (BoS.consumables).
+    # the availability).
     eco: Dict[str, Any] = {
         'kite': eco_kite(inputs.kite, inputs.performance,
                          costs.kite, inputs.topology, inputs.business,

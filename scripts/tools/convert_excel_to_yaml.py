@@ -24,7 +24,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = PROJECT_ROOT / "data"
 OUTPUT_DIR = PROJECT_ROOT / "config" / "example"
 

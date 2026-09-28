@@ -217,8 +217,7 @@ def eco_compute_metrics(
     grossAep = (float(performance.externalAep)
                 if performance.externalAep is not None
                 else integratedAep)
-    # Net AEP after downtime; the price weighting below keeps the gross
-    # integral as its (intensive) normalization, so ``p`` is unchanged.
+    # Net AEP after downtime (the price weighting below is unaffected).
     metrics['AEP'] = availability * grossAep
 
     # Capacity Factor (on the net, delivered energy)

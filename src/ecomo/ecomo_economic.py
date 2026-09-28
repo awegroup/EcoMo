@@ -20,9 +20,11 @@ import numpy as np
 import yaml
 
 from .base import EconomicModel
-from .ecomo.eco_main import eco_main
-from .ecomo.eco_costs import EcoCosts
-from .ecomo.eco_inputs import (
+from .eco_main import eco_main
+from .eco_costs import EcoCosts
+from .maturity import stage_defaults, stage_operating_hours_per_day
+from .eco_hours import annual_operating_days
+from .eco_inputs import (
     BusinessInputs,
     EcoInputs,
     GroundStationInputs,
@@ -33,7 +35,7 @@ from .ecomo.eco_inputs import (
     TetherInputs,
     Topology,
 )
-from .ecomo.loaders import (
+from .loaders import (
     eco_load_cost_inputs,
     eco_load_system,
     eco_load_performance,
@@ -43,7 +45,7 @@ from .ecomo.loaders import (
     WEIBULL_SHAPE,
     WEIBULL_SCALE,
 )
-from .ecomo.eco_display_results import eco_display_results
+from .eco_display_results import eco_display_results
 
 try:
     from awesio.validator import validate as awesio_validate  # type: ignore
@@ -86,7 +88,9 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
 
     Returns:
         dict: Dictionary with keys ``'windRange'`` [m/s], ``'peAvg'``
-        (electrical) [W], ``'dtCycle'`` [s], ``'peRated'`` [W],
+        (electrical average cycle power) [W], ``'pmAvg'`` (mechanical
+        average cycle power, before the drivetrain/storage losses) [W],
+        ``'dtCycle'`` [s], ``'peRated'`` [W],
         ``'reelOutFraction'`` (t_reel_out / t_cycle per wind speed [-]),
         ``'peakReelOutPower'`` (max average mechanical reel-out power
         [W]), ``'tetherForce'`` (cycle-maximum ground tether force per
@@ -103,6 +107,7 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
 
     nSpeeds = len(windRange)
     powerSum = np.zeros(nSpeeds)
+    mechPowerSum = np.zeros(nSpeeds)
     timeSum = np.zeros(nSpeeds)
     weightTotal = 0.0
     timeWeight = np.zeros(nSpeeds)
@@ -136,6 +141,11 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
             elecPower = performance.get('electrical_power', mechPower)
             timing = performance['timing']
             powerSum[i] += weight * elecPower['average_cycle_power']
+            # Mechanical cycle power: the shaft output before the
+            # drivetrain/storage efficiency chain, kept for the
+            # mechanical-vs-electrical power-curve comparison.
+            mechPowerSum[i] += weight * mechPower.get(
+                'average_cycle_power', 0.0)
             cycleTime = timing.get('cycle_time', 0.0)
             reelOutTime = timing.get('reel_out_time', 0.0)
             timeSum[i] += weight * cycleTime
@@ -170,6 +180,7 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
                 exchangedEnergySum[i] += weight * bufferedJoules / JOULES_PER_KWH
 
     peAvg = powerSum / weightTotal
+    pmAvg = mechPowerSum / weightTotal
     with np.errstate(divide='ignore', invalid='ignore'):
         dtCycle = np.where(timeWeight > 0, timeSum / timeWeight, 0.0)
         reelOutFraction = np.where(timeWeight > 0,
@@ -178,6 +189,7 @@ def _parse_power_curves(power_curves_data: Dict[str, Any]) -> Dict[str, Any]:
     return {
         'windRange': windRange,
         'peAvg': peAvg,
+        'pmAvg': pmAvg,
         'dtCycle': dtCycle,
         'peRated': float(np.max(peAvg)),
         'reelOutFraction': reelOutFraction,
@@ -232,6 +244,7 @@ class EcoMo(EconomicModel):
     def __init__(self):
         """Initialize the ECOMo economic model."""
         self.settings: Optional[Dict[str, Any]] = None
+        self.stageDefaults: Dict[str, float] = {}
         self.systemData: Optional[Dict[str, Any]] = None
         self.costInputsPath: Optional[Path] = None
         self.performancePath: Optional[Path] = None
@@ -341,6 +354,7 @@ class EcoMo(EconomicModel):
             )
 
         self.settings = settings
+        self.stageDefaults = stage_defaults(settings.get('development_stage'))
         self.awespaData = None
         self.performancePath = None
         if aepResults is not None:
@@ -510,6 +524,11 @@ class EcoMo(EconomicModel):
             performance, exchangedEnergy, forceAvailable = (
                 self._standalone_performance(topology))
 
+        # The development-stage operating hours are specified per week and
+        # converted to a per-day value using the wind resource's operating-
+        # day count, so N_op must be known before the operations are built.
+        nOp = annual_operating_days(performance)
+
         # Typed inputs and costs
         inputs = EcoInputs(
             topology=topology,
@@ -518,12 +537,13 @@ class EcoMo(EconomicModel):
             tether=self._build_tether(),
             groundStation=self._build_ground_station(topology, exchangedEnergy),
             performance=performance,
-            operations=self._build_operations(),
+            operations=self._build_operations(nOp),
         )
         costs = eco_load_cost_inputs(
             self.costInputsPath,
             tether_max_stress=self.systemData['tetherMaxStress'],
-            power=topology.power)
+            power=topology.power,
+            stage_defaults=self.stageDefaults)
 
         # Run the simulation
         eco = eco_main(inputs, costs)
@@ -634,7 +654,8 @@ class EcoMo(EconomicModel):
         tetherForce, available = self._resolve_tether_force(
             perf['tetherForce'], windRange)
 
-        peakMechanicalPower = perf['pmPeak']
+        peakMechanicalPower = (self._peak_mechanical_power_override() or
+                               perf['pmPeak'])
         cycleTime = perf['dtCycle']
         if topology.power == 'GG' and peakMechanicalPower is None:
             peakMechanicalPower = peak_mechanical_power_fallback(
@@ -707,11 +728,12 @@ class EcoMo(EconomicModel):
         tractionTetherForce = (None if override is not None
                                else data.get('tractionTetherForce'))
 
-        # Peak mechanical power: the actual peak reel-out power from the
-        # power curves, falling back to the 2.5x rated estimate only when
-        # the reel-out power is unavailable.
-        peakMechanicalPower = None
-        if topology.power == 'GG':
+        # Peak mechanical power sizes the generator/gearbox. An explicit
+        # system_extras override (e.g. the true full-cycle |P_mech(t)| peak
+        # from the QSM time histories) wins; otherwise the reel-out power
+        # from the power curves, with the 2.5x rated fallback.
+        peakMechanicalPower = self._peak_mechanical_power_override()
+        if peakMechanicalPower is None and topology.power == 'GG':
             peakMechanicalPower = data.get('peakReelOutPower') or None
             if peakMechanicalPower is None:
                 peakMechanicalPower = peak_mechanical_power_fallback(
@@ -721,6 +743,7 @@ class EcoMo(EconomicModel):
             windSpeeds=windRange,
             windPdf=self._wind_distribution(windRange),
             averagePower=data['peAvg'],
+            mechanicalPower=data.get('pmAvg'),
             ratedPower=data['peRated'],
             tetherForce=tetherForce,
             peakMechanicalPower=peakMechanicalPower,
@@ -744,6 +767,21 @@ class EcoMo(EconomicModel):
             exchangedEnergy = {}
         return performance, exchangedEnergy, available
 
+    def _peak_mechanical_power_override(self) -> Optional[float]:
+        """Peak mechanical power override from the settings [W], or None.
+
+        ``system_extras.peak_mechanical_power_override`` lets a caller supply
+        the true full-cycle peak mechanical power (e.g. the QSM time-history
+        peak), which sizes the generator/gearbox instead of the power-curve
+        reel-out power.
+
+        Returns:
+            float: The override in watts, or None when it is not set.
+        """
+        value = (self.settings.get('system_extras') or {}).get(
+            'peak_mechanical_power_override')
+        return float(value) if value is not None else None
+
     def _build_business(self) -> BusinessInputs:
         """Build the business inputs from the settings."""
         business = self.settings['business']
@@ -755,8 +793,13 @@ class EcoMo(EconomicModel):
             debtToEquity=float(business['debt_to_equity']),
         )
 
-    def _build_operations(self) -> Optional[OperationsInputs]:
+    def _build_operations(self, n_op: float) -> Optional[OperationsInputs]:
         """Build the operations inputs from the settings.
+
+        Args:
+            n_op (float): Operating days per year of the wind resource,
+                used to convert the development stage's weekly operating
+                hours to the per-day value the cost model needs.
 
         Returns:
             OperationsInputs: The labour parameters, or None when the
@@ -794,11 +837,25 @@ class EcoMo(EconomicModel):
                 f"'operations.automation' must be in [0, 1], "
                 f"got {automation}."
             )
+        # The development stage supplies the operating hours (converted from
+        # its weekly target via N_op) and the per-flight-hour maintenance
+        # when they are not set explicitly.
+        operatingHours = operations.get(
+            'operating_hours_per_day',
+            stage_operating_hours_per_day(self.stageDefaults, n_op))
+        maintenanceHours = operations.get(
+            'maintenance_hours_per_flight_hour',
+            self.stageDefaults.get('maintenance_hours_per_flight_hour'))
+        if operatingHours is None or maintenanceHours is None:
+            raise ValueError(
+                "'operations.operating_hours_per_day' and "
+                "'operations.maintenance_hours_per_flight_hour' must be set, "
+                "either explicitly or via a 'development_stage'."
+            )
         return OperationsInputs(
             labourPrice=float(operations['labour_price']),
-            operatingHoursPerDay=float(operations['operating_hours_per_day']),
-            maintenanceHoursPerFlightHour=float(
-                operations['maintenance_hours_per_flight_hour']),
+            operatingHoursPerDay=float(operatingHours),
+            maintenanceHoursPerFlightHour=float(maintenanceHours),
             availability=float(operations.get('availability', 1.0)),
             automation=automation,
         )
@@ -946,6 +1003,7 @@ class EcoMo(EconomicModel):
                 'power': self.settings['topology']['power'],
                 'wing': self.settings['topology']['wing'],
             },
+            'development_stage': self.settings.get('development_stage') or 'none',
             'metrics': {
                 'lcoe_eur_per_mwh': metrics['LCoE'],
                 'cove_eur_per_mwh': metrics['CoVE'],

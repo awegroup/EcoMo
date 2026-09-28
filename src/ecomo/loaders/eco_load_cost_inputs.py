@@ -390,9 +390,54 @@ def _warn_missing_hydraulic(component: str) -> None:
     )
 
 
+def _apply_stage_defaults_to_costs(
+        data: Dict[str, Any],
+        stage_defaults: Optional[Dict[str, float]]) -> None:
+    """Apply the development-stage maturity settings to the cost inputs.
+
+    Mutates ``data`` in place. The canopy life and the tether
+    operational life are filled only where they are not already present
+    (explicit numeric file values win). Selecting a stage additionally
+    forces the tether into operational-wear mode -- operational life
+    enabled, bending ``master_curve`` off -- so the staged operational
+    life governs the replacement. An explicit
+    ``costs.tether.operational_life_enabled: false`` opts out and keeps the
+    bending master curve, so the design study runs a stress-sensitive tether
+    life at a chosen maturity; otherwise the stage's operational mode wins.
+    No-op when ``stage_defaults`` is empty (stage ``none``).
+
+    Args:
+        data (dict): Parsed cost inputs mapping.
+        stage_defaults (dict): Development-stage defaults, or None.
+    """
+    if not stage_defaults:
+        return
+    soft = (data.get('costs', {}).get('kite', {})
+            .get('structure', {}).get('soft'))
+    if soft is not None and 'canopy_lifetime_flight_hours' not in soft:
+        soft['canopy_lifetime_flight_hours'] = (
+            stage_defaults['canopy_lifetime_flight_hours'])
+    tether = data.get('costs', {}).get('tether')
+    if tether is not None:
+        if 'operational_life_flight_hours' not in tether:
+            tether['operational_life_flight_hours'] = (
+                stage_defaults['operational_life_flight_hours'])
+        # A stage models maturity via operational wear, not the bending
+        # design safety factor: by default it puts the tether into
+        # operational-life mode (operational life governs, master curve off).
+        # An explicit ``operational_life_enabled: false`` in the cost file is
+        # an opt-out that wins, so the design study can keep the bending master
+        # curve -- and hence a stress-sensitive tether life -- while still
+        # taking canopy life, operating hours and maintenance from the stage.
+        if tether.get('operational_life_enabled', True):
+            tether['operational_life_enabled'] = True
+            tether['master_curve'] = None
+
+
 def eco_load_cost_inputs(cost_inputs_path: Path,
                          tether_max_stress: Optional[float] = None,
-                         power: Optional[str] = None
+                         power: Optional[str] = None,
+                         stage_defaults: Optional[Dict[str, float]] = None
                          ) -> EcoCosts:
     """Load cost model parameters from a YAML file.
 
@@ -405,6 +450,10 @@ def eco_load_cost_inputs(cost_inputs_path: Path,
         power (str): Power generation type, 'GG' or 'FG', used to decide
             which topology-dependent cost fields warrant a warning when
             absent. Defaults to None (no topology-dependent warnings).
+        stage_defaults (dict): Development-stage maturity defaults used to
+            fill the canopy life and tether operational life when they are
+            absent from the file. Explicit file values take precedence.
+            Defaults to None.
 
     Raises:
         FileNotFoundError: If the file does not exist.
@@ -420,6 +469,8 @@ def eco_load_cost_inputs(cost_inputs_path: Path,
 
     with open(costPath, 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
+
+    _apply_stage_defaults_to_costs(data, stage_defaults)
 
     costs = _require(data, 'costs', '<root>')
     market = _require(data, 'market', '<root>')
@@ -446,9 +497,6 @@ def eco_load_cost_inputs(cost_inputs_path: Path,
                 bos['operations_maintenance']['price_power']),
             decommissioningInstallationFraction=(
                 bos['decommissioning']['installation_fraction']),
-            consumablesEurPerYear=float(
-                bos.get('consumables_eur_per_year', 0.0)),
-            consumablesMaturity=float(bos.get('consumables_maturity', 1.0)),
         ),
         market=MarketCosts(
             electricityPriceIntercept=market['electricity_price']['intercept'],

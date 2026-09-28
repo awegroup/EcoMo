@@ -31,7 +31,7 @@ import yaml
 
 import matplotlib.pyplot as plt
 
-from ...ecomo_economic import EcoMo
+from ..ecomo_economic import EcoMo
 from .plots import (
     plot_1d_sweeps,
     plot_2d_contour,

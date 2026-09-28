@@ -9,7 +9,7 @@ topology:
   wing: soft       # fixed or soft
 
 input_files:
-  system: "tudelft V3_25.yml"                 # awesIO system_schema.yml (V3.25 kite)
+  system: tudelft_V3_25.yml                   # awesIO system_schema.yml (V3.25 kite)
   cost_inputs: economic_cost_inputs_V3.yml
   performance: null                           # ignored in AWESPA-connected mode
   aep_results: ../../data/aep_results.yml     # AWESPA calculate_aep() output
@@ -30,29 +30,27 @@ business:
   tax_rate: 0.25
   debt_to_equity: 2.3333333333333335   # 70/30 debt-to-equity ratio
 
-# Explicit labour OPEX (the dominant operating cost for small, manually-
-# supervised AWE prototypes; the per-kW BoS O&M term only covers non-labour
-# overhead such as land lease and insurance, so there is no double-counting).
-# Operating-day model: the plant is manned on N_op = f_wind * 365 operating
-# days per year (the windy fraction of the year, from the wind resource),
-# each with a fixed, size-independent labour allowance:
-#   C_op    = (1 - automation) * labour_price * N_op * operating_hours_per_day
-#   C_maint =        labour_price * maintenance_hours_per_flight_hour * H_flight
-# The operating hours are size-independent on purpose: one crew runs one system
-# regardless of wing area, so a fixed crew is amortised over a larger, more
-# energetic system as it scales (economy of scale in labour). For V3,
-# f_wind ~ 0.87 -> N_op ~ 318 days/yr. Omit this block to skip the labour OPEX.
+# Development stage: early, mid, mature or none.
+#   early/mid/mature -- apply a maturity preset: canopy life, operating hours,
+#     per-flight-hour maintenance and tether operational life step with the
+#     stage, and the tether is put into operational-wear mode (bending
+#     master curve off) so the staged operational life governs. This is the
+#     maturity-roadmap scenario (e.g. mid -> ~2992 EUR/MWh for V3).
+#   none -- no preset; every lifetime, labour hour and tether mode is taken
+#     from this file and the cost inputs as written (bending master curve
+#     stays on if present). You must then set operations.operating_hours_per_day
+#     and operations.maintenance_hours_per_flight_hour explicitly below.
+# Any numeric value set explicitly below or in the cost inputs overrides the
+# preset (the tether mode, however, is forced by the stage).
+development_stage: mid
+
+# Explicit labour OPEX. The operating labour is a per-operating-day cost and
+# the maintenance labour is charged per flight hour; both come from the
+# development stage unless set here. Omit this block to skip the labour OPEX.
 operations:
-  operating_hours_per_day: 2.0            # h/operating-day (base crew)
-  maintenance_hours_per_flight_hour: 0.5  # h per flight hour (maintenance)
   labour_price: 50                        # EUR/h
-  # Availability scales the flight hours (canopy/tether wear) AND the net AEP,
-  # so downtime raises cost and lowers energy consistently. It does NOT change
-  # the operating-day count (labour is a standing cost). Baseline 0.90, derived
-  # from an assumed 2 h/day operational interruption (730 h/yr downtime vs the
-  # ~7644 h/yr potential flight time -> a = 1 - 730/7644 = 0.904 ~ 0.90).
   availability: 0.90                      # fraction of operating-wind time flown
-  automation: 0.0                         # alpha_auto in [0,1]; 0 = fully manual
+  automation: 0.0                         # automation fraction in [0, 1]
 
 # Replacement frequencies [1/year].
 # null = auto-estimate from the load/cycle models, 0 = never replaced.
@@ -76,7 +74,7 @@ system_extras:
 # Optional analysis/plotting layer (OFF by default). When enabled, the run
 # script calls run_analysis() after compute_economics() and writes figures to
 # results_example/analysis/. It only re-runs the model (sweeps); it never
-# changes the economics. See ecomo.ecomo.analysis.
+# changes the economics. See ecomo.analysis.
 analysis:
   enabled: true
   # plots: [stacked_bar, tornado, sweeps, contour, tether_life, power_curve]

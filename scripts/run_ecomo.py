@@ -18,7 +18,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from ecomo import EcoMo
-from ecomo.ecomo.analysis import maybe_run_analysis
+from ecomo.analysis import maybe_run_analysis
 
 
 def main():
