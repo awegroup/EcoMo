@@ -1,8 +1,8 @@
-# ECOMo — Economic Model for Airborne Wind Energy Systems
+# EcoMo — Economic Model for Airborne Wind Energy Systems
 
 Python implementation of the AWE-Eco reference economic model, originally developed in MATLAB by the AWE Group at TU Delft.
 
-ECOMo computes capital expenditure (CAPEX), operational expenditure (OPEX), levelised cost of energy (LCoE), net present value (NPV), internal rate of return (IRR), and other economic metrics for airborne wind energy systems.
+EcoMo computes capital expenditure (CAPEX), operational expenditure (OPEX), levelised cost of energy (LCoE), net present value (NPV), internal rate of return (IRR), and other economic metrics for airborne wind energy systems.
 
 ## :gear: Installation
 
@@ -17,8 +17,8 @@ ECOMo computes capital expenditure (CAPEX), operational expenditure (OPEX), leve
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/awegroup/ecomo.git
-    cd ecomo
+    git clone https://github.com/awegroup/EcoMo.git
+    cd EcoMo
     ```
 
 2. Create and activate a virtual environment:
@@ -147,7 +147,7 @@ power model. AEP in AWESPA-connected mode is taken directly from
 ### Project Structure
 
 ```
-ecomo/
+EcoMo/
 ├── config/
 │   ├── example/          # production V3.25 example (AWESPA-connected)
 │   └── test/             # per-topology fixtures (GG fixed/soft, FG)
